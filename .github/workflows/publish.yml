@@ -21,6 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Test catalog integrity
+        run: python3 tests/test_catalog.py
+
       - name: Package theme zips
         run: ./marketing/package-zips.sh
 

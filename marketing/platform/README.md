@@ -32,9 +32,23 @@ opens. Everything below is reference detail; the wizard handles all of it.
 |---|---|---|
 | **Etsy** | **Full** — listings created/updated by CI on every push | Official Etsy Open API v3 (`sync-etsy.py`) |
 | **Own storefront** | Full — rebuilt by CI on every push | `/store/` page on the demo site; Buy buttons link to the Etsy listings once they exist |
-| Gumroad | Browser automation (no create API exists) | `sync-browser.py gumroad` — RPA in CI with your captured session |
-| Creative Market | Browser automation (no seller API exists) | `sync-browser.py creativemarket` |
-| ThemeForest | Browser automation submits; **Envato humans still review** | `sync-browser.py themeforest` — flagship items only, per the duplicate-item policy |
+| Gumroad | Browser automation (no create API exists) | Generic auto-fill engine (`sync-browser.py`) with your captured session |
+| Payhip | Browser automation | Same engine — Gumroad-style digital storefront |
+| Creative Market | Browser automation (no seller API exists) | Same engine |
+| Codester | Browser automation | Same engine — code/template marketplace |
+| WrapBootstrap | Browser automation | Same engine — HTML-template-specific marketplace |
+| Creative Fabrica | Browser automation | Same engine |
+| ThemeForest | Browser automation submits; **Envato humans still review** | Same engine — flagship items only, per the duplicate-item policy |
+| TemplateMonster | Browser automation submits; **their reviewers approve** | Same engine — flagship items only |
+
+All eight browser-automated sites share one **generic auto-fill engine**: it
+reads whatever listing form the site presents, recognises fields by their
+labels/placeholders (title, price, description, tags, demo URL, image and
+file uploads), fills everything from `marketing/catalog.json`, steps through
+multi-page forms and publishes. Adding a marketplace is one config entry.
+The engine has its own test suite (`tests/test_autofill.py`) exercising
+three real-world form styles in a local browser, and the catalog is
+integrity-checked on every push (`tests/test_catalog.py`).
 
 ### About the browser-automation (RPA) channels
 

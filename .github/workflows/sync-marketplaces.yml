@@ -29,23 +29,28 @@ jobs:
       - name: Package theme zips
         run: ./marketing/package-zips.sh
 
-      - name: List on Gumroad
+      - name: Test the auto-fill engine and catalog
+        run: |
+          python3 tests/test_catalog.py
+          python3 tests/test_autofill.py
+
+      - name: List on every connected marketplace
         continue-on-error: true
         env:
           GUMROAD_SESSION: ${{ secrets.GUMROAD_SESSION }}
-        run: python3 marketing/platform/sync-browser.py gumroad
-
-      - name: List on Creative Market
-        continue-on-error: true
-        env:
           CREATIVEMARKET_SESSION: ${{ secrets.CREATIVEMARKET_SESSION }}
-        run: python3 marketing/platform/sync-browser.py creativemarket
-
-      - name: Submit to ThemeForest
-        continue-on-error: true
-        env:
           THEMEFOREST_SESSION: ${{ secrets.THEMEFOREST_SESSION }}
-        run: python3 marketing/platform/sync-browser.py themeforest
+          PAYHIP_SESSION: ${{ secrets.PAYHIP_SESSION }}
+          CODESTER_SESSION: ${{ secrets.CODESTER_SESSION }}
+          WRAPBOOTSTRAP_SESSION: ${{ secrets.WRAPBOOTSTRAP_SESSION }}
+          TEMPLATEMONSTER_SESSION: ${{ secrets.TEMPLATEMONSTER_SESSION }}
+          CREATIVEFABRICA_SESSION: ${{ secrets.CREATIVEFABRICA_SESSION }}
+        run: |
+          rc=0
+          for site in gumroad creativemarket themeforest payhip codester wrapbootstrap templatemonster creativefabrica; do
+            python3 marketing/platform/sync-browser.py "$site" || rc=1
+          done
+          exit $rc
 
       - name: Upload step screenshots (for diagnosing UI changes)
         if: always()

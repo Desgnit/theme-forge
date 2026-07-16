@@ -57,6 +57,36 @@ RPA_SITES = {
         "domains": ("themeforest.net", "envato.com"),
         "secret": "THEMEFOREST_SESSION",
     },
+    "payhip": {
+        "login": "https://payhip.com/auth/login",
+        "check": "https://payhip.com/dashboard",
+        "domains": ("payhip.com",),
+        "secret": "PAYHIP_SESSION",
+    },
+    "codester": {
+        "login": "https://www.codester.com/login",
+        "check": "https://www.codester.com/upload",
+        "domains": ("codester.com",),
+        "secret": "CODESTER_SESSION",
+    },
+    "wrapbootstrap": {
+        "login": "https://wrapbootstrap.com/login",
+        "check": "https://wrapbootstrap.com/user/items",
+        "domains": ("wrapbootstrap.com",),
+        "secret": "WRAPBOOTSTRAP_SESSION",
+    },
+    "templatemonster": {
+        "login": "https://account.templatemonster.com/",
+        "check": "https://account.templatemonster.com/products",
+        "domains": ("templatemonster.com",),
+        "secret": "TEMPLATEMONSTER_SESSION",
+    },
+    "creativefabrica": {
+        "login": "https://www.creativefabrica.com/login/",
+        "check": "https://studio.creativefabrica.com/",
+        "domains": ("creativefabrica.com",),
+        "secret": "CREATIVEFABRICA_SESSION",
+    },
 }
 LOGIN_MARKERS = ("login", "sign_in", "sign-in", "signin", "sso")
 

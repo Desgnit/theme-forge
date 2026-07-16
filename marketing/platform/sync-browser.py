@@ -1,28 +1,30 @@
 #!/usr/bin/env python3
-"""RPA listers for marketplaces that have no listing API (Gumroad,
-Creative Market, ThemeForest). Drives the seller dashboard in a headless
-browser using a session captured with capture-session.py.
+"""RPA listers for marketplaces without listing APIs.
 
-Usage:  python3 marketing/platform/sync-browser.py <gumroad|creativemarket|themeforest>
+One generic engine: it reads whatever listing form the site shows, matches
+each field by its label/placeholder/name (title, price, description, tags,
+demo URL, image/file uploads), auto-fills everything from
+marketing/catalog.json, advances through multi-step forms, and publishes.
+Adding a marketplace = adding one SITES entry.
 
-Auth comes from the <SITE>_SESSION env var (base64 storage-state). Without
-it the script prints what it would do and exits 0, so CI stays green until
-the account is connected.
+Usage:  python3 marketing/platform/sync-browser.py <site>
+Sites:  gumroad creativemarket themeforest payhip codester wrapbootstrap
+        templatemonster creativefabrica
 
-Listing state is tracked in marketing/platform/<site>-listings.json so
-re-runs only create what's missing. Every step screenshots into
-marketing/platform/shots/ — CI uploads them as an artifact, which is how
-selector breakage gets diagnosed and fixed after marketplace UI changes.
+Auth: <SITE>_SESSION env var (captured by setup-wizard.py). Without it the
+script says what it would do and exits 0, keeping CI green.
+State: marketing/platform/<site>-listings.json (idempotent re-runs).
+Diagnostics: every step screenshots to marketing/platform/shots/ (uploaded
+as a CI artifact) so selector drift after a site redesign is quick to fix.
 
-Honest notes:
-- This automates YOUR account doing YOUR listings — but check each site's
-  terms on automation; you run it at your own risk.
-- ThemeForest submissions still go through Envato's human review; this
-  uploads and submits, it cannot approve.
+Honest notes: automation may sit against some sites' terms — your account,
+your call. ThemeForest/TemplateMonster listings still pass human review;
+the robot submits, people approve.
 """
 import base64
 import json
 import os
+import re
 import sys
 import traceback
 
@@ -32,12 +34,56 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 MK = os.path.join(ROOT, "marketing")
 SHOTS = os.path.join(MK, "platform", "shots")
 DEMO = "https://desgnit.github.io/theme-forge"
+LOGIN_MARKERS = ("login", "sign_in", "sign-in", "signin", "sso", "auth")
 
 SITES = {
-    "gumroad": {"secret": "GUMROAD_SESSION", "login_marker": "gumroad.com/login"},
-    "creativemarket": {"secret": "CREATIVEMARKET_SESSION", "login_marker": "sign-in"},
-    "themeforest": {"secret": "THEMEFOREST_SESSION", "login_marker": "sign_in"},
+    "gumroad": {
+        "new": "https://app.gumroad.com/products/new",
+        "choose": ["Digital product"],
+        "secret": "GUMROAD_SESSION",
+    },
+    "creativemarket": {
+        "new": "https://creativemarket.com/studio/products/new",
+        "secret": "CREATIVEMARKET_SESSION",
+    },
+    "themeforest": {
+        "new": "https://themeforest.net/item/upload",
+        "secret": "THEMEFOREST_SESSION",
+        "flagships_only": True,  # Envato rejects near-duplicate items
+    },
+    "payhip": {
+        "new": "https://payhip.com/product/add/digital",
+        "secret": "PAYHIP_SESSION",
+    },
+    "codester": {
+        "new": "https://www.codester.com/upload",
+        "secret": "CODESTER_SESSION",
+    },
+    "wrapbootstrap": {
+        "new": "https://wrapbootstrap.com/user/items/new",
+        "secret": "WRAPBOOTSTRAP_SESSION",
+    },
+    "templatemonster": {
+        "new": "https://account.templatemonster.com/products/new",
+        "secret": "TEMPLATEMONSTER_SESSION",
+        "flagships_only": True,  # reviewed marketplace — same duplicate risk
+    },
+    "creativefabrica": {
+        "new": "https://studio.creativefabrica.com/products/create",
+        "secret": "CREATIVEFABRICA_SESSION",
+    },
 }
+
+FIELD_KEYWORDS = {
+    "title": ("product name", "item name", "title", "name"),
+    "price": ("price", "amount", "cost"),
+    "description": ("description", "about", "summary", "overview", "details"),
+    "tags": ("tags", "keywords"),
+    "demo": ("demo", "live preview", "preview url", "website url"),
+}
+ADVANCE_BUTTONS = ("next", "continue", "save and continue", "customize")
+PUBLISH_BUTTONS = ("publish and continue", "publish", "submit for review",
+                   "upload item", "submit", "save draft", "save product", "save")
 
 
 class SessionExpired(Exception):
@@ -47,144 +93,146 @@ class SessionExpired(Exception):
 def shot(page, site, slug, step):
     os.makedirs(SHOTS, exist_ok=True)
     try:
-        page.screenshot(path=os.path.join(SHOTS, f"{site}-{slug}-{step}.png"), full_page=False)
+        page.screenshot(path=os.path.join(SHOTS, f"{site}-{slug}-{step}.png"))
     except Exception:
         pass
-
-
-def first_visible(page, locators, timeout=8000):
-    """Try several locator strategies; return the first that appears."""
-    last = None
-    for loc in locators:
-        try:
-            loc.first.wait_for(state="visible", timeout=timeout)
-            return loc.first
-        except Exception as e:
-            last = e
-    raise last
 
 
 def check_logged_in(page, site):
-    if SITES[site]["login_marker"] in page.url:
+    if any(m in page.url.lower() for m in LOGIN_MARKERS):
         raise SessionExpired(
-            f"{site} session has expired — re-run capture-session.py and update "
-            f"the {SITES[site]['secret']} secret.")
+            f"{site} session has expired — re-run setup-wizard.py {site} "
+            f"(the {SITES[site]['secret']} secret needs refreshing).")
 
 
-# ---------------------------------------------------------------- Gumroad
-
-def gumroad_create(page, t, paths):
-    slug, title = t["slug"], t["title"]
-    page.goto("https://app.gumroad.com/products/new", wait_until="domcontentloaded")
-    check_logged_in(page, "gumroad")
-    shot(page, "gumroad", slug, "1-new")
-
-    first_visible(page, [page.get_by_label("Name"),
-                         page.get_by_placeholder("Name of product")]).fill(title)
-    first_visible(page, [page.get_by_text("Digital product", exact=True),
-                         page.get_by_role("radio", name="Digital product")]).click()
-    first_visible(page, [page.get_by_label("Price"),
-                         page.get_by_placeholder("Price your product"),
-                         page.locator('input[type="text"][inputmode="decimal"]')]).fill(str(t["price_gbp"]))
-    shot(page, "gumroad", slug, "2-filled")
-    first_visible(page, [page.get_by_role("button", name="Next: Customize"),
-                         page.get_by_role("button", name="Customize")]).click()
-    page.wait_for_load_state("domcontentloaded")
-    shot(page, "gumroad", slug, "3-customize")
-
-    desc = t["oneliner"] + "\n\n" + t["description"] + f"\n\nLive demo: {DEMO}/{slug}/"
-    first_visible(page, [page.get_by_role("textbox", name="Description"),
-                         page.locator('[contenteditable="true"]')]).fill(desc)
-    cover_input = page.locator('input[type="file"]').first
-    cover_input.set_input_files(paths["cover"])
-    page.wait_for_timeout(3000)
-    shot(page, "gumroad", slug, "4-described")
-
-    first_visible(page, [page.get_by_role("button", name="Save and continue"),
-                         page.get_by_role("button", name="Next: Content"),
-                         page.get_by_role("button", name="Save changes")]).click()
-    page.wait_for_load_state("domcontentloaded")
-
-    # Content tab: attach the product zip
-    try:
-        first_visible(page, [page.get_by_role("tab", name="Content"),
-                             page.get_by_role("link", name="Content")], timeout=4000).click()
-    except Exception:
-        pass
-    zip_input = page.locator('input[type="file"]').last
-    zip_input.set_input_files(paths["zip"])
-    page.wait_for_timeout(8000)  # upload
-    shot(page, "gumroad", slug, "5-content")
-
-    first_visible(page, [page.get_by_role("button", name="Publish and continue"),
-                         page.get_by_role("button", name="Publish")]).click()
-    page.wait_for_load_state("domcontentloaded")
-    shot(page, "gumroad", slug, "6-published")
-    return page.url
+def describe_fields(page):
+    """Return metadata for every fillable element on the page."""
+    return page.evaluate("""() => {
+      const els = [...document.querySelectorAll('input, textarea, [contenteditable="true"]')];
+      return els.map((e, i) => {
+        let label = '';
+        if (e.labels && e.labels.length) label = [...e.labels].map(l => l.innerText).join(' ');
+        if (!label && e.closest('label')) label = e.closest('label').innerText;
+        const text = [label, e.placeholder || '', e.name || '', e.id || '',
+                      e.getAttribute('aria-label') || ''].join(' ').toLowerCase();
+        const style = window.getComputedStyle(e);
+        return {
+          i, text,
+          tag: e.tagName.toLowerCase(),
+          type: (e.type || '').toLowerCase(),
+          accept: (e.accept || '').toLowerCase(),
+          editable: e.hasAttribute('contenteditable'),
+          visible: style.display !== 'none' && style.visibility !== 'hidden'
+                   && e.offsetParent !== null,
+          filled: !!(e.value || (e.innerText || '').trim()),
+        };
+      });
+    }""")
 
 
-# --------------------------------------------------------- Creative Market
+def pick_upload(desc, paths):
+    """Choose which asset a file input wants, from its wording/accept."""
+    t = desc["text"]
+    if "thumbnail" in t and os.path.exists(paths["tf_thumb"]):
+        return paths["tf_thumb"]
+    if "preview" in t and "image" in desc["accept"] and os.path.exists(paths["tf_preview"]):
+        return paths["tf_preview"]
+    if "image" in desc["accept"] or any(w in t for w in ("image", "cover", "photo", "thumbnail", "screenshot")):
+        return paths["cover"]
+    return paths["zip"]
 
-def creativemarket_create(page, t, paths):
+
+def autofill(page, values, paths):
+    """Fill every recognisable field on the current page. Returns what was
+    filled, e.g. {"title": 0, "price": 3, "file:...zip": 7} (field -> element
+    index) — used by the tests."""
+    filled = {}
+    used = set()
+    all_els = page.locator('input, textarea, [contenteditable="true"]')
+    descs = describe_fields(page)
+
+    for field in ("title", "price", "description", "tags", "demo"):
+        if field not in values:
+            continue
+        best = None
+        for d in descs:
+            if d["i"] in used or d["type"] in ("file", "checkbox", "radio", "hidden",
+                                               "submit", "button") or not d["visible"]:
+                continue
+            if any(k in d["text"] for k in FIELD_KEYWORDS[field]):
+                # prefer textareas/contenteditable for description
+                score = len([k for k in FIELD_KEYWORDS[field] if k in d["text"]])
+                if field == "description" and (d["tag"] == "textarea" or d["editable"]):
+                    score += 2
+                if best is None or score > best[0]:
+                    best = (score, d)
+        if best:
+            d = best[1]
+            try:
+                all_els.nth(d["i"]).fill(str(values[field]), timeout=5000)
+                used.add(d["i"])
+                filled[field] = d["i"]
+            except Exception:
+                pass
+
+    for d in descs:
+        if d["type"] == "file" and d["i"] not in used:
+            path = pick_upload(d, paths)
+            if path and os.path.exists(path):
+                try:
+                    all_els.nth(d["i"]).set_input_files(path, timeout=5000)
+                    used.add(d["i"])
+                    filled[f"file:{os.path.basename(path)}"] = d["i"]
+                except Exception:
+                    pass
+    return filled
+
+
+def click_first(page, names, timeout=4000):
+    for name in names:
+        try:
+            btn = page.get_by_role("button", name=re.compile(f"^{re.escape(name)}$", re.I))
+            btn.first.click(timeout=timeout)
+            return name
+        except Exception:
+            continue
+    return None
+
+
+def list_theme(page, site, t, paths):
+    cfg = SITES[site]
     slug = t["slug"]
-    page.goto("https://creativemarket.com/studio/products/new", wait_until="domcontentloaded")
-    check_logged_in(page, "creativemarket")
-    shot(page, "creativemarket", slug, "1-new")
+    values = {
+        "title": t["title"],
+        "price": t["price_gbp"],
+        "description": t["oneliner"] + "\n\n" + t["description"]
+                       + f"\n\nLive demo: {DEMO}/{slug}/",
+        "tags": ", ".join(t["tags"][:13]),
+        "demo": f"{DEMO}/{slug}/",
+    }
+    page.goto(cfg["new"], wait_until="domcontentloaded")
+    check_logged_in(page, site)
+    shot(page, site, slug, "1-new")
 
-    first_visible(page, [page.get_by_label("Product name"),
-                         page.get_by_label("Name"),
-                         page.get_by_placeholder("Product name")]).fill(t["title"])
-    desc = t["oneliner"] + "\n\n" + t["description"] + f"\n\nLive preview: {DEMO}/{slug}/"
-    first_visible(page, [page.get_by_label("Description"),
-                         page.locator("textarea"),
-                         page.locator('[contenteditable="true"]')]).fill(desc)
-    page.locator('input[type="file"]').first.set_input_files([paths["cover"], paths["zip"]])
-    page.wait_for_timeout(10000)
-    shot(page, "creativemarket", slug, "2-filled")
+    for choice in cfg.get("choose", []):
+        try:
+            page.get_by_text(choice, exact=True).first.click(timeout=4000)
+        except Exception:
+            pass
 
-    first_visible(page, [page.get_by_role("button", name="Save draft"),
-                         page.get_by_role("button", name="Save"),
-                         page.get_by_role("button", name="Submit")]).click()
-    page.wait_for_load_state("domcontentloaded")
-    shot(page, "creativemarket", slug, "3-saved")
+    # up to 4 form pages: fill -> advance; stop when a publish button works
+    for step in range(1, 5):
+        autofill(page, values, paths)
+        page.wait_for_timeout(2500)  # let uploads start
+        shot(page, site, slug, f"{step + 1}-filled")
+        if click_first(page, PUBLISH_BUTTONS, timeout=6000):
+            break
+        if not click_first(page, ADVANCE_BUTTONS):
+            break
+        page.wait_for_load_state("domcontentloaded")
+    page.wait_for_timeout(4000)
+    shot(page, site, slug, "final")
     return page.url
-
-
-# ------------------------------------------------------------- ThemeForest
-
-def themeforest_create(page, t, paths):
-    slug = t["slug"]
-    page.goto("https://themeforest.net/item/upload", wait_until="domcontentloaded")
-    check_logged_in(page, "themeforest")
-    shot(page, "themeforest", slug, "1-upload")
-
-    first_visible(page, [page.get_by_label("Name"),
-                         page.get_by_label("Item name"),
-                         page.get_by_placeholder("Name")]).fill(t["title"])
-    desc = t["oneliner"] + "\n\n" + t["description"] + f"\n\nLive preview: {DEMO}/{slug}/"
-    first_visible(page, [page.get_by_label("Description"),
-                         page.locator("textarea"),
-                         page.locator('[contenteditable="true"]')]).fill(desc)
-    inputs = page.locator('input[type="file"]')
-    inputs.nth(0).set_input_files(paths["tf_thumb"])
-    inputs.nth(1).set_input_files(paths["tf_preview"])
-    inputs.nth(2).set_input_files(paths["zip"])
-    page.wait_for_timeout(10000)
-    shot(page, "themeforest", slug, "2-filled")
-
-    first_visible(page, [page.get_by_role("button", name="Upload item"),
-                         page.get_by_role("button", name="Submit for review"),
-                         page.get_by_role("button", name="Save")]).click()
-    page.wait_for_load_state("domcontentloaded")
-    shot(page, "themeforest", slug, "3-submitted")
-    return page.url
-
-
-ADAPTERS = {
-    "gumroad": gumroad_create,
-    "creativemarket": creativemarket_create,
-    "themeforest": themeforest_create,
-}
 
 
 def theme_paths(slug):
@@ -198,20 +246,19 @@ def theme_paths(slug):
 
 
 def main():
-    if len(sys.argv) != 2 or sys.argv[1] not in ADAPTERS:
+    if len(sys.argv) != 2 or sys.argv[1] not in SITES:
         print(__doc__)
         return 1
     site = sys.argv[1]
+    cfg = SITES[site]
     themes = json.load(open(os.path.join(MK, "catalog.json")))["themes"]
-    if site == "themeforest":
-        # Envato rejects near-duplicate items: flagship items only (see
-        # marketing/marketplaces/themeforest/README.md).
+    if cfg.get("flagships_only"):
         themes = [t for t in themes if t["slug"] in ("forgeline", "terrace", "sideline")]
 
-    blob = os.environ.get(SITES[site]["secret"], "")
+    blob = os.environ.get(cfg["secret"], "")
     if not blob:
-        print(f"{site}: no {SITES[site]['secret']} secret — would list "
-              f"{len(themes)} themes. Run capture-session.py to connect. Skipping.")
+        print(f"{site}: no {cfg['secret']} secret — would list {len(themes)} themes. "
+              "Run setup-wizard.py to connect. Skipping.")
         return 0
 
     state_path = os.path.join(MK, "platform", f"{site}-listings.json")
@@ -228,7 +275,7 @@ def main():
         page = ctx.new_page()
         for t in todo:
             try:
-                url = ADAPTERS[site](page, t, theme_paths(t["slug"]))
+                url = list_theme(page, site, t, theme_paths(t["slug"]))
                 state[t["slug"]] = {"url": url}
                 json.dump(state, open(state_path, "w"), indent=2)
                 print(f"{site}: listed {t['slug']} -> {url}")
@@ -240,7 +287,7 @@ def main():
                 return 1
             except Exception:
                 failures += 1
-                print(f"{site}: FAILED on {t['slug']} — screenshot saved for diagnosis")
+                print(f"{site}: FAILED on {t['slug']} — screenshots saved for diagnosis")
                 traceback.print_exc()
                 shot(page, site, t["slug"], "FAILED")
         browser.close()
