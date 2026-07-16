@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 OUT=marketing/dist
-THEMES="forgeline sideline terrace clarion vermilion evergreen amberline skyline tangerine midnight canary candystripe callout callout-plumbing callout-building callout-landscaping callout-roofing"
+THEMES=$(python3 -c "import json; print(' '.join(t['slug'] for t in json.load(open('marketing/catalog.json'))['themes']))")
 
 rm -rf "$OUT"
 mkdir -p "$OUT"

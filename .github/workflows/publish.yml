@@ -20,11 +20,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Assemble demo site (hub at site root)
-        run: ./marketing/build-demos.sh
-
       - name: Package theme zips
         run: ./marketing/package-zips.sh
+
+      - name: Sync listings to Etsy (skips until shop secrets are set)
+        env:
+          ETSY_API_KEY: ${{ secrets.ETSY_API_KEY }}
+          ETSY_REFRESH_TOKEN: ${{ secrets.ETSY_REFRESH_TOKEN }}
+          ETSY_SHOP_ID: ${{ secrets.ETSY_SHOP_ID }}
+          ETSY_PUBLISH: ${{ secrets.ETSY_PUBLISH }}
+        run: |
+          pip install -q requests
+          python3 marketing/platform/sync-etsy.py
+
+      - name: Assemble demo site (hub at site root)
+        run: ./marketing/build-demos.sh
 
       - name: Publish theme zips to rolling release
         uses: softprops/action-gh-release@v2
@@ -51,3 +61,13 @@ jobs:
           git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit Etsy listing state back to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/platform/etsy-listings.json marketing/store-links.json 2>/dev/null || true
+          git diff --cached --quiet || {
+            git commit -m "Update Etsy listing state [bot]"
+            git push origin HEAD:main
+          }

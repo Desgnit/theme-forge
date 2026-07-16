@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 OUT=marketing/demo-site
-THEMES="forgeline sideline terrace clarion vermilion evergreen amberline skyline tangerine midnight canary candystripe callout callout-plumbing callout-building callout-landscaping callout-roofing"
+THEMES=$(python3 -c "import json; print(' '.join(t['slug'] for t in json.load(open('marketing/catalog.json'))['themes']))")
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
@@ -20,6 +20,8 @@ for t in $THEMES; do
     "$OUT/$t"/package-lock.json "$OUT/$t"/tailwind.config.js \
     "$OUT/$t"/.gitignore "$OUT/$t"/README.md
 done
+
+python3 marketing/build-store.py
 
 echo "Demo site assembled at $OUT ($(du -sh "$OUT" | cut -f1))."
 echo "Deploy: https://app.netlify.com/drop — drag the demo-site folder in."
