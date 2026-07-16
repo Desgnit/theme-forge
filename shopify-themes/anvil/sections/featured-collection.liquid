@@ -1,0 +1,102 @@
+<section class="section">
+  <div class="page-width">
+    <div class="section__header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="section__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        <h2 class="section__heading">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="section__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_view_all and section.settings.collection != blank -%}
+        <a href="{{ section.settings.collection.url }}" class="link-arrow">
+          {{ 'sections.featured_collection.view_all' | t }}
+          {% render 'icon', name: 'arrow-right', size: 16 %}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="product-grid" style="--grid-desktop: {{ section.settings.columns }};">
+      {%- if section.settings.collection != blank -%}
+        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..section.settings.products_to_show) -%}
+          {%- assign ph_index = forloop.index0 | modulo: 6 | plus: 1 -%}
+          <article class="product-card">
+            <div class="product-card__media">
+              <div class="product-card__placeholder" aria-hidden="true">
+                {{ 'product-' | append: ph_index | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            </div>
+            <div class="product-card__info">
+              <h3 class="product-card__title">{{ 'sections.featured_collection.placeholder_title' | t }}</h3>
+              <div class="price price--card"><span class="price__current">{{ 2900 | money }}</span></div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Best sellers"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show \"View all\" link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

@@ -6,14 +6,20 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 OUT=marketing/demo-site
-THEMES=$(python3 -c "import json; print(' '.join(t['slug'] for t in json.load(open('marketing/catalog.json'))['themes']))")
+PAIRS=$(python3 -c "import json; print(' '.join(t['slug']+':'+t.get('kind','html') for t in json.load(open('marketing/catalog.json'))['themes']))")
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
 cp marketing/demo-hub-index.html "$OUT/index.html"
 
-for t in $THEMES; do
+for p in $PAIRS; do
+  t=${p%%:*}; kind=${p##*:}
   mkdir -p "$OUT/$t"
+  if [ "$kind" = "shopify" ]; then
+    # Shopify themes demo via their static design preview
+    cp -r shopify-themes/"$t"/preview/. "$OUT/$t"/
+    continue
+  fi
   # ship only what a visitor needs — no sources, no tooling
   cp -r themes/"$t"/. "$OUT/$t"/
   rm -rf "$OUT/$t"/node_modules "$OUT/$t"/src "$OUT/$t"/package.json \

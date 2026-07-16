@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Southpaw — skin layer. Loaded AFTER main.css on every page.
+   Dark, punchy boxing-gym identity: square corners, oversized Anton
+   display type, red slash kickers, near-black "board" sections.
+   ========================================================================== */
+
+:root { --co-radius: 0; }                    /* square corners everywhere */
+.rounded, .spec-chip { border-radius: 0; }
+
+/* --- Display type: Anton ships a single weight, so kill faux-bold ------- */
+h1, h2, h3, h4, .font-display { font-weight: 400; }
+h1, h2, h3, h4, .section-title { text-transform: uppercase; letter-spacing: .015em; }
+h1.text-4xl { font-size: clamp(2.75rem, 6.5vw, 4.5rem); line-height: .95; }
+.section-title { font-size: clamp(2rem, 4.2vw, 3rem); line-height: .98; }
+
+/* --- Kickers: red slash accent ------------------------------------------ */
+.kicker { letter-spacing: .26em; }
+.kicker::before {
+  height: .9em; width: .5em;
+  background-color: rgb(var(--co-accent));
+  transform: skewX(-20deg);
+}
+
+/* --- High-contrast buttons ---------------------------------------------- */
+.btn-accent { color: #fff; }                 /* white on fight red, not near-black */
+.skip-link:focus { color: #fff; }
+
+/* --- Red accents on near-black surfaces: lift for readability ----------- */
+:is(.bg-primary-dark, footer) .text-accent,
+:is(.bg-primary-dark, footer) .hover\:text-accent:hover { color: rgb(248 113 113); }
+.bg-primary-dark .\!text-accent { color: rgb(248 113 113) !important; }
+
+/* --- Board sections go near-black (scoped: never the header/mobile nav) - */
+:is(section.bg-board, main .rounded-card.bg-board) {
+  background-color: rgb(24 24 24);
+  border-color: rgb(255 255 255 / .14);
+}
+:is(section.bg-board, main .rounded-card.bg-board) :is(.card, .bg-paper) {
+  background-color: rgb(34 34 34);
+  border-color: rgb(255 255 255 / .14);
+}
+:is(section.bg-board, main .rounded-card.bg-board) .border-line { border-color: rgb(255 255 255 / .14); }
+
+/* Light text adjustments for everything sitting on the darkened boards */
+:is(section.bg-board, main .rounded-card.bg-board) :is(h1, h2, h3, h4, .text-primary) { color: #fafafa; }
+:is(section.bg-board, main .rounded-card.bg-board) .text-ink-soft { color: rgb(191 191 191); }
+:is(section.bg-board, main .rounded-card.bg-board) .text-ink-faint { color: rgb(163 163 163); }
+:is(section.bg-board, main .rounded-card.bg-board) .text-accent-dark { color: rgb(248 113 113); }
+
+/* Outline buttons inside darkened boards would be black-on-black */
+section.bg-board .btn-outline { border-color: #fff; color: #fff; }
+section.bg-board .btn-outline:hover { background-color: #fff; color: rgb(var(--co-primary-dark)); }

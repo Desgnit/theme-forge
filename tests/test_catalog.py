@@ -27,18 +27,24 @@ def main():
         for field in ("title", "price_gbp", "oneliner", "description", "family", "tags"):
             if not t.get(field):
                 errors.append(f"{s}: missing {field}")
-        if not os.path.isdir(os.path.join(ROOT, "themes", s)):
-            errors.append(f"{s}: themes/{s}/ folder missing")
-        if not os.path.isfile(os.path.join(ROOT, "themes", s, "index.html")):
-            errors.append(f"{s}: themes/{s}/index.html missing")
+        if t.get("kind") == "shopify":
+            if not os.path.isfile(os.path.join(ROOT, "shopify-themes", s, "layout", "theme.liquid")):
+                errors.append(f"{s}: shopify-themes/{s}/layout/theme.liquid missing")
+            if not os.path.isfile(os.path.join(ROOT, "shopify-themes", s, "preview", "index.html")):
+                errors.append(f"{s}: shopify-themes/{s}/preview/index.html missing")
+        else:
+            if not os.path.isdir(os.path.join(ROOT, "themes", s)):
+                errors.append(f"{s}: themes/{s}/ folder missing")
+            if not os.path.isfile(os.path.join(ROOT, "themes", s, "index.html")):
+                errors.append(f"{s}: themes/{s}/index.html missing")
         if not os.path.isfile(os.path.join(ROOT, "marketing", "covers", f"{s}-cover.png")):
             errors.append(f"{s}: cover image missing")
         if not isinstance(t.get("price_gbp"), (int, float)) or not 1 <= t["price_gbp"] <= 500:
             errors.append(f"{s}: implausible price {t.get('price_gbp')}")
         if len(t.get("title", "")) > 120:  # leaves room for Etsy's suffix within 140
             errors.append(f"{s}: title too long ({len(t['title'])} chars)")
-        if t.get("family") not in ("industrial", "trades", "football",
-                                   "sport", "services", "community"):
+        if t.get("family") not in ("industrial", "trades", "football", "sport",
+                                   "services", "community", "retail", "shopify"):
             errors.append(f"{s}: unknown family {t.get('family')}")
 
     # every catalogued theme must be in the demo hub

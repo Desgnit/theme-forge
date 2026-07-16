@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_background }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags -%}
+        {%- assign tag_list = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tagged' | t: tags: tag_list }}
+      {%- endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {% comment %} Design tokens fed from theme settings {% endcomment %}
+    {% style %}
+      {{ settings.type_body_font | font_face: font_display: 'swap' }}
+      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+      {%- assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bolder' -%}
+      {%- if body_font_bold -%}
+        {{ body_font_bold | font_face: font_display: 'swap' }}
+      {%- endif -%}
+
+      :root {
+        --font-body: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-weight: {{ settings.type_body_font.weight }};
+        --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 800 }};
+        --font-heading: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-weight: {{ settings.type_header_font.weight }};
+        --font-size-base: {{ settings.base_font_size }}px;
+
+        --color-primary: {{ settings.color_primary }};
+        --color-primary-rgb: {{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }};
+        --color-accent: {{ settings.color_accent }};
+        --color-accent-rgb: {{ settings.color_accent.red }}, {{ settings.color_accent.green }}, {{ settings.color_accent.blue }};
+        --color-bg: {{ settings.color_background }};
+        --color-bg-rgb: {{ settings.color_background.red }}, {{ settings.color_background.green }}, {{ settings.color_background.blue }};
+        --color-text: {{ settings.color_text }};
+        --color-text-rgb: {{ settings.color_text.red }}, {{ settings.color_text.green }}, {{ settings.color_text.blue }};
+        --color-sale: {{ settings.color_sale }};
+
+        --page-width: {{ settings.page_width }}px;
+        --btn-radius: {{ settings.button_radius }}px;
+        --card-radius: {{ settings.card_radius }}px;
+      }
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'global.js' | asset_url }}" defer></script>
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+    <script>
+      window.Anvil = {
+        moneyFormat: {{ shop.money_format | json }},
+        cartCurrency: {{ cart.currency.iso_code | json }},
+        freeShippingThreshold: {{ settings.free_shipping_threshold | times: 100 }},
+        showFreeShippingBar: {{ settings.cart_show_shipping_bar | json }},
+        cartType: {{ settings.cart_type | json }},
+        routes: {
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_update_url | json }},
+          search: {{ routes.search_url | json }}
+        },
+        strings: {
+          addToCart: {{ 'products.add_to_cart' | t | json }},
+          soldOut: {{ 'products.sold_out' | t | json }},
+          unavailable: {{ 'products.unavailable' | t | json }},
+          adding: {{ 'products.adding' | t | json }},
+          added: {{ 'products.added' | t | json }},
+          cartError: {{ 'cart.error' | t | json }},
+          cartEmpty: {{ 'cart.empty' | t | json }},
+          viewFullDetails: {{ 'products.view_full_details' | t | json }},
+          shippingRemaining: {{ 'cart.shipping_bar.remaining_html' | t: amount: '[amount]' | json }},
+          shippingUnlocked: {{ 'cart.shipping_bar.unlocked' | t | json }},
+          quantity: {{ 'products.quantity' | t | json }},
+          days: {{ 'general.countdown.days' | t | json }},
+          hours: {{ 'general.countdown.hours' | t | json }},
+          minutes: {{ 'general.countdown.minutes' | t | json }},
+          seconds: {{ 'general.countdown.seconds' | t | json }}
+        }
+      };
+    </script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }}{% if template.suffix %} template-suffix-{{ template.suffix | handle }}{% endif %}">
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    {%- unless template.name == 'cart' -%}
+      {% render 'cart-drawer' %}
+    {%- endunless -%}
+
+    <div class="quick-view" id="QuickViewModal" hidden>
+      <div class="quick-view__overlay" data-quick-view-close></div>
+      <div class="quick-view__panel" role="dialog" aria-modal="true" aria-label="{{ 'products.quick_view_label' | t }}" tabindex="-1">
+        <button type="button" class="quick-view__close btn-icon" data-quick-view-close aria-label="{{ 'accessibility.close' | t }}">
+          {% render 'icon', name: 'close' %}
+        </button>
+        <div class="quick-view__content" data-quick-view-content>
+          <div class="quick-view__loading" aria-hidden="true"><span class="spinner"></span></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

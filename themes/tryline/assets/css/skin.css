@@ -1,0 +1,80 @@
+/* ==========================================================================
+   Tryline skin — Millbrook Raiders RLFC
+   Loaded AFTER main.css. Token overrides + section treatments only.
+   ========================================================================== */
+
+:root {
+  --tc-radius: 0.125rem; /* hard, square-shouldered corners */
+}
+
+/* Dark sections: heavy diagonal chalk-stripe over a forge-light gradient,
+   with a single amber tryline pinned to the bottom edge. */
+.bg-terrace {
+  background-image:
+    repeating-linear-gradient(-52deg, rgb(255 255 255 / 0.05) 0 3px, transparent 3px 26px),
+    linear-gradient(118deg, rgb(var(--tc-primary-dark)) 0%, rgb(var(--tc-primary)) 62%, rgb(var(--tc-primary-light)) 100%);
+  border-bottom: 4px solid rgb(var(--tc-accent));
+}
+
+/* Buttons: squared, wide-tracked, poster-weight */
+.btn-accent,
+.btn-outline,
+.btn-primary,
+.btn-ghost-light {
+  border-radius: 0;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+}
+
+/* Cards carry a thick amber top bar — like a scoreboard header */
+.card {
+  border-top: 3px solid rgb(var(--tc-accent));
+}
+
+/* Kickers open with a short amber dash */
+.kicker::before {
+  content: "";
+  width: 1.5rem;
+  height: 3px;
+  flex-shrink: 0;
+  background: rgb(var(--tc-accent));
+}
+
+/* Condensed headline treatment: uppercase, tight, tall */
+h1,
+.section-title {
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+}
+
+/* Scorelines flip to amber chips — the amber pops on maroon and on white */
+.scoreline {
+  border-radius: 0;
+  background-color: rgb(var(--tc-accent));
+  color: rgb(var(--tc-primary-dark));
+}
+
+/* W/D/L badges and competition chips go square too */
+.form-badge,
+.comp-chip {
+  border-radius: 0;
+}
+
+/* Stat tables: shouting headers, amber rule under the header row */
+.stat-table thead th {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid rgb(var(--tc-accent));
+}
+
+/* Pull quotes: amber sideline bar, no italics — it's a team talk, not poetry */
+.prose-tc blockquote {
+  font-style: normal;
+  font-family: var(--tc-font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-left: 4px solid rgb(var(--tc-accent));
+  background: rgb(var(--tc-board));
+  padding: 1.25rem 1.5rem;
+  border-radius: 0;
+}

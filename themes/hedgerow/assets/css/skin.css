@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Hedgerow — skin.css
+   Rustic-premium layer loaded AFTER main.css. Farmers-market chic:
+   cream paper, generous serif display, hand-drawn offset borders,
+   kraft-label price and produce tags. Delete this file to fall back
+   to the plain compiled theme.
+   ========================================================================== */
+
+:root {
+  /* Cream paper tint on page + tinted boards (warm, not yellow) */
+  --fl-paper: 250 246 238;
+  --fl-board: 243 236 222;
+  --fl-line: 226 215 196;
+}
+
+/* Generous serif display sizing — Fraunces breathes at looser leading */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+h1 { line-height: 1.12; }
+.section-title { line-height: 1.15; }
+.kicker { letter-spacing: 0.24em; }
+
+/* Hand-drawn feel: slightly offset 2px border-shadow on cards & buttons */
+.card {
+  border-color: rgb(61 46 33 / 0.28);
+  box-shadow: 2px 2px 0 rgb(61 46 33 / 0.22);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  box-shadow: 3px 3px 0 rgb(61 46 33 / 0.3);
+  transform: translate(-1px, -1px);
+}
+.btn-accent, .btn-outline {
+  box-shadow: 2px 2px 0 rgb(61 46 33 / 0.35);
+}
+.btn-accent:active, .btn-outline:active {
+  box-shadow: 1px 1px 0 rgb(61 46 33 / 0.35);
+  transform: translate(1px, 1px);
+}
+
+/* Kraft-label styling on price/produce tags (.spec-chip) */
+.spec-chip {
+  background: rgb(214 190 150 / 0.4);
+  border: 1px solid rgb(61 46 33 / 0.35);
+  border-radius: 2px;
+  box-shadow: 1px 1px 0 rgb(61 46 33 / 0.2);
+  color: rgb(72 56 41);
+  letter-spacing: 0.06em;
+}
+
+/* Price lines set in the display serif read like chalkboard tickets */
+.font-display.font-extrabold {
+  font-weight: 700; /* Fraunces ships 600/700 — keep tickets from faux-bolding */
+}
+
+/* Field inputs and provenance tables sit on cream, not white */
+.field-input { background-color: rgb(255 253 248); }
+.spec-table th { background-color: rgb(238 229 211); }
+
+/* Dark bands: soften the engineering grid into a faint field-drain check */
+.bg-blueprint {
+  background-image:
+    linear-gradient(rgb(250 246 238 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(250 246 238 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Pull-quotes get the same offset-label treatment */
+.prose-fl blockquote {
+  border-left-width: 3px;
+  box-shadow: 2px 2px 0 rgb(61 46 33 / 0.18);
+}

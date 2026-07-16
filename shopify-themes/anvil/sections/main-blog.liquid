@@ -1,0 +1,69 @@
+<section class="section">
+  <div class="page-width">
+    <div class="section__header">
+      <h1 class="section__heading">{{ blog.title | escape }}</h1>
+    </div>
+
+    {%- paginate blog.articles by section.settings.articles_per_page -%}
+      <div class="blog-grid">
+        {%- for article in blog.articles -%}
+          <article class="article-card">
+            <a class="article-card__media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
+              {%- if article.image -%}
+                <img
+                  src="{{ article.image | image_url: width: 800 }}"
+                  srcset="{{ article.image | image_url: width: 500 }} 500w, {{ article.image | image_url: width: 800 }} 800w"
+                  sizes="(min-width: 750px) 33vw, 100vw"
+                  alt="{{ article.image.alt | default: article.title | escape }}"
+                  width="{{ article.image.width }}"
+                  height="{{ article.image.height }}"
+                  loading="lazy"
+                >
+              {%- endif -%}
+            </a>
+            <p class="article-card__meta">
+              {{ article.published_at | date: format: 'abbreviated_date' }}
+              {%- if section.settings.show_author %} &middot; {{ article.author }}{% endif -%}
+            </p>
+            <h2 class="article-card__title"><a href="{{ article.url }}">{{ article.title | escape }}</a></h2>
+            {%- if section.settings.show_excerpt -%}
+              <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncate: 140 }}</p>
+            {%- endif -%}
+          </article>
+        {%- else -%}
+          <p>{{ 'blog.empty' | t }}</p>
+        {%- endfor -%}
+      </div>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

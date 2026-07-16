@@ -1,0 +1,29 @@
+{
+  "current": {
+    "color_primary": "#1a1c1f",
+    "color_accent": "#c2542e",
+    "color_background": "#faf9f6",
+    "color_text": "#26282c",
+    "color_sale": "#b3372b",
+    "type_header_font": "work_sans_n6",
+    "type_body_font": "assistant_n4",
+    "base_font_size": 16,
+    "page_width": 1280,
+    "button_radius": 6,
+    "card_radius": 10,
+    "show_sale_badge": true,
+    "show_soldout_badge": true,
+    "show_quick_view": true,
+    "show_vendor": false,
+    "card_hover_swap": true,
+    "cart_type": "drawer",
+    "cart_show_shipping_bar": true,
+    "free_shipping_threshold": 75,
+    "social_instagram_link": "",
+    "social_facebook_link": "",
+    "social_twitter_link": "",
+    "social_youtube_link": "",
+    "social_tiktok_link": "",
+    "social_pinterest_link": ""
+  }
+}

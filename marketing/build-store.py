@@ -15,7 +15,9 @@ OUT = os.path.join(MK, "demo-site", "store")
 RELEASE = "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/{slug}-theme-v1.0.0.zip"
 
 FAMILIES = [
+    ("shopify", "Shopify Themes"),
     ("industrial", "Trade & Industry"),
+    ("retail", "Food & Retail"),
     ("trades", "Local Trades"),
     ("football", "Football Clubs"),
     ("sport", "More Sport"),

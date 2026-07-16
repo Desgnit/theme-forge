@@ -1,0 +1,172 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "height": "large",
+        "content_alignment": "left",
+        "eyebrow": "New season",
+        "heading": "Gear that earns its keep",
+        "text": "Hard-wearing essentials, designed once and built properly. Free shipping over $75.",
+        "cta_primary_label": "Shop the collection",
+        "cta_secondary_label": "Our story",
+        "overlay_opacity": 35
+      }
+    },
+    "value_props": {
+      "type": "multicolumn",
+      "blocks": {
+        "col1": {
+          "type": "column",
+          "settings": {
+            "icon": "truck",
+            "heading": "Fast, free shipping",
+            "text": "Orders over $75 ship free, everywhere we deliver."
+          }
+        },
+        "col2": {
+          "type": "column",
+          "settings": {
+            "icon": "shield",
+            "heading": "2-year warranty",
+            "text": "If it breaks under normal use, we replace it. Simple."
+          }
+        },
+        "col3": {
+          "type": "column",
+          "settings": {
+            "icon": "check",
+            "heading": "Easy returns",
+            "text": "30 days to change your mind, no questions asked."
+          }
+        },
+        "col4": {
+          "type": "column",
+          "settings": {
+            "icon": "mail",
+            "heading": "Human support",
+            "text": "Real people answer within one business day."
+          }
+        }
+      },
+      "block_order": ["col1", "col2", "col3", "col4"]
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Most wanted",
+        "heading": "Best sellers",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true
+      }
+    },
+    "promos": {
+      "type": "promo-tiles",
+      "blocks": {
+        "tile1": {
+          "type": "tile",
+          "settings": {
+            "heading": "New arrivals",
+            "text": "Fresh this week",
+            "cta_label": "Shop now"
+          }
+        },
+        "tile2": {
+          "type": "tile",
+          "settings": {
+            "heading": "Everyday carry",
+            "text": "Small tools, big difference",
+            "cta_label": "Shop now"
+          }
+        },
+        "tile3": {
+          "type": "tile",
+          "settings": {
+            "heading": "Last chance",
+            "text": "Final units at final prices",
+            "cta_label": "Shop the sale"
+          }
+        }
+      },
+      "block_order": ["tile1", "tile2", "tile3"]
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "Our craft",
+        "heading": "Made properly, or not at all",
+        "cta_label": "Learn more"
+      }
+    },
+    "countdown": {
+      "type": "countdown-banner",
+      "settings": {
+        "heading": "The mid-season sale ends soon",
+        "deadline": "2026-12-31T23:59"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The quality genuinely surprised me. Ordered a second one for my brother a week later.",
+            "author": "Jamie R."
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Shipping was quick and the packaging was flawless. This is how e-commerce should feel.",
+            "author": "Priya S."
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I've bought from a lot of stores. The attention to detail here is on another level.",
+            "author": "Marcus T."
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question" },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You have 30 days from delivery to return any unused item for a full refund. Returns are free.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — we ship to most countries worldwide. Duties and taxes are calculated at checkout where applicable.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3"]
+    },
+    "newsletter": {
+      "type": "newsletter-signup"
+    }
+  },
+  "order": [
+    "hero",
+    "value_props",
+    "featured",
+    "promos",
+    "story",
+    "countdown",
+    "testimonials",
+    "faq",
+    "newsletter"
+  ]
+}

@@ -1,0 +1,101 @@
+<section class="section">
+  <div class="page-width">
+    <article class="article">
+      <header class="article__header">
+        <p class="article__meta">
+          {{ article.published_at | date: format: 'on_date' }}
+          {%- if section.settings.show_author %} &middot; {{ article.author }}{% endif -%}
+        </p>
+        <h1>{{ article.title | escape }}</h1>
+      </header>
+
+      {%- if section.settings.show_image and article.image -%}
+        <div class="article__image">
+          <img
+            src="{{ article.image | image_url: width: 1400 }}"
+            srcset="{{ article.image | image_url: width: 800 }} 800w, {{ article.image | image_url: width: 1400 }} 1400w"
+            sizes="(min-width: 990px) 760px, 100vw"
+            alt="{{ article.image.alt | default: article.title | escape }}"
+            width="{{ article.image.width }}"
+            height="{{ article.image.height }}"
+          >
+        </div>
+      {%- endif -%}
+
+      <div class="article__body rte">{{ article.content }}</div>
+
+      {%- if blog.comments_enabled? -%}
+        <div style="margin-top: var(--space-8); border-top: 1px solid var(--color-border); padding-top: var(--space-6);">
+          <h2 class="h3">{{ 'blog.comments.title' | t: count: article.comments_count }}</h2>
+
+          {%- paginate article.comments by 20 -%}
+            {%- for comment in article.comments -%}
+              <div style="padding-block: var(--space-4); border-bottom: 1px solid var(--color-border);">
+                <p style="margin-bottom: var(--space-2);">{{ comment.content }}</p>
+                <p class="article-card__meta">{{ comment.author }} &middot; {{ comment.created_at | date: format: 'abbreviated_date' }}</p>
+              </div>
+            {%- endfor -%}
+            {% render 'pagination', paginate: paginate %}
+          {%- endpaginate -%}
+
+          {%- form 'new_comment', article -%}
+            <h3 style="margin-block: var(--space-6) var(--space-4);">{{ 'blog.comments.form_title' | t }}</h3>
+            {%- if form.posted_successfully? -%}
+              <p class="form-status form-status--success" role="status">
+                {% render 'icon', name: 'check', size: 16 %}
+                {%- if blog.moderated? -%}
+                  {{ 'blog.comments.success_moderated' | t }}
+                {%- else -%}
+                  {{ 'blog.comments.success' | t }}
+                {%- endif -%}
+              </p>
+            {%- endif -%}
+            {%- if form.errors -%}
+              <div class="form-status form-status--error" role="alert">
+                {% render 'icon', name: 'error', size: 16 %}
+                <ul>
+                  {%- for field in form.errors -%}
+                    <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+            <div class="field">
+              <label class="field__label" for="CommentAuthor">{{ 'blog.comments.name' | t }}</label>
+              <input type="text" id="CommentAuthor" name="comment[author]" required value="{{ form.author }}">
+            </div>
+            <div class="field">
+              <label class="field__label" for="CommentEmail">{{ 'blog.comments.email' | t }}</label>
+              <input type="email" id="CommentEmail" name="comment[email]" required value="{{ form.email }}">
+            </div>
+            <div class="field">
+              <label class="field__label" for="CommentBody">{{ 'blog.comments.message' | t }}</label>
+              <textarea id="CommentBody" name="comment[body]" rows="5" required>{{ form.body }}</textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">{{ 'blog.comments.submit' | t }}</button>
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </article>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

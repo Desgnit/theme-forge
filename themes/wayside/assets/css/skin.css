@@ -1,0 +1,72 @@
+/* ==========================================================================
+   Wayside — skin layer
+   Loaded AFTER main.css. Outdoorsy identity: contour-line hero/CTA bands,
+   warm cream boards, signpost kickers, badge-style price tags.
+   ========================================================================== */
+
+:root {
+  --co-radius: 0.5rem;           /* rounded, not bubbly */
+  --co-board: 250 246 238;       /* warm cream boards */
+  --co-line: 232 226 213;        /* warm hairlines */
+}
+
+/* Topographic contour treatment on dark hero / CTA bands.
+   Replaces the parent theme's engineering grid with soft map-contour rings
+   and a low wave-band wash along the foot of the section. */
+.bg-grid {
+  background-image:
+    repeating-radial-gradient(circle at 85% -40%,
+      transparent 0 46px,
+      rgb(255 255 255 / 0.055) 46px 48px),
+    repeating-radial-gradient(circle at -10% 130%,
+      transparent 0 64px,
+      rgb(255 255 255 / 0.04) 64px 66px),
+    linear-gradient(to top,
+      rgb(var(--co-primary-light) / 0.35) 0,
+      transparent 34%);
+  background-size: auto, auto, auto;
+}
+
+/* Signpost kickers — swap the rule-line for a small pointing arrow. */
+.kicker::before {
+  content: "";
+  width: 0.9rem;
+  height: 0.9rem;
+  background: none;
+  border-top: 2px solid rgb(var(--co-accent));
+  border-right: 2px solid rgb(var(--co-accent));
+  transform: rotate(45deg) scale(0.72);
+  border-radius: 1px;
+}
+
+/* Badge-style price tags — used inside pitch cards and the price table. */
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4ch;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: rgb(var(--co-accent) / 0.16);
+  border: 1px solid rgb(var(--co-accent) / 0.45);
+  color: rgb(var(--co-accent-dark));
+  font-family: var(--co-font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.bg-primary-dark .price-badge {
+  background: rgb(var(--co-accent) / 0.18);
+  color: rgb(var(--co-accent));
+}
+
+/* Facility chips read friendlier as pills on the cream board. */
+.spec-chip {
+  border-radius: 999px;
+  background: rgb(var(--co-paper));
+}
+
+/* Cards sit on the meadow with a soft, grounded shadow. */
+.card {
+  box-shadow: 0 1px 2px rgb(var(--co-primary-dark) / 0.05),
+              0 6px 18px -12px rgb(var(--co-primary-dark) / 0.18);
+}

@@ -450,6 +450,213 @@
         "day ticket",
         "carp fishing"
       ]
+    },
+    {
+      "slug": "tryline",
+      "title": "Tryline \u2014 Rugby League Club HTML Template",
+      "price_gbp": 35,
+      "family": "sport",
+      "oneliner": "A complete rugby league club website in deep maroon and amber \u2014 fixtures, league table with points difference, squad by position, juniors and match reports, with a gritty condensed-type design of its own.",
+      "description": "Built for the community game \u2014 the demo club (Millbrook Raiders RLFC, est. 1923, The Foundry Ground, NCL Division Two) reads like a proper northern club, not a reskin.\n\n- **Match centre**: rugby league scorelines, W/L/D badges, league table with points difference, all plain HTML edited by copy-paste\n- **Squad grid** by position group (props to loose forwards) with player pages showing tries, goals and appearances\n- Juniors page from tag rugby U8s to U16s with parents' FAQ\n- Match report layout, club history, clubhouse news, contact with ground directions\n- Its own design identity: Barlow Condensed display type, sharp corners, diagonal-stripe hero treatment\n- 8 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested\n- Every colour is a CSS variable \u2014 five-minute rebrand, documented in the README",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "rugby league",
+        "rugby club",
+        "sports club",
+        "fixtures",
+        "league table",
+        "club website"
+      ]
+    },
+    {
+      "slug": "greenside",
+      "title": "Greenside \u2014 Lawn Bowls Club HTML Template",
+      "price_gbp": 29,
+      "family": "sport",
+      "oneliner": "A heritage-styled website for a bowls club \u2014 fixtures and rink results, membership and open days, new-bowler taster sessions, in bowling green and brass with readable serif elegance.",
+      "description": "Thousands of UK bowls clubs, almost no templates made for them. Greenside's demo club (Avonford Bowls Club, est. 1907, two greens) is written for the actual audience: clear, welcoming, unhurried.\n\n- Fixtures and results as bowls matches with rink scores, plus the league table\n- **Members & Teams** page: Saturday league, midweek triples, ladies' team and the newcomers' roll-up\n- **New Bowlers** page: free taster sessions, what to wear, equipment loaned, green etiquette\n- Club history with county pennants, finals-day news, green fees and open days\n- Heritage design of its own: Playfair Display serif, cream tints, double-rule borders, larger base text for readability\n- 8 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "bowls club",
+        "lawn bowls",
+        "sports club",
+        "club website",
+        "community club"
+      ]
+    },
+    {
+      "slug": "southpaw",
+      "title": "Southpaw \u2014 Boxing & Martial Arts Gym Template",
+      "price_gbp": 29,
+      "family": "sport",
+      "oneliner": "A dark, punchy website for a boxing gym \u2014 class timetable, no-contract membership pricing, coach profiles and fighter stories, with Anton display type and fight-red accents.",
+      "description": "The demo gym (Southside Boxing Academy, Salford, England Boxing affiliated) is written to get someone through the door for their first session.\n\n- **Classes & Timetable**: fundamentals, sparring, juniors, ladies-only, boxfit and 1-to-1 pads \u2014 each with its weekly slot\n- Membership pricing block: monthly, junior and drop-in rates, no contracts\n- **Our Fighters** page: amateur bout results, show nights and a first-bout story\n- The head coach's story and the railway-arch gym\n- First-session booking form with experience-level dropdown\n- Its own design identity: near-black sections, oversized Anton headings, red slash accents\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "boxing gym",
+        "martial arts",
+        "fitness website",
+        "gym template",
+        "class timetable"
+      ]
+    },
+    {
+      "slug": "clearview",
+      "title": "Clearview \u2014 Window Cleaning Business Template",
+      "price_gbp": 29,
+      "family": "trades",
+      "oneliner": "A light, airy website built around the window-cleaning round \u2014 'your street every four weeks', text-the-night-before reminders, gutter and conservatory add-ons, join-the-round form.",
+      "description": "Window cleaning runs on rounds, and Clearview is the rare template that understands that. The demo business (Clearview Window Cleaning, Norwich) sells reliability, not one-off jobs.\n\n- Homepage built around the recurring round: 4- or 8-weekly visits, reminder texts, pay-online-after-each-clean\n- Services: domestic rounds, conservatory roofs, gutter clearing with camera proof, fascias, solar panels, storefronts\n- Round areas with postcodes, price guide by property size, reviews about turning up when promised\n- Join-the-round form with frequency and property-type dropdowns\n- Its own design identity: sky gradients, Nunito Sans, pill buttons, soft shadows \u2014 clean-glass airy\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "window cleaner",
+        "cleaning business",
+        "tradesman template",
+        "local business",
+        "recurring service"
+      ]
+    },
+    {
+      "slug": "vanguard",
+      "title": "Vanguard \u2014 Man & Van / Removals Template",
+      "price_gbp": 29,
+      "family": "trades",
+      "oneliner": "A reassuring website for a removals firm \u2014 ballpark prices up front, goods-in-transit insurance messaging, WhatsApp video surveys, and a quote form that asks the right questions.",
+      "description": "Moving house is stressful; Vanguard's job is to look organised. The demo firm (Vanguard Removals, Reading, est. 2015) leads with the two things customers want: a price and proof you're insured.\n\n- Ballpark pricing up front: man & van, 2-man crew and full house moves\n- Services: single items and marketplace pickups, flat/house moves, office moves, packing with materials, student moves\n- **Recent Moves** stories including a piano and a last-minute landlord clear-out\n- Quote form with move type, from/to postcodes, date and lift access \u2014 plus the WhatsApp video-survey explainer\n- Its own design identity: navy and go-green, Chivo type, dashed route-line motifs, arrow buttons\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "removals",
+        "man and van",
+        "moving company",
+        "tradesman template",
+        "local business"
+      ]
+    },
+    {
+      "slug": "showroom",
+      "title": "Showroom \u2014 Mobile Car Valeting & Detailing Template",
+      "price_gbp": 29,
+      "family": "services",
+      "oneliner": "A gloss-black website for a mobile valeter \u2014 package prices from mini valet to ceramic coating, transformation stories, and a booking form that asks about driveways, in cyan-edged automotive style.",
+      "description": "Detailing customers buy the finish \u2014 Showroom looks like one. The demo business (Showroom Mobile Valeting, Milton Keynes) is a specialist gone two-van.\n\n- Package pricing up front: mini valet, full valet, enhancement detail, ceramic coating \u2014 each itemised line by line\n- Add-ons: pet hair, headlight restoration, engine bay, interior ozone\n- **Recent Details**: transformation stories from neglected family SUV to show-prep classic\n- Booking form with package, vehicle size and parking situation\n- Its own design identity: gloss-black bands with a diagonal sheen, cyan edge-glow cards, Saira type, spec-plate price tags\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "car valeting",
+        "car detailing",
+        "mobile valeting",
+        "automotive website",
+        "local business"
+      ]
+    },
+    {
+      "slug": "wagtail",
+      "title": "Wagtail \u2014 Dog Grooming Salon Template",
+      "price_gbp": 29,
+      "family": "services",
+      "oneliner": "A warm, rounded website for a dog groomer \u2014 prices by size and coat, one-dog-at-a-time reassurance for nervous dogs, fresh-trim gallery stories, salon plus mobile van.",
+      "description": "Owners choose groomers on trust. Wagtail's demo business (Wagtail Dog Grooming, Chester, City & Guilds Level 3) leads with calm: one dog at a time, no cages, nervous dogs welcome.\n\n- Services priced by dog size: full groom, bath & tidy, puppy introductions, hand stripping, de-shedding, nails & teeth\n- **Fresh Trims** gallery stories \u2014 a matted rescue cockapoo, a show-standard schnauzer, a first puppy groom\n- Booking form with breed, size, coat condition and first-visit flag\n- The groomer's story, the calm salon philosophy, the mobile van's coverage\n- Its own design identity: cocoa and apricot, Quicksand type, extra-round corners, paw-print list bullets\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "dog groomer",
+        "pet grooming",
+        "pet services",
+        "local business",
+        "dog website"
+      ]
+    },
+    {
+      "slug": "hedgerow",
+      "title": "Hedgerow \u2014 Farm Shop & Butchery HTML Template",
+      "price_gbp": 35,
+      "family": "retail",
+      "oneliner": "A rustic-premium website for a farm shop \u2014 filterable shop sections from butchery to hampers, provenance-rich product pages, what's-in-season strips and farm notes, in soil brown and hedgerow green.",
+      "description": "Farm shops sell provenance, and Hedgerow is built to show it. The demo (Hedgerow Farm Shop, Peak District, farming since 1946) makes you hungry \u2014 which is the job.\n\n- **The Shop**: filterable grid across butchery, greengrocery, dairy & eggs, bakery, pantry and hampers, with honest prices\n- Product page built for provenance: breed, hanging time and what's in the box instead of tech specs\n- Veg box delivery rounds, hampers and corporate gifts, counter orders, caf\u00e9 corner\n- Farm notes blog: lambing diary, why asparagus season is short\n- Opening hours prominent everywhere; four generations of story without buzzword soup\n- Its own design identity: Fraunces serif, cream paper tints, kraft-label price tags, offset hand-drawn borders\n- 8 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "farm shop",
+        "butchery",
+        "food retail",
+        "local produce",
+        "farm website"
+      ]
+    },
+    {
+      "slug": "wayside",
+      "title": "Wayside \u2014 Caravan & Camping Site Template",
+      "price_gbp": 29,
+      "family": "community",
+      "oneliner": "A fresh-air website for a caravan and camping site \u2014 pitch types and seasonal prices up front, facilities and site rules in plain English, quiet-site policy, walks from the gate.",
+      "description": "Campers compare pitches, prices and shower blocks \u2014 Wayside answers all three above the fold. The demo site (Wayside Meadow, North Yorkshire coast, 60 pitches, March\u2013October) is family-run and proudly quiet.\n\n- **Pitches & Prices**: grass, electric hook-up, hardstanding and seasonal pitches, each with size, amps and awning rules, priced by season\n- Facilities strip: heated shower block, laundry, dog walk field, playground, shop with camping gas\n- Arrival times, deposits and cancellation explained like a human wrote them\n- The site & around: sea views, Cleveland Way walks, Whitby 15 minutes, gates locked 10pm\n- Booking enquiry form with pitch type, dates, party size and dog flag \u2014 plus the narrow-lane sat-nav warning\n- Its own design identity: sea teal and campfire orange, Bitter slab type, contour-pattern hero bands, badge price tags\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "campsite",
+        "caravan park",
+        "camping website",
+        "holiday park",
+        "tourism"
+      ]
+    },
+    {
+      "slug": "greenlight",
+      "title": "Greenlight \u2014 Driving Instructor Website Template",
+      "price_gbp": 29,
+      "family": "services",
+      "oneliner": "An optimistic website for a driving school \u2014 lesson and block prices up front, first-time pass wall, calm-teaching promise, manual and automatic, with a traffic-light design motif.",
+      "description": "Learners (and their parents) choose on trust and price. Greenlight's demo (Greenlight Driving School, Leicester, DVSA ADI Grade A) leads with both.\n\n- Pricing up front: hourly, block-of-ten and intensive courses; first-time pass rate stat\n- Services: manual and automatic lessons, intensives, refreshers and motorway confidence, Pass Plus, theory support\n- **Recent Passes** wall: first-timers, a nervous re-taker, a 17th-birthday pass\n- Booking form with transmission and postcode; test centres named; theory-to-test timeline explainer\n- The instructor's story and a no-shouting-ever teaching philosophy\n- Its own design identity: steady blue and green-light green, Rubik type, traffic-light kicker dots, L-plate stat badges\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "driving instructor",
+        "driving school",
+        "lessons website",
+        "local business"
+      ]
+    },
+    {
+      "slug": "anvil",
+      "title": "Anvil \u2014 Premium Conversion-First Shopify Theme",
+      "price_gbp": 149,
+      "family": "shopify",
+      "kind": "shopify",
+      "oneliner": "An original OS 2.0 Shopify theme with the best-seller feature set built in: mega menu with images, quick-view, slide-out AJAX cart with free-shipping bar, sticky add-to-cart, promo tiles and 18+ configurable sections \u2014 no apps needed.",
+      "description": "Anvil is an original, from-scratch Shopify OS 2.0 theme that builds in the features stores usually pay monthly apps for:\n\n- **Mega menu** with image blocks, predictive-search-ready header, cart bubble\n- **Quick-view** product modals straight from collection grids\n- **Slide-out AJAX cart** with a free-shipping progress bar\n- **Sticky add-to-cart** bar on product pages, dynamic checkout buttons, variant-aware pricing with sale badges\n- Promo tiles, countdown banner, testimonials, FAQ accordion, logo list, multicolumn value props \u2014 18+ sections, all JSON-configurable in the theme editor\n- Storefront filtering and sorting on collections, related products, blog and article templates\n- Speed-first: vanilla JavaScript, no jQuery, no frameworks; accessible drawers and modals (focus traps, Escape to close, reduced-motion respected)\n- Colours, typography, radius and layout width all editable in theme settings \u2014 no code\n- 100% original code (not a Dawn fork) \u2014 licensed for sale on any marketplace\n\nInstall: Online Store \u2192 Themes \u2192 Upload zip. Full customisation guide in the README.",
+      "tags": [
+        "shopify theme",
+        "ecommerce theme",
+        "shopify os 2.0",
+        "online store",
+        "conversion",
+        "premium theme"
+      ]
     }
   ]
 }

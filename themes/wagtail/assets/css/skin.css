@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Wagtail — skin layer
+   Loaded AFTER main.css. Softens the base theme into something cosy and
+   dog-friendly: extra-round corners, cream/blush tints, blob-soft shadows,
+   paw-print bullets and bouncy pill buttons. No HTML or JS changes needed.
+   ========================================================================== */
+
+:root {
+  --co-radius: 1.25rem;                 /* extra-round everything */
+  --co-board: 250 243 234;              /* warm cream section tint */
+  --co-line: 240 226 211;               /* biscuit-coloured borders */
+  --co-ink: 59 47 42;                   /* warm near-cocoa body text */
+  --co-ink-soft: 122 103 94;            /* warm secondary text */
+}
+
+/* Blush variant: every other cream band leans gently pink */
+section.bg-board:nth-of-type(even) { background-color: rgb(249 236 231); }
+
+/* Cards float on blob-soft shadows instead of hard borders */
+.card {
+  border-color: rgb(var(--co-line) / 0.6);
+  box-shadow: 0 14px 30px -18px rgb(91 63 48 / 0.28),
+              0 4px 12px -6px rgb(91 63 48 / 0.10);
+}
+
+/* Bouncy pill buttons */
+.btn, .btn-accent, .btn-outline, .btn-ghost-light, .\!btn {
+  border-radius: 999px;
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease,
+              transform .2s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s ease;
+}
+.btn-accent:hover, .btn-outline:hover, .btn-ghost-light:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 22px -10px rgb(91 63 48 / 0.45);
+}
+.btn-accent:active, .btn-outline:active, .btn-ghost-light:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Kicker rule becomes a little paw */
+.kicker::before {
+  content: "\1F43E"; /* paw prints */
+  width: auto; height: auto;
+  background: none;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* Paw-print bullets on content lists (what's-included lists etc.) */
+main ul[class*="space-y"] > li {
+  position: relative;
+  padding-left: 1.75rem;
+  list-style: none;
+}
+main ul[class*="space-y"] > li::before {
+  content: "\1F43E";
+  position: absolute;
+  left: 0; top: 0.1em;
+  font-size: 0.85em;
+}
+/* …but never on the areas-chip list, which is decorative */
+main ul[class*="space-y"] > li:has(> .spec-chip) { padding-left: 0; }
+main ul[class*="space-y"] > li:has(> .spec-chip)::before { content: none; }
+
+/* Chips become soft cream pills */
+.spec-chip { border-radius: 999px; background-color: rgb(255 252 247); }
+
+/* Dark bands: swap the engineering grid for friendly polka dots */
+.bg-grid {
+  background-image: radial-gradient(rgb(255 255 255 / 0.10) 1.5px, transparent 2px);
+  background-size: 26px 26px;
+}
+
+/* Form fields keep pace with the softer shapes */
+.field-input { border-radius: 1rem; }
+.field-input:focus { box-shadow: 0 0 0 4px rgb(var(--co-accent) / 0.25); }

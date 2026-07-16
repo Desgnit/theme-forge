@@ -37,10 +37,14 @@ def main():
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True, executable_path=exe or None)
         page = browser.new_page(viewport={"width": 1280, "height": 720})
+        kinds = {t["slug"]: t.get("kind", "html") for t in themes}
         for slug in slugs:
-            index = os.path.join(ROOT, "themes", slug, "index.html")
+            if kinds.get(slug) == "shopify":
+                index = os.path.join(ROOT, "shopify-themes", slug, "preview", "index.html")
+            else:
+                index = os.path.join(ROOT, "themes", slug, "index.html")
             if not os.path.exists(index):
-                print(f"covers: themes/{slug}/index.html missing — skipped")
+                print(f"covers: {index} missing — skipped")
                 continue
             page.goto("file://" + index)
             page.wait_for_timeout(1200)  # fonts/paint settle
