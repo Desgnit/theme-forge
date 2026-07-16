@@ -5,40 +5,15 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  deployments: write
-  actions: write
 
 jobs:
-  probe:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe Pages and environment APIs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          R: ${{ github.repository }}
+      - name: Verify live site and release
         run: |
-          api() {
-            method=$1; path=$2; body=${3:-}
-            echo "=== $method $path $body"
-            if [ -n "$body" ]; then
-              curl -s -o /tmp/resp -w "HTTP %{http_code}\n" -X "$method" \
-                -H "Authorization: Bearer $GH_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                -H "Content-Type: application/json" \
-                -d "$body" "https://api.github.com/repos/$R$path"
-            else
-              curl -s -o /tmp/resp -w "HTTP %{http_code}\n" -X "$method" \
-                -H "Authorization: Bearer $GH_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                "https://api.github.com/repos/$R$path"
-            fi
-            head -c 600 /tmp/resp; echo
-          }
-          api GET /pages
-          api GET /environments/github-pages
-          api GET /environments/github-pages/deployment-branch-policies
-          api PUT /pages '{"build_type":"workflow"}'
-          api GET /pages
-          api POST /environments/github-pages/deployment-branch-policies '{"name":"main"}'
-          api GET /environments/github-pages/deployment-branch-policies
+          echo "=== hub status: $(curl -s -o /tmp/hub -w '%{http_code}' https://desgnit.github.io/theme-forge/)"
+          echo "=== hub demo links: $(grep -o 'href="[a-z-]*/index.html"' /tmp/hub | sort -u | wc -l)"
+          grep -o 'href="[a-z-]*/index.html"' /tmp/hub | sort -u
+          echo "=== callout status: $(curl -s -o /dev/null -w '%{http_code}' https://desgnit.github.io/theme-forge/callout/index.html)"
+          echo "=== release zips: $(curl -s https://api.github.com/repos/Desgnit/theme-forge/releases/tags/themes-latest | python3 -c 'import json,sys; print(len(json.load(sys.stdin)["assets"]))')"
