@@ -1,0 +1,44 @@
+name: Pages bootstrap probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  deployments: write
+  actions: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe Pages and environment APIs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          R: ${{ github.repository }}
+        run: |
+          api() {
+            method=$1; path=$2; body=${3:-}
+            echo "=== $method $path $body"
+            if [ -n "$body" ]; then
+              curl -s -o /tmp/resp -w "HTTP %{http_code}\n" -X "$method" \
+                -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                -H "Content-Type: application/json" \
+                -d "$body" "https://api.github.com/repos/$R$path"
+            else
+              curl -s -o /tmp/resp -w "HTTP %{http_code}\n" -X "$method" \
+                -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/$R$path"
+            fi
+            head -c 600 /tmp/resp; echo
+          }
+          api GET /pages
+          api GET /environments/github-pages
+          api GET /environments/github-pages/deployment-branch-policies
+          api PUT /pages '{"build_type":"workflow"}'
+          api GET /pages
+          api POST /environments/github-pages/deployment-branch-policies '{"name":"main"}'
+          api GET /environments/github-pages/deployment-branch-policies
