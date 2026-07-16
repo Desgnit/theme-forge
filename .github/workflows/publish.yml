@@ -1,0 +1,51 @@
+name: Publish demos + package theme zips
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # release uploads
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble demo site (hub at site root)
+        run: ./marketing/build-demos.sh
+
+      - name: Package theme zips
+        run: ./marketing/package-zips.sh
+
+      - name: Publish theme zips to rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: themes-latest
+          name: Theme product zips (latest)
+          body: >
+            Sellable theme packages, rebuilt automatically on every push.
+            Upload these zips to your marketplace listings.
+          files: marketing/dist/*.zip
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: marketing/demo-site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

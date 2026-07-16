@@ -1,0 +1,2 @@
+# Theme Forge — premium niche HTML templates
+Seventeen production-ready HTML + Tailwind templates: Forgeline (industrial supplier), Callout x5 (local trades: electrician, plumber, builder, landscaper, roofer), Sideline (grassroots junior football club) and Terrace x10 (football club colour editions). Demos deploy to GitHub Pages and product zips publish to the themes-latest release automatically on every push to main.
