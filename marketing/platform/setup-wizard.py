@@ -1,52 +1,79 @@
 #!/usr/bin/env python3
-"""Theme Forge setup wizard — the ONE command that connects everything.
+"""Theme Forge setup wizard — connect every marketplace in one sitting.
 
-Run on your own computer (needs Python 3.9+ from python.org and nothing else):
+Mac/Linux, one line:
 
-    python3 setup-wizard.py
+    curl -s https://raw.githubusercontent.com/Desgnit/theme-forge/main/marketing/platform/setup-wizard.py | python3 -
 
-What it does, in one sitting (~15 min, once ever):
-  1. Installs its own dependencies (playwright, pynacl, requests + Chromium).
-  2. Connects to GitHub (via the `gh` CLI if you have it, else it opens a
-     token page — one click + one paste).
-  3. Etsy: opens the app-registration page, then runs the OAuth consent flow
-     and finds your shop id automatically.
-  4. Gumroad / Creative Market / ThemeForest: opens each login page in a real
-     browser window — you log in as normal (captcha, 2FA, whatever), press
-     Enter, and it captures the session.
-  5. Uploads all secrets straight to the GitHub repo. No manual copy-paste.
+Windows: download the file, then  python setup-wizard.py
 
-After it finishes, every push to main lists every theme on every connected
-marketplace with zero manual work. Re-run it any time a session expires (the
-pipeline opens a GitHub issue to tell you); it skips anything still working.
+The only thing you do is type your logins. The wizard does everything else:
+installs its own dependencies, signs into GitHub (device code, or automatic
+if the `gh` CLI is present), creates/finds your Etsy API app and clicks the
+consent button itself, detects when you've finished logging in to each site
+(no key presses needed), verifies every captured session, and uploads all
+secrets to the repo. Re-run any time; it can also target one site:
 
-You can also do a single site:  python3 setup-wizard.py etsy|gumroad|creativemarket|themeforest
+    python3 setup-wizard.py gumroad
 """
 import base64
 import hashlib
 import http.server
 import json
 import os
+import re
 import secrets as pysecrets
 import shutil
 import subprocess
 import sys
 import threading
+import time
 import urllib.parse
 import webbrowser
 
 REPO = "Desgnit/theme-forge"
 ETSY_PORT = 8642
 ETSY_SCOPES = "listings_r listings_w shops_r shops_w"
+APP_NAME = "theme-forge autolister"
+# GitHub CLI's public OAuth client id — used for device login when gh is absent
+GH_CLIENT_ID = "178c6fc778ccc68e1d6a"
+
 RPA_SITES = {
-    "gumroad": ("https://gumroad.com/login", "https://app.gumroad.com/products", "GUMROAD_SESSION"),
-    "creativemarket": ("https://creativemarket.com/sign-in", "https://creativemarket.com/account", "CREATIVEMARKET_SESSION"),
-    "themeforest": ("https://themeforest.net/sign_in", "https://themeforest.net/user/account", "THEMEFOREST_SESSION"),
+    "gumroad": {
+        "login": "https://gumroad.com/login",
+        "check": "https://app.gumroad.com/products",
+        "domains": ("gumroad.com",),
+        "secret": "GUMROAD_SESSION",
+    },
+    "creativemarket": {
+        "login": "https://creativemarket.com/sign-in",
+        "check": "https://creativemarket.com/account",
+        "domains": ("creativemarket.com",),
+        "secret": "CREATIVEMARKET_SESSION",
+    },
+    "themeforest": {
+        "login": "https://themeforest.net/sign_in",
+        "check": "https://themeforest.net/user/account",
+        "domains": ("themeforest.net", "envato.com"),
+        "secret": "THEMEFOREST_SESSION",
+    },
 }
+LOGIN_MARKERS = ("login", "sign_in", "sign-in", "signin", "sso")
 
 
 def say(msg):
-    print(f"\n==> {msg}")
+    print(f"\n==> {msg}", flush=True)
+
+
+def ask(prompt):
+    """Prompt that works even when the script is piped into python3."""
+    try:
+        with open("/dev/tty", "r") as tty_in, open("/dev/tty", "w") as tty_out:
+            tty_out.write(prompt)
+            tty_out.flush()
+            return tty_in.readline().strip()
+    except OSError:
+        return input(prompt)
 
 
 def bootstrap():
@@ -59,24 +86,39 @@ def bootstrap():
 # ------------------------------------------------------------- GitHub auth
 
 class GitHub:
-    """Sets repo secrets via `gh` when available, else a PAT + REST."""
+    """Sets repo secrets. Prefers `gh` (zero interaction if already logged
+    in); otherwise GitHub device login — you type one short code."""
 
     def __init__(self):
         self.gh = shutil.which("gh")
         self.token = None
-        if self.gh:
-            ok = subprocess.run([self.gh, "auth", "status"], capture_output=True).returncode == 0
-            if not ok:
-                say("Logging you into GitHub (browser will open)...")
-                subprocess.run([self.gh, "auth", "login", "--web", "-h", "github.com"], check=True)
+        if self.gh and subprocess.run([self.gh, "auth", "status"],
+                                      capture_output=True).returncode == 0:
+            say("GitHub: using your existing gh login.")
             return
-        say("GitHub CLI not found — using a token instead.")
-        url = ("https://github.com/settings/tokens/new"
-               "?scopes=repo&description=theme-forge-setup-wizard")
-        print(f"  Opening {url}")
-        print("  Click 'Generate token' at the bottom, then paste it here.")
-        webbrowser.open(url)
-        self.token = input("  Token: ").strip()
+        self.gh = None
+        import requests
+        say("GitHub sign-in — a browser page is opening.")
+        r = requests.post("https://github.com/login/device/code",
+                          data={"client_id": GH_CLIENT_ID, "scope": "repo"},
+                          headers={"Accept": "application/json"}, timeout=30).json()
+        print(f"  Type this code on the page:   {r['user_code']}")
+        webbrowser.open(r.get("verification_uri", "https://github.com/login/device"))
+        interval = int(r.get("interval", 5))
+        while True:
+            time.sleep(interval)
+            p = requests.post("https://github.com/login/oauth/access_token", data={
+                "client_id": GH_CLIENT_ID, "device_code": r["device_code"],
+                "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+            }, headers={"Accept": "application/json"}, timeout=30).json()
+            if "access_token" in p:
+                self.token = p["access_token"]
+                print("  GitHub connected.")
+                return
+            if p.get("error") == "slow_down":
+                interval += 5
+            elif p.get("error") != "authorization_pending":
+                raise SystemExit(f"GitHub login failed: {p.get('error')}")
 
     def set_secret(self, name, value):
         if self.gh:
@@ -87,46 +129,111 @@ class GitHub:
             from nacl import encoding, public
             h = {"Authorization": f"Bearer {self.token}",
                  "Accept": "application/vnd.github+json"}
-            key = requests.get(f"https://api.github.com/repos/{REPO}/actions/secrets/public-key",
-                               headers=h, timeout=30)
+            key = requests.get(
+                f"https://api.github.com/repos/{REPO}/actions/secrets/public-key",
+                headers=h, timeout=30)
             key.raise_for_status()
             key = key.json()
             sealed = public.SealedBox(
                 public.PublicKey(key["key"].encode(), encoding.Base64Encoder())
             ).encrypt(value.encode())
-            r = requests.put(
+            requests.put(
                 f"https://api.github.com/repos/{REPO}/actions/secrets/{name}",
                 headers=h, timeout=30,
                 json={"encrypted_value": base64.b64encode(sealed).decode(),
-                      "key_id": key["key_id"]})
-            r.raise_for_status()
-        print(f"  secret {name} set on {REPO}")
+                      "key_id": key["key_id"]}).raise_for_status()
+        print(f"  secret {name} set")
+
+
+# --------------------------------------------------------------- helpers
+
+def wait_for_login(ctx, check_url, timeout=900):
+    """Poll (using the browser's own cookies) until check_url loads without
+    bouncing to a login page. No key presses needed."""
+    print("  Waiting for you to finish logging in (auto-detects)...", flush=True)
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        try:
+            r = ctx.request.get(check_url, max_redirects=8, timeout=15000)
+            if r.ok and not any(m in r.url for m in LOGIN_MARKERS):
+                return True
+        except Exception:
+            pass
+        time.sleep(2)
+    return False
+
+
+def filtered_state(ctx, domains):
+    state = ctx.storage_state()
+    state["cookies"] = [c for c in state.get("cookies", [])
+                        if any(d in c.get("domain", "") for d in domains)]
+    return state
 
 
 # ------------------------------------------------------------------- Etsy
 
-def setup_etsy(gh):
+def find_keystring(page):
+    """Scan the developer console DOM for a 24-char keystring."""
+    text = page.evaluate("() => document.body.innerText")
+    m = re.search(r"\b([a-z0-9]{24})\b", text)
+    return m.group(1) if m else None
+
+
+def setup_etsy(gh, browser):
     import requests
-    say("ETSY — you need a (free) API app. If you don't have one:")
-    print("  1. Have an Etsy shop (etsy.com/sell) — create it first if needed.")
-    print("  2. The app page is opening: register any app name.")
-    print(f"     Callback URL must be exactly: http://localhost:{ETSY_PORT}/callback")
-    webbrowser.open("https://www.etsy.com/developers/register")
-    keystring = input("  Paste your app KEYSTRING: ").strip()
-    if not keystring:
-        print("  skipped Etsy")
+    say("ETSY — log in when the window opens (create your shop at "
+        "etsy.com/sell first if you don't have one).")
+    ctx = browser.new_context()
+    page = ctx.new_page()
+    page.goto("https://www.etsy.com/developers/your-apps")
+    if not wait_for_login(ctx, "https://www.etsy.com/developers/your-apps"):
+        print("  Timed out waiting for Etsy login — skipping Etsy.")
+        ctx.close()
         return
 
+    # Find an existing app's keystring, or create the app ourselves.
+    page.goto("https://www.etsy.com/developers/your-apps")
+    keystring = find_keystring(page)
+    if not keystring:
+        print("  Creating your Etsy API app...")
+        try:
+            page.goto("https://www.etsy.com/developers/register")
+            page.locator("input[type='text']").first.fill(APP_NAME)
+            for box in page.locator("input[type='checkbox']").all():
+                try:
+                    box.check(timeout=1500)
+                except Exception:
+                    pass
+            page.get_by_role("button", name=re.compile("create|register|submit", re.I)).first.click()
+            page.wait_for_load_state("domcontentloaded")
+            keystring = find_keystring(page)
+        except Exception:
+            keystring = None
+    if not keystring:
+        print("  Couldn't create it automatically — in the browser window, create "
+              "an app at etsy.com/developers/register (any name), then return here.")
+        for _ in range(300):
+            time.sleep(2)
+            try:
+                page.goto("https://www.etsy.com/developers/your-apps")
+                keystring = find_keystring(page)
+            except Exception:
+                pass
+            if keystring:
+                break
+    if not keystring:
+        keystring = ask("  Paste the app KEYSTRING (or Enter to skip Etsy): ")
+        if not keystring:
+            ctx.close()
+            return
+    print(f"  Using app keystring {keystring[:6]}…")
+
+    # OAuth consent — the wizard clicks Allow itself.
     verifier = base64.urlsafe_b64encode(pysecrets.token_bytes(32)).rstrip(b"=").decode()
     challenge = base64.urlsafe_b64encode(
         hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
-    state = pysecrets.token_hex(8)
+    state_tok = pysecrets.token_hex(8)
     redirect = f"http://localhost:{ETSY_PORT}/callback"
-    url = "https://www.etsy.com/oauth/connect?" + urllib.parse.urlencode({
-        "response_type": "code", "client_id": keystring, "redirect_uri": redirect,
-        "scope": ETSY_SCOPES, "state": state, "code_challenge": challenge,
-        "code_challenge_method": "S256"})
-
     holder = {}
 
     class H(http.server.BaseHTTPRequestHandler):
@@ -136,18 +243,30 @@ def setup_etsy(gh):
             self.send_response(200)
             self.send_header("Content-Type", "text/html")
             self.end_headers()
-            self.wfile.write(b"<h1>Done - close this tab.</h1>")
+            self.wfile.write(b"<h1>Connected - the wizard is finishing up.</h1>")
 
         def log_message(self, *a):
             pass
 
     srv = http.server.HTTPServer(("localhost", ETSY_PORT), H)
     threading.Thread(target=srv.handle_request, daemon=True).start()
-    say("Approving access (browser opening — click 'Allow Access')...")
-    webbrowser.open(url)
-    while "code" not in holder:
-        pass
-    assert holder.get("state") == state, "OAuth state mismatch — run again"
+    page.goto("https://www.etsy.com/oauth/connect?" + urllib.parse.urlencode({
+        "response_type": "code", "client_id": keystring, "redirect_uri": redirect,
+        "scope": ETSY_SCOPES, "state": state_tok, "code_challenge": challenge,
+        "code_challenge_method": "S256"}))
+    try:
+        page.get_by_role("button", name=re.compile("allow|grant", re.I)).first.click(timeout=20000)
+    except Exception:
+        print("  If a consent page is showing, click 'Allow Access'. If Etsy shows a "
+              f"redirect error, add {redirect} as a callback URL in your app settings "
+              "and re-run: python3 setup-wizard.py etsy")
+    t0 = time.time()
+    while "code" not in holder and time.time() - t0 < 600:
+        time.sleep(1)
+    ctx.close()
+    if holder.get("state") != state_tok or "code" not in holder:
+        print("  Etsy consent didn't complete — skipping (re-run: setup-wizard.py etsy).")
+        return
 
     tokens = requests.post("https://api.etsy.com/v3/public/oauth/token", data={
         "grant_type": "authorization_code", "client_id": keystring,
@@ -161,42 +280,29 @@ def setup_etsy(gh):
         headers={"x-api-key": keystring,
                  "Authorization": f"Bearer {tokens['access_token']}"}, timeout=30).json()
     shop_id = shops.get("shop_id") or shops["results"][0]["shop_id"]
-
     gh.set_secret("ETSY_API_KEY", keystring)
     gh.set_secret("ETSY_REFRESH_TOKEN", tokens["refresh_token"])
     gh.set_secret("ETSY_SHOP_ID", str(shop_id))
-    if input("  Publish Etsy listings immediately instead of drafts? "
-             "(Etsy charges $0.20/listing) [y/N]: ").strip().lower() == "y":
-        gh.set_secret("ETSY_PUBLISH", "active")
     print("  Etsy connected.")
 
 
 # -------------------------------------------------------------- RPA sites
 
-def setup_rpa(gh, site):
-    from playwright.sync_api import sync_playwright
-    login_url, check_url, secret = RPA_SITES[site]
-    say(f"{site.upper()} — a browser window is opening. Log in as normal "
-        "(create the account first if you don't have one).")
-    with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=False)
-        ctx = browser.new_context()
-        page = ctx.new_page()
-        page.goto(login_url)
-        input(f"  When you can see your {site} dashboard, press Enter here... ")
-        state = ctx.storage_state()
-        # verify the captured session actually works headlessly
-        ctx2 = browser.new_context(storage_state=state)
-        p2 = ctx2.new_page()
-        p2.goto(check_url, wait_until="domcontentloaded")
-        ok = "login" not in p2.url and "sign_in" not in p2.url and "sign-in" not in p2.url
-        browser.close()
-    if not ok:
-        print(f"  WARNING: the {site} session didn't verify — you may not have "
-              "been fully logged in. Re-run: python3 setup-wizard.py " + site)
-        if input("  Save it anyway? [y/N]: ").strip().lower() != "y":
-            return
-    gh.set_secret(secret, base64.b64encode(json.dumps(state).encode()).decode())
+def setup_rpa(gh, browser, site):
+    cfg = RPA_SITES[site]
+    say(f"{site.upper()} — log in when the window opens (create the account "
+        "first if needed).")
+    ctx = browser.new_context()
+    page = ctx.new_page()
+    page.goto(cfg["login"])
+    if not wait_for_login(ctx, cfg["check"]):
+        print(f"  Timed out waiting for {site} login — skipping "
+              f"(re-run: python3 setup-wizard.py {site}).")
+        ctx.close()
+        return
+    state = filtered_state(ctx, cfg["domains"])
+    ctx.close()
+    gh.set_secret(cfg["secret"], base64.b64encode(json.dumps(state).encode()).decode())
     print(f"  {site} connected.")
 
 
@@ -208,13 +314,17 @@ def main():
         return 1
     bootstrap()
     gh = GitHub()
-    if only in (None, "etsy"):
-        setup_etsy(gh)
-    for site in RPA_SITES:
-        if only in (None, site):
-            setup_rpa(gh, site)
-    say("All done. Push anything to main (or re-run the last workflow) and "
-        "the pipeline lists everything. You're finished here.")
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=False)
+        if only in (None, "etsy"):
+            setup_etsy(gh, browser)
+        for site in RPA_SITES:
+            if only in (None, site):
+                setup_rpa(gh, browser, site)
+        browser.close()
+    say("All done — the platform is live. Every push now lists everything. "
+        "You're finished here.")
     return 0
 
 

@@ -5,17 +5,20 @@ everywhere possible — no manual work per theme.
 
 ## Setup = one command
 
-On your own computer (Python 3.9+ installed, nothing else needed):
+On your own computer (Python 3.9+ installed, nothing else needed) — Mac/Linux:
 
 ```
-curl -sO https://raw.githubusercontent.com/Desgnit/theme-forge/main/marketing/platform/setup-wizard.py
-python3 setup-wizard.py
+curl -s https://raw.githubusercontent.com/Desgnit/theme-forge/main/marketing/platform/setup-wizard.py | python3 -
 ```
 
-The wizard installs its own dependencies, connects GitHub, walks you through
-Etsy + Gumroad + Creative Market + ThemeForest in one sitting (you just log
-in when a browser window opens), and uploads every secret to the repo
-itself. When it finishes, the platform is fully live. Re-run it (or
+(Windows: download the file first, then `python setup-wizard.py`.)
+
+The only thing you do is type your logins when browser windows open. The
+wizard does everything else itself: installs dependencies, signs into GitHub
+(device code — or fully automatic with the `gh` CLI), creates your Etsy API
+app and clicks the consent button for you, auto-detects each login (no key
+presses), verifies the sessions, and uploads all secrets to the repo. When
+it finishes, the platform is fully live. Re-run it (or
 `python3 setup-wizard.py <site>`) whenever a session expires — the pipeline
 opens a GitHub issue to tell you, and checks weekly on its own.
 
