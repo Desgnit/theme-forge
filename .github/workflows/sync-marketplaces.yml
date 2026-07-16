@@ -4,9 +4,12 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1" # weekly health check: catches expired sessions early
 
 permissions:
   contents: write # state-file commits
+  issues: write # expiry alerts
 
 concurrency:
   group: marketplace-sync
@@ -51,6 +54,28 @@ jobs:
           name: rpa-screenshots
           path: marketing/platform/shots/
           if-no-files-found: ignore
+
+      - name: Open an issue if any session needs re-auth
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          f=marketing/platform/needs-reauth.txt
+          [ -f "$f" ] || exit 0
+          sites=$(sort -u "$f" | paste -sd', ' -)
+          title="Action needed: re-run setup wizard ($sites session expired)"
+          if [ -z "$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "$title in:title" --json number --jq '.[0].number')" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body \
+              "The stored login session for **$sites** has expired, so automatic listing is paused for that site (everything else keeps working).
+
+          Fix (5 min): on your computer run
+
+          \`\`\`
+          python3 marketing/platform/setup-wizard.py ${sites%%,*}
+          \`\`\`
+
+          log in when the browser opens, and this issue can be closed. See marketing/platform/README.md."
+          fi
 
       - name: Commit listing state back to main
         run: |

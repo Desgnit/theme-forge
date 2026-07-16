@@ -234,6 +234,8 @@ def main():
                 print(f"{site}: listed {t['slug']} -> {url}")
             except SessionExpired as e:
                 print(f"ERROR: {e}")
+                with open(os.path.join(MK, "platform", "needs-reauth.txt"), "a") as f:
+                    f.write(site + "\n")
                 browser.close()
                 return 1
             except Exception:

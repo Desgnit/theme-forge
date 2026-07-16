@@ -60,7 +60,13 @@ class Etsy:
             "client_id": api_key,
             "refresh_token": refresh_token,
         }, timeout=30)
-        r.raise_for_status()
+        if r.status_code >= 400:
+            with open(os.path.join(MK, "platform", "needs-reauth.txt"), "a") as f:
+                f.write("etsy\n")
+            raise SystemExit(
+                f"Etsy token refresh failed ({r.status_code}) — the refresh token has "
+                "likely expired. Re-run setup-wizard.py (or etsy-auth.py) and update "
+                "the ETSY_REFRESH_TOKEN secret.")
         self.token = r.json()["access_token"]
 
     def call(self, method, path, expect_ok=True, **kw):

@@ -9,6 +9,7 @@ permissions:
   contents: write # release uploads
   pages: write
   id-token: write
+  issues: write # Etsy token-expiry alerts
 
 concurrency:
   group: pages
@@ -32,6 +33,23 @@ jobs:
         run: |
           pip install -q requests
           python3 marketing/platform/sync-etsy.py
+        continue-on-error: true
+
+      - name: Open an issue if the Etsy token expired
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          f=marketing/platform/needs-reauth.txt
+          [ -f "$f" ] || exit 0
+          title="Action needed: re-run setup wizard (etsy session expired)"
+          if [ -z "$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "$title in:title" --json number --jq '.[0].number')" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body \
+              "The Etsy refresh token has expired, so Etsy listing sync is paused (demos, zips and everything else keep working).
+
+          Fix (5 min): on your computer run \`python3 marketing/platform/setup-wizard.py etsy\`, approve in the browser, done. See marketing/platform/README.md."
+          fi
+          rm -f "$f"
 
       - name: Assemble demo site (hub at site root)
         run: ./marketing/build-demos.sh

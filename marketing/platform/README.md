@@ -3,6 +3,26 @@
 The goal: add a theme to this repo, push, and have it listed for sale
 everywhere possible — no manual work per theme.
 
+## Setup = one command
+
+On your own computer (Python 3.9+ installed, nothing else needed):
+
+```
+curl -sO https://raw.githubusercontent.com/Desgnit/theme-forge/main/marketing/platform/setup-wizard.py
+python3 setup-wizard.py
+```
+
+The wizard installs its own dependencies, connects GitHub, walks you through
+Etsy + Gumroad + Creative Market + ThemeForest in one sitting (you just log
+in when a browser window opens), and uploads every secret to the repo
+itself. When it finishes, the platform is fully live. Re-run it (or
+`python3 setup-wizard.py <site>`) whenever a session expires — the pipeline
+opens a GitHub issue to tell you, and checks weekly on its own.
+
+The only part it can't do for you is *creating* the seller accounts
+(identity, payouts, tax) — have those, or create them when each login page
+opens. Everything below is reference detail; the wizard handles all of it.
+
 ## What is (and isn't) automatable
 
 | Channel | Automation | How |
