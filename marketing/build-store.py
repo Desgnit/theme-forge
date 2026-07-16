@@ -18,6 +18,9 @@ FAMILIES = [
     ("industrial", "Trade & Industry"),
     ("trades", "Local Trades"),
     ("football", "Football Clubs"),
+    ("sport", "More Sport"),
+    ("services", "Local Services"),
+    ("community", "Community & Leisure"),
 ]
 
 CSS = """

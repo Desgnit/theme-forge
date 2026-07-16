@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elmsworth Village Hall — Community Centre &amp; Hall Hire | Commons Theme</title>
+  <meta name="description" content="Elmsworth Village Hall: a charity-run community hall in the Cotswolds, built 1928. Main hall seats 120, kitchen, stage and car park. Hire from £18/hour — call 01632 960 428.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ===== Utility bar ===== -->
+  <div class="bg-primary-dark text-white/85 text-sm">
+    <div class="container flex items-center justify-between gap-4 py-2">
+      <p class="truncate">Main hall from £18/hour · discounts for village residents · wheelchair access &amp; hearing loop</p>
+      <a href="tel:+441632960428" class="flex shrink-0 items-center gap-2 font-bold text-accent hover:text-white">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1.1 3.29a1 1 0 01-.27 1.06l-1.5 1.5a16 16 0 006.9 6.9l1.5-1.5a1 1 0 011.06-.27l3.3 1.1a1 1 0 01.68.95V19a2 2 0 01-2 2h-1C9.72 21 3 14.28 3 6V5z"/></svg>
+        01632 960 428
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header data-header class="sticky top-0 z-50 border-b border-line bg-paper transition-shadow">
+    <div class="container flex items-center justify-between gap-6 py-4">
+      <a href="index.html" class="flex items-center gap-3" aria-label="Elmsworth Village Hall — home">
+        <svg class="h-11 w-11" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="10" style="fill:rgb(var(--co-primary))"/><path d="M13 30V14h9l7 8-7 8h-9z" fill="none" style="stroke:rgb(var(--co-accent))" stroke-width="2.6" stroke-linejoin="round"/><circle cx="18.5" cy="22" r="2.6" style="fill:rgb(var(--co-accent))"/></svg>
+        <span class="font-display text-lg font-extrabold leading-tight tracking-tight text-primary">Elmsworth<br><span class="text-accent-dark">Village Hall</span></span>
+      </a>
+      <nav class="hidden lg:block" aria-label="Main navigation">
+        <ul class="flex items-center gap-8 font-display text-sm font-bold uppercase tracking-wide">
+                    <li><a class="text-accent-dark" href="index.html" aria-current="page">Home</a></li>
+          <li><a class="text-primary hover:text-accent-dark" href="services.html">Hire the hall</a></li>
+          <li><a class="text-primary hover:text-accent-dark" href="projects.html">What's on</a></li>
+          <li><a class="text-primary hover:text-accent-dark" href="about.html">About</a></li>
+          <li><a class="text-primary hover:text-accent-dark" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="contact.html" class="btn-accent hidden md:inline-flex !py-2.5">Book the hall</a>
+        <button data-nav-toggle class="lg:hidden rounded-card border border-line p-2.5 text-primary" aria-expanded="false" aria-controls="mobile-nav" aria-label="Toggle navigation menu">
+          <svg data-icon-open class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <svg data-icon-close class="hidden h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav id="mobile-nav" data-nav-panel class="hidden lg:hidden border-t border-line bg-paper" aria-label="Mobile navigation">
+      <ul class="container flex flex-col gap-1 py-4 font-display font-bold uppercase tracking-wide text-sm">
+                <li><a class="block rounded-card px-3 py-3 text-accent-dark bg-board" href="index.html" aria-current="page">Home</a></li>
+        <li><a class="block rounded-card px-3 py-3 text-primary hover:bg-board" href="services.html">Hire the hall</a></li>
+        <li><a class="block rounded-card px-3 py-3 text-primary hover:bg-board" href="projects.html">What's on</a></li>
+        <li><a class="block rounded-card px-3 py-3 text-primary hover:bg-board" href="about.html">About</a></li>
+        <li><a class="block rounded-card px-3 py-3 text-primary hover:bg-board" href="contact.html">Contact</a></li>
+        <li class="pt-2"><a href="contact.html" class="btn-accent w-full">Make a booking enquiry</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ===== Hero ===== -->
+    <section class="relative overflow-hidden bg-primary-dark bg-grid text-white">
+      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
+        <div>
+          <p class="kicker !text-accent">At the heart of the village &middot; since 1928</p>
+          <h1 class="text-4xl leading-tight text-white md:text-5xl">Welcome to Elmsworth Village Hall — the village's living room.</h1>
+          <p class="mt-5 max-w-xl text-lg text-white/80">Toddler mornings, pilates, the WI, birthday parties and the annual fete — all under one Cotswold-stone roof. Run by volunteer trustees as a registered charity, and yours to hire from £18 an hour.</p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a href="services.html" class="btn-accent">Hire the hall</a>
+            <a href="projects.html" class="btn-ghost-light">See what's on</a>
+          </div>
+          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-7">
+            <p class="flex items-center gap-2 font-display text-sm font-bold"><span class="text-accent" aria-hidden="true">★★★★★</span> Loved by generations of villagers</p>
+            <p class="text-sm text-white/70">Main hall seats 120 &middot; Wheelchair accessible &middot; Hearing loop</p>
+          </div>
+        </div>
+        <div class="reveal">
+          <img src="assets/img/hero.jpg" alt="The main hall at Elmsworth Village Hall set up for a community event" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== This week strip ===== -->
+    <section class="border-b border-line bg-board" aria-label="What's on this week">
+      <div class="container grid gap-6 py-8 sm:grid-cols-3">
+        <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.6-2.6A11.95 11.95 0 0112 21 11.95 11.95 0 013.4 7.4 11.95 11.95 0 0112 3a11.95 11.95 0 018.6 4.4z"/></svg>Monday 7pm — Pilates with Sarah (drop-ins welcome)</p>
+        <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Tuesday 9:30am — Elmsworth Toddler Group</p>
+        <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l4-2 3 2 3-2z"/></svg>Friday 6:30pm — Youth Club (school years 5–9)</p>
+      </div>
+    </section>
+
+    <!-- ===== Facilities ===== -->
+    <section class="py-16 lg:py-24">
+      <div class="container">
+        <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p class="kicker">Everything under one roof</p>
+            <h2 class="section-title">Our facilities</h2>
+          </div>
+          <a href="services.html" class="btn-outline">Hire details &amp; rates</a>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="card reveal p-7">
+            <h3 class="text-lg">Main hall — seats 120</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">A light, sprung-floored hall seating 120 (150 standing), with tables and chairs included. Big enough for a ceilidh, cosy enough for a coffee morning.</p>
+          </div>
+          <div class="card reveal p-7">
+            <h3 class="text-lg">Committee room</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">A quieter room for up to 20 — ideal for meetings, small classes, book groups and the parish council. Available on its own or alongside the hall.</p>
+          </div>
+          <div class="card reveal p-7">
+            <h3 class="text-lg">Kitchen</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">Fully fitted with a range cooker, fridge, urn, crockery and cutlery for 120. Serving hatch straight into the main hall — teas and buffets made easy.</p>
+          </div>
+          <div class="card reveal p-7">
+            <h3 class="text-lg">Stage</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">A proper raised stage with curtains and lighting bar — home to the panto, school shows and the monthly film night's silver screen.</p>
+          </div>
+          <div class="card reveal p-7">
+            <h3 class="text-lg">Car park</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">Free parking for around 30 cars behind the hall, with overflow on the green verge by arrangement for bigger events.</p>
+          </div>
+          <div class="card reveal p-7">
+            <h3 class="text-lg">Accessible to everyone</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">Step-free entrance, wheelchair-accessible toilet, hearing loop in the main hall and reserved parking by the door. Just ask if you need anything else.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Hire the hall ===== -->
+    <section class="border-y border-line bg-board py-16 lg:py-24">
+      <div class="container">
+        <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p class="kicker">Parties, classes, celebrations</p>
+            <h2 class="section-title">Hire the hall</h2>
+          </div>
+          <a href="services.html" class="btn-outline">Rates &amp; booking</a>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+          <figure class="card reveal overflow-hidden">
+            <img src="assets/img/house-white.jpg" alt="Main hall set for a wedding reception with long tables" class="w-full" width="880" height="560" loading="lazy">
+            <figcaption class="p-6"><p class="font-display text-lg font-bold text-primary">Main hall</p><p class="mt-1 text-sm text-ink-soft">Seats 120 · stage &amp; hearing loop · £18/hour</p></figcaption>
+          </figure>
+          <figure class="card reveal overflow-hidden">
+            <img src="assets/img/house-modern.jpg" alt="Committee room laid out for a meeting" class="w-full" width="880" height="560" loading="lazy">
+            <figcaption class="p-6"><p class="font-display text-lg font-bold text-primary">Committee room</p><p class="mt-1 text-sm text-ink-soft">Up to 20 people · meetings &amp; classes · £10/hour</p></figcaption>
+          </figure>
+          <figure class="card reveal overflow-hidden">
+            <img src="assets/img/tools-wall.jpg" alt="The hall kitchen with serving hatch open to the main hall" class="w-full" width="880" height="560" loading="lazy">
+            <figcaption class="p-6"><p class="font-display text-lg font-bold text-primary">Whole building</p><p class="mt-1 text-sm text-ink-soft">Hall, committee room &amp; kitchen · £150 day rate</p></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Reviews ===== -->
+    <section class="py-16 lg:py-24">
+      <div class="container">
+        <div class="mb-12 max-w-2xl">
+          <p class="kicker">Word around the village</p>
+          <h2 class="section-title">What hirers say</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+          <figure class="card reveal p-7">
+            <p class="text-accent-dark" aria-label="5 stars">★★★★★</p>
+            <blockquote class="mt-3 text-sm leading-relaxed text-ink-soft">"We had my mum's 80th here — kitchen brilliant, hall looked lovely, and the trustees couldn't have been more helpful with the setting up."</blockquote>
+            <figcaption class="mt-4 text-sm font-bold text-primary">Karen B., Elmsworth</figcaption>
+          </figure>
+          <figure class="card reveal p-7">
+            <p class="text-accent-dark" aria-label="5 stars">★★★★★</p>
+            <blockquote class="mt-3 text-sm leading-relaxed text-ink-soft">"I've run my pilates class here for six years. Warm in winter, fair rates, and the sprung floor is kinder on knees than any gym I've taught in."</blockquote>
+            <figcaption class="mt-4 text-sm font-bold text-primary">Sarah M., class leader</figcaption>
+          </figure>
+          <figure class="card reveal p-7">
+            <p class="text-accent-dark" aria-label="5 stars">★★★★★</p>
+            <blockquote class="mt-3 text-sm leading-relaxed text-ink-soft">"Booked the whole building for our wedding reception. A marquee would have cost ten times as much and had none of the charm."</blockquote>
+            <figcaption class="mt-4 text-sm font-bold text-primary">The Whitfields, Ashwick</figcaption>
+          </figure>
+        </div>
+        <p class="mt-8 text-sm text-ink-faint">Review cards are plain HTML — paste in real comments from your hirers and delete these.</p>
+      </div>
+    </section>
+
+    <!-- ===== Regulars ===== -->
+    <section class="border-t border-line bg-board py-12">
+      <div class="container flex flex-wrap items-center gap-x-8 gap-y-4">
+        <p class="font-display text-sm font-bold uppercase tracking-widest text-ink-faint">Regulars at the hall</p>
+        <ul class="flex flex-wrap gap-2"><li><span class="spec-chip !text-sm !py-1 !px-3">Pilates</span></li><li><span class="spec-chip !text-sm !py-1 !px-3">Toddler Group</span></li><li><span class="spec-chip !text-sm !py-1 !px-3">WI</span></li><li><span class="spec-chip !text-sm !py-1 !px-3">Short Mat Bowls</span></li><li><span class="spec-chip !text-sm !py-1 !px-3">Youth Club</span></li><li><span class="spec-chip !text-sm !py-1 !px-3">Film Night</span></li></ul>
+      </div>
+    </section>
+
+    <!-- ===== CTA band ===== -->
+    <section class="bg-primary-dark bg-grid py-16 text-white lg:py-20">
+      <div class="container flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+        <div>
+          <h2 class="section-title text-white">Planning a party, a class or a village get-together?</h2>
+          <p class="mt-3 max-w-xl text-white/80">Tell us the date and rough numbers and we'll check the diary, usually the same day. Village residents and regular clubs get discounted rates.</p>
+        </div>
+        <div class="flex flex-wrap gap-4">
+          <a href="contact.html" class="btn-accent">Make a booking enquiry</a>
+          <a href="tel:+441632960428" class="btn-ghost-light">01632 960 428</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="bg-primary-dark text-white/75">
+    <div class="container grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="font-display text-lg font-extrabold text-white">Elmsworth Village Hall</p>
+        <p class="mt-3 text-sm leading-relaxed">A charity-run community hall at the heart of Elmsworth since 1928. Managed by volunteer trustees, hired by the hour, loved by the whole village.</p>
+        <p class="mt-4 font-display text-xs font-bold uppercase tracking-widest text-white/40">Registered Charity No. 000000 (placeholder) · Built 1928 · Volunteer run</p>
+      </div>
+      <nav aria-label="Site footer navigation">
+        <h2 class="font-display text-sm font-bold uppercase tracking-widest text-white">Site</h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a class="hover:text-accent" href="services.html">Hire the hall</a></li>
+          <li><a class="hover:text-accent" href="projects.html">What's on</a></li>
+          <li><a class="hover:text-accent" href="about.html">About the hall</a></li>
+          <li><a class="hover:text-accent" href="contact.html">Contact &amp; bookings</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2 class="font-display text-sm font-bold uppercase tracking-widest text-white">Find us</h2>
+        <p class="mt-4 text-sm leading-relaxed">Elmsworth Village Hall, The Green, Elmsworth, Gloucestershire GL99 0AA. Free car park behind the hall; overflow parking by the green.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-sm font-bold uppercase tracking-widest text-white">Talk to us</h2>
+        <address class="mt-4 space-y-2.5 text-sm not-italic">
+          <p><a class="font-bold text-accent hover:text-white" href="tel:+441632960428">01632 960 428</a></p>
+          <p><a class="hover:text-accent" href="mailto:bookings@elmsworthvillagehall.org.uk">bookings@elmsworthvillagehall.org.uk</a></p>
+          <p class="text-white/50">Booking enquiries answered by volunteers, usually within a day.</p>
+          <p class="text-white/50">During an event, the duty keyholder's number is on the lobby noticeboard.</p>
+        </address>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="container flex flex-col items-center justify-between gap-3 py-6 text-xs text-white/50 sm:flex-row">
+        <p>&copy; <span data-year>2026</span> Elmsworth Village Hall. All rights reserved. Demo content — Commons theme.</p>
+        <p><a class="hover:text-accent" href="#">Privacy</a> &middot; <a class="hover:text-accent" href="#">Hire agreement</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

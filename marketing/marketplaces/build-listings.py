@@ -5,8 +5,8 @@ sizes each marketplace requires (from marketing/covers/).
 
 Run from the repo root:  python3 marketing/marketplaces/build-listings.py
 """
+import json
 import os
-import textwrap
 
 from PIL import Image
 
@@ -109,50 +109,17 @@ sides, club volunteers who got handed "the website job"."""
 
 
 def products():
+    """marketing/catalog.json is the single source of truth — the kits are
+    generated from it, so new catalogue themes appear here automatically."""
+    catalog = json.load(open(os.path.join(ROOT, "marketing", "catalog.json")))
     out = []
-    out.append(dict(
-        slug="forgeline", price=39,
-        title="Forgeline — Industrial & Trade Supplier HTML Template",
-        oneliner=("A premium website template that actually understands the trade — "
-                  "datasheets, photometry downloads, quote requests and next-day "
-                  "delivery messaging, not another generic \"business theme\"."),
-        desc=FORGELINE_DESC, demo=f"{DEMO}/forgeline/",
-        tags=["industrial website", "trade supplier", "wholesale", "manufacturing", "b2b template"],
-        family="industrial"))
-    for slug, trade, tag in CALLOUT:
+    for t in catalog["themes"]:
         out.append(dict(
-            slug=slug, price=29,
-            title=f"Callout — {trade} Website Template (local trades)",
-            oneliner=(f"A complete website for a local {trade.lower()} — built around what "
-                      "actually wins trade work: reviews, fixed-quote promises, photos of "
-                      "real jobs, and a phone number everywhere."),
-            desc=CALLOUT_DESC, demo=f"{DEMO}/{slug}/",
-            tags=[tag, "tradesman template", "local business", "trade website"],
-            family="trades"))
-    out.append(dict(
-        slug="sideline", price=35,
-        title="Sideline — Grassroots Junior Football Club Template",
-        oneliner=("The first club website template built for how junior clubs actually "
-                  "work — 20+ teams, boys' and girls' pathways, volunteers and "
-                  "safeguarding, no \"first team\" your club doesn't have."),
-        desc=SIDELINE_DESC, demo=f"{DEMO}/sideline/",
-        tags=["football club", "soccer club", "youth sports", "junior football", "grassroots", "sports team website"],
-        family="football"))
-    for slug, name, colours, colour_tag, club, est, extra in FOOTBALL:
-        desc = FOOTBALL_DESC.format(name=name, colours=colours, club=club, est=est)
-        if extra:
-            desc += "\n\n" + extra
-        out.append(dict(
-            slug=slug, price=35 if slug == "terrace" else 29,
-            title=f"{name} — Football Club HTML Template ({colours.split('(')[0].strip().rstrip(' &')})"
-                  if "(" in colours else f"{name} — Football Club HTML Template ({colours})",
-            oneliner=(f"A complete football club website in {colours} — fixtures, results, "
-                      "league table, squad profiles, match reports and academy trials, "
-                      "styled for your colours out of the box."),
-            desc=desc, demo=f"{DEMO}/{slug}/",
-            tags=["football club template", "soccer website", "sports club", "fixtures",
-                  "league table", f"{colour_tag} football", "non-league"],
-            family="football"))
+            slug=t["slug"], price=t["price_gbp"], title=t["title"],
+            oneliner=t["oneliner"], desc=t["description"],
+            demo=f"{DEMO}/{t['slug']}/",
+            tags=[x for x in t["tags"] if x not in SHARED_TAGS],
+            family=t["family"]))
     return out
 
 

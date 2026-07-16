@@ -1,0 +1,13 @@
+{
+  "name": "callout-scaffolding-theme",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Callout Scaffolding — Scaffolder / local trade HTML template built with Tailwind CSS",
+  "scripts": {
+    "build": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/css/main.css --minify",
+    "watch": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/css/main.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

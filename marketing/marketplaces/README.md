@@ -29,8 +29,13 @@ each platform requires. Regenerate after editing copy with:
 Always ship the zips from the rolling release (rebuilt on every push to main):
 https://github.com/Desgnit/theme-forge/releases/tag/themes-latest
 
-## Pricing (from marketing/listings.md)
+## Pricing (source of truth: marketing/catalog.json)
 
-Forgeline £39 · Sideline £35 · Terrace £35 · other football editions £29 ·
-Callout editions £29 · football 10-edition bundle £79. Raise prices once each
+Forgeline £39 · Solace (funeral directors) £39 · Sideline £35 · Terrace £35 ·
+Boundary (cricket) £35 · other football editions £29 · Callout trade editions
+(electrician, plumber, builder, landscaper, roofer, skip hire, scaffolding)
+£29 · Commons (village hall) £29 · Swim (fishery) £29.
+
+Bundles (create manually on Gumroad/Payhip): all ten football editions £79 ·
+all seven Callout trades £59 · everything £199. Raise prices once each
 product has 2–3 sales/reviews.

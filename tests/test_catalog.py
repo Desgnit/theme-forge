@@ -37,7 +37,8 @@ def main():
             errors.append(f"{s}: implausible price {t.get('price_gbp')}")
         if len(t.get("title", "")) > 120:  # leaves room for Etsy's suffix within 140
             errors.append(f"{s}: title too long ({len(t['title'])} chars)")
-        if t.get("family") not in ("industrial", "trades", "football"):
+        if t.get("family") not in ("industrial", "trades", "football",
+                                   "sport", "services", "community"):
             errors.append(f"{s}: unknown family {t.get('family')}")
 
     # every catalogued theme must be in the demo hub

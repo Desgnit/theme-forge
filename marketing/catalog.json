@@ -339,6 +339,117 @@
         "red and white football",
         "non-league"
       ]
+    },
+    {
+      "slug": "boundary",
+      "title": "Boundary \u2014 Cricket Club HTML Template (green & gold)",
+      "price_gbp": 35,
+      "oneliner": "A complete cricket club website \u2014 fixtures with proper scorelines, league table, squad averages, junior section and a first-ball countdown, in classic cricket green & gold.",
+      "description": "Your club's website shouldn't look like a football template with the badge swapped. Boundary is built for how cricket clubs actually run \u2014 the demo club (Longmead CC, est. 1894, home at The Meadow) reads like a real village club, not lorem ipsum.\n\n- **Match centre**: fixtures and results with real cricket scorelines (187/6 dec, 40-over formats), W/L/D/T badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **First-ball countdown** on the homepage (set one date attribute)\n- **Squad grid** with batting and bowling roles, player pages with averages, and a \"sponsor this player\" revenue CTA\n- Junior cricket page: All Stars and Dynamos age groups, coaching nights, parents' FAQ\n- Match report layout, club history and honours, contact with ground directions\n- 8 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: village and league cricket clubs, junior sections, club volunteers who got handed \"the website job\".",
+      "family": "sport",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "cricket club",
+        "sports club",
+        "fixtures",
+        "league table",
+        "village cricket",
+        "club website"
+      ]
+    },
+    {
+      "slug": "callout-skiphire",
+      "title": "Callout \u2014 Skip Hire Website Template (local trades)",
+      "price_gbp": 29,
+      "oneliner": "A complete website for a skip hire firm \u2014 built around what actually wins waste work: clear skip sizes and prices, same-day delivery messaging, permit handling, and a phone number everywhere.",
+      "description": "Five pages (Home, Skips & Prices, Recent Jobs, About, Get a Skip) with a fully written demo company (Loadstar Skips, Doncaster) so you see a real waste business, not lorem ipsum: skip size cards from 4-yard midis to roll-on-roll-off, licensed-waste-carrier trust strip, recent jobs with sizes and prices, review cards, an areas-covered strip, and a booking form with skip-size and waste-type dropdowns plus prohibited-items notes.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
+      "family": "trades",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "skip hire",
+        "waste removal",
+        "tradesman template",
+        "local business"
+      ]
+    },
+    {
+      "slug": "callout-scaffolding",
+      "title": "Callout \u2014 Scaffolding Website Template (local trades)",
+      "price_gbp": 29,
+      "oneliner": "A complete website for a scaffolding company \u2014 CISRS-carded credibility, TG20:21 compliance messaging, recent contracts and a free site-survey form, styled in steel and amber.",
+      "description": "Five pages (Home, Services, Recent Contracts, About, Site Survey) with a fully written demo company (Vertex Scaffolding, Birmingham) so you see a real access firm, not lorem ipsum: residential and commercial scaffolding services, temporary roofs, edge protection and inspections, an accreditation trust strip (CISRS, CHAS, \u00a310m public liability), contract case cards with durations, review cards from site managers, and a survey-request form.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
+      "family": "trades",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "scaffolding",
+        "construction website",
+        "tradesman template",
+        "local business"
+      ]
+    },
+    {
+      "slug": "solace",
+      "title": "Solace \u2014 Funeral Directors HTML Template",
+      "price_gbp": 39,
+      "oneliner": "A dignified website for a family funeral directors \u2014 24-hour contact first, plain guidance for families, transparent pricing, and a tone that never sells.",
+      "description": "Most templates shout. Solace is quiet on purpose \u2014 designed for a family firm (the demo is Fairbourne & Sons, Harrogate, serving families since 1932) where the website's job is to reassure at the hardest moment.\n\n- 24-hour phone line prominent on every page, with \"what to do first\" guidance written in plain, kind English\n- Services explained honestly: traditional funerals, cremation, direct cremation, woodland burial, pre-paid plans, repatriation\n- Transparent-pricing section aligned with the CMA's standardised price list requirement for UK funeral directors\n- Testimonials page with believable, respectful words from families\n- About page: four generations of history, the team, the chapel of rest\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested\n- A muted dusk-and-brass palette, changeable via CSS variables in minutes\n\nPerfect for: independent funeral directors, family firms, memorial services.",
+      "family": "services",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "funeral director",
+        "funeral home",
+        "memorial",
+        "dignified design"
+      ]
+    },
+    {
+      "slug": "commons",
+      "title": "Commons \u2014 Village Hall & Community Centre Template",
+      "price_gbp": 29,
+      "oneliner": "A warm website for a village hall \u2014 hire rates and booking, a what's-on grid of weekly clubs, facilities and access details, run-by-volunteers friendly.",
+      "description": "Thousands of village halls run on a volunteer with a spare evening \u2014 Commons is built for exactly that (the demo is Elmsworth Village Hall, a charity-run hall built 1928).\n\n- **Hire the Hall** page: rooms with capacities and an hourly-rates table, resident and regular-club discounts, how booking and deposits work\n- **What's On** grid: weekly clubs from pilates to short mat bowls, plus one-off events\n- Facilities up front: capacity, kitchen, stage, parking, wheelchair access, hearing loop\n- About page: the hall's history, the trustees, the charity number, how to volunteer\n- Booking enquiry form with event type, date, room and numbers\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested\n- Every colour is a CSS variable \u2014 five-minute rebrand, documented in the README\n\nPerfect for: village halls, community centres, church halls, scout huts, parish councils.",
+      "family": "community",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "village hall",
+        "community centre",
+        "charity website",
+        "parish"
+      ]
+    },
+    {
+      "slug": "swim",
+      "title": "Swim \u2014 Fishing Lakes & Day-Ticket Fishery Template",
+      "price_gbp": 29,
+      "oneliner": "A complete website for a day-ticket fishery \u2014 lakes and prices up front, catch reports, venue rules and records, in deep-water blue and reed green.",
+      "description": "Anglers check three things before they travel: prices, stock and rules. Swim puts all three on the surface \u2014 the demo venue (Willow Pool Fisheries, Shropshire, three lakes on a family farm since 1987) reads like somewhere you'd actually fish.\n\n- **Lakes & Prices**: each lake with its stock, pegs and character (runs water, silvers lake, specimen syndicate), plus a day/evening/season ticket price table\n- **Catch Reports** page: recent catches with weights, baits and pegs, and a venue records list\n- Day-ticket prices and opening times on the homepage, above the fold\n- Rules summary written like a fishery actually writes them (barbless only, unhooking mats, no braid)\n- About page: the farm's story, stocking policy, otter fencing, match bookings\n- 5 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA, iPhone-tested\n- Every colour is a CSS variable \u2014 five-minute rebrand, documented in the README\n\nPerfect for: day-ticket fisheries, carp lakes, angling clubs, farm diversification ventures.",
+      "family": "community",
+      "tags": [
+        "html template",
+        "tailwind css",
+        "landing page",
+        "small business website",
+        "fishing lake",
+        "fishery",
+        "angling",
+        "day ticket",
+        "carp fishing"
+      ]
     }
   ]
 }
