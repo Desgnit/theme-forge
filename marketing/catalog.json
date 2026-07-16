@@ -6,6 +6,7 @@
       "title": "Forgeline \u2014 Industrial & Trade Supplier HTML Template",
       "price_gbp": 39,
       "oneliner": "A premium website template that actually understands the trade \u2014 datasheets, photometry downloads, quote requests and next-day delivery messaging, not another generic \"business theme\".",
+      "description": "Most templates make an electrical wholesaler look like a startup. Forgeline was\ndesigned *from inside the industry*: the demo content is a believable UK\ncommercial lighting distributor, with product spec tables (IP ratings, lumen\noutput, efficacy), a downloads tab for datasheets and LDT/IES photometric\nfiles, trade-account CTAs, volume-break pricing and a \"send us your bill of\nmaterials\" quote flow.\n\n- 8 pages: Home, About, Products (filterable grid), Single Product, Services, Blog, Article, Contact\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Real photography included; product images as clean technical renders\n- Vanilla JS only: tabs, filters, gallery, accordion, working demo forms\n- WCAG-AA accessibility patterns, tested at iPhone widths, no horizontal scroll anywhere\n- Plain-English README covering setup, rebranding and going live\n\nPerfect for: electrical wholesalers, lighting suppliers, manufacturers,\nengineering firms, industrial distributors, builders' merchants.",
       "family": "industrial",
       "tags": [
         "html template",
@@ -24,6 +25,7 @@
       "title": "Callout \u2014 Electrician Website Template (local trades)",
       "price_gbp": 29,
       "oneliner": "A complete website for a local electrician \u2014 built around what actually wins trade work: reviews, fixed-quote promises, photos of real jobs, and a phone number everywhere.",
+      "description": "Five pages (Home, Services, Recent Work, About, Free Quote) with a fully\nwritten demo company so you see a real trade business, not lorem ipsum: trust\nstrip with guarantees, 6 service cards with honest trade copy, project cards\nwith budgets, review cards ready for your Checkatrade quotes, an areas-covered\nstrip, and a quote form with job-type dropdown.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
       "family": "trades",
       "tags": [
         "html template",
@@ -41,6 +43,7 @@
       "title": "Callout \u2014 Plumber Website Template (local trades)",
       "price_gbp": 29,
       "oneliner": "A complete website for a local plumber \u2014 built around what actually wins trade work: reviews, fixed-quote promises, photos of real jobs, and a phone number everywhere.",
+      "description": "Five pages (Home, Services, Recent Work, About, Free Quote) with a fully\nwritten demo company so you see a real trade business, not lorem ipsum: trust\nstrip with guarantees, 6 service cards with honest trade copy, project cards\nwith budgets, review cards ready for your Checkatrade quotes, an areas-covered\nstrip, and a quote form with job-type dropdown.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
       "family": "trades",
       "tags": [
         "html template",
@@ -58,6 +61,7 @@
       "title": "Callout \u2014 Builder Website Template (local trades)",
       "price_gbp": 29,
       "oneliner": "A complete website for a local builder \u2014 built around what actually wins trade work: reviews, fixed-quote promises, photos of real jobs, and a phone number everywhere.",
+      "description": "Five pages (Home, Services, Recent Work, About, Free Quote) with a fully\nwritten demo company so you see a real trade business, not lorem ipsum: trust\nstrip with guarantees, 6 service cards with honest trade copy, project cards\nwith budgets, review cards ready for your Checkatrade quotes, an areas-covered\nstrip, and a quote form with job-type dropdown.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
       "family": "trades",
       "tags": [
         "html template",
@@ -75,6 +79,7 @@
       "title": "Callout \u2014 Landscaper Website Template (local trades)",
       "price_gbp": 29,
       "oneliner": "A complete website for a local landscaper \u2014 built around what actually wins trade work: reviews, fixed-quote promises, photos of real jobs, and a phone number everywhere.",
+      "description": "Five pages (Home, Services, Recent Work, About, Free Quote) with a fully\nwritten demo company so you see a real trade business, not lorem ipsum: trust\nstrip with guarantees, 6 service cards with honest trade copy, project cards\nwith budgets, review cards ready for your Checkatrade quotes, an areas-covered\nstrip, and a quote form with job-type dropdown.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
       "family": "trades",
       "tags": [
         "html template",
@@ -92,6 +97,7 @@
       "title": "Callout \u2014 Roofer Website Template (local trades)",
       "price_gbp": 29,
       "oneliner": "A complete website for a local roofer \u2014 built around what actually wins trade work: reviews, fixed-quote promises, photos of real jobs, and a phone number everywhere.",
+      "description": "Five pages (Home, Services, Recent Work, About, Free Quote) with a fully\nwritten demo company so you see a real trade business, not lorem ipsum: trust\nstrip with guarantees, 6 service cards with honest trade copy, project cards\nwith budgets, review cards ready for your Checkatrade quotes, an areas-covered\nstrip, and a quote form with job-type dropdown.\n\n- HTML + compiled Tailwind CSS \u2014 open index.html and it just works, no build step\n- Rebrand in minutes: every colour and font is a CSS variable\n- Vanilla JS only, WCAG-AA accessibility patterns, tested at iPhone widths\n- Plain-English README covering setup, rebranding and going live",
       "family": "trades",
       "tags": [
         "html template",
@@ -109,6 +115,7 @@
       "title": "Sideline \u2014 Grassroots Junior Football Club Template",
       "price_gbp": 35,
       "oneliner": "The first club website template built for how junior clubs actually work \u2014 20+ teams, boys' and girls' pathways, volunteers and safeguarding, no \"first team\" your club doesn't have.",
+      "description": "Junior clubs don't need a fixtures-and-league-table site \u2014 they need parents to\nfind the right team, register in five minutes, and trust the setup. Sideline\nis organised around exactly that:\n\n- A **teams directory** with 24 demo teams across U6\u2013U16, filterable by Boys / Girls / Mixed, each card showing league, format (4v4 \u2192 11v11), training night, coach and live space availability\n- Registration page with a fees table, sibling discounts and hardship fund \u2014 plus a parents' FAQ that answers the questions you get every July\n- A volunteers page, because the real shortage is coaches, not players\n- Safeguarding built in structurally: welfare contact first on the contact page, no junior players named, photo-consent language modelled\n- 8 pages, HTML + compiled Tailwind, vanilla JS, WCAG-AA, iPhone-tested",
       "family": "football",
       "tags": [
         "html template",
@@ -128,6 +135,7 @@
       "title": "Terrace \u2014 Football Club HTML Template (claret & sky)",
       "price_gbp": 35,
       "oneliner": "A complete football club website in claret & sky (plus a 5-way colour switcher) \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Terrace is a complete club site in **claret & sky (plus a 5-way colour switcher)** \u2014 the demo club\n(Ravenshaw Rovers, est. 1921) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".\n\nCan't see your colours? Terrace is the any-colour edition: five ready-made colourways ship in the box (claret, royal, scarlet, forest, black & amber) switchable with one line of HTML \u2014 plus a live preview page \u2014 and the README shows how to hit your exact colours with one CSS block.",
       "family": "football",
       "tags": [
         "html template",
@@ -148,6 +156,7 @@
       "title": "Clarion \u2014 Football Club HTML Template (royal blue & gold)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in royal blue & gold \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Clarion is a complete club site in **royal blue & gold** \u2014 the demo club\n(Kingsfield Rovers, est. 1907) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -168,6 +177,7 @@
       "title": "Vermilion \u2014 Football Club HTML Template (scarlet & gold)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in scarlet & gold \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Vermilion is a complete club site in **scarlet & gold** \u2014 the demo club\n(Redbrook Rovers, est. 1911) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -188,6 +198,7 @@
       "title": "Evergreen \u2014 Football Club HTML Template (forest green & gold)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in forest green & gold \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Evergreen is a complete club site in **forest green & gold** \u2014 the demo club\n(Oakhurst Rovers, est. 1924) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -208,6 +219,7 @@
       "title": "Amberline \u2014 Football Club HTML Template (black & amber)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in black & amber \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Amberline is a complete club site in **black & amber** \u2014 the demo club\n(Blackwick Rovers, est. 1899) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -228,6 +240,7 @@
       "title": "Skyline \u2014 Football Club HTML Template (sky blue & gold)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in sky blue & gold \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Skyline is a complete club site in **sky blue & gold** \u2014 the demo club\n(Easthaven Rovers, est. 1902) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -248,6 +261,7 @@
       "title": "Tangerine \u2014 Football Club HTML Template (orange & black)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in orange & black \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Tangerine is a complete club site in **orange & black** \u2014 the demo club\n(Seabrook Rovers, est. 1912) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -268,6 +282,7 @@
       "title": "Midnight \u2014 Football Club HTML Template (navy & sky)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in navy & sky \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Midnight is a complete club site in **navy & sky** \u2014 the demo club\n(Northgate Rovers, est. 1905) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -288,6 +303,7 @@
       "title": "Canary \u2014 Football Club HTML Template (yellow & slate)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in yellow & slate \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Canary is a complete club site in **yellow & slate** \u2014 the demo club\n(Marshside Rovers, est. 1926) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".",
       "family": "football",
       "tags": [
         "html template",
@@ -308,6 +324,7 @@
       "title": "Candystripe \u2014 Football Club HTML Template (red & white stripes)",
       "price_gbp": 29,
       "oneliner": "A complete football club website in red & white stripes \u2014 fixtures, results, league table, squad profiles, match reports and academy trials, styled for your colours out of the box.",
+      "description": "Your club's website shouldn't look like a corporate brochure with a ball\nphoto. Candystripe is a complete club site in **red & white stripes** \u2014 the demo club\n(Westport Rovers, est. 1889) wears your end of the colour spectrum so you can picture\nyour own badge on it immediately.\n\n- **Match centre**: fixtures, results with scorelines and W/D/L badges, and a league table with your club's row highlighted \u2014 all plain HTML, edited by copy-paste\n- **Live kick-off countdown** on the homepage (set one date attribute)\n- **Squad grid** with position filter and player profile page (with a \"sponsor this player\" revenue CTA)\n- Match report layout, club history/honours, academy trials form with parents' FAQ, contact with matchday directions\n- A proper **club crest** included as a recolourable SVG \u2014 swap in your own badge whenever you're ready\n- 9 pages, HTML + compiled Tailwind CSS, no build step, vanilla JS, WCAG-AA patterns, tested at iPhone widths\n- Every colour is a CSS variable \u2014 matching your exact club colours is a five-minute job, documented in the README\n\nPerfect for: non-league and semi-pro clubs, community clubs, Sunday league\nsides, club volunteers who got handed \"the website job\".\n\nThe stripes aren't a gimmick \u2014 every dark section wears the candy stripes, woven into the design the way your fans expect.",
       "family": "football",
       "tags": [
         "html template",

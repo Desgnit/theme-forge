@@ -9,9 +9,30 @@ everywhere possible — no manual work per theme.
 |---|---|---|
 | **Etsy** | **Full** — listings created/updated by CI on every push | Official Etsy Open API v3 (`sync-etsy.py`) |
 | **Own storefront** | Full — rebuilt by CI on every push | `/store/` page on the demo site; Buy buttons link to the Etsy listings once they exist |
-| Gumroad | Not possible server-side | Their API has no create-product endpoint; use `marketing/marketplaces/gumroad/` kits |
-| Creative Market | Not possible | No seller API exists |
-| ThemeForest | Not possible | No API + mandatory human review of every item |
+| Gumroad | Browser automation (no create API exists) | `sync-browser.py gumroad` — RPA in CI with your captured session |
+| Creative Market | Browser automation (no seller API exists) | `sync-browser.py creativemarket` |
+| ThemeForest | Browser automation submits; **Envato humans still review** | `sync-browser.py themeforest` — flagship items only, per the duplicate-item policy |
+
+### About the browser-automation (RPA) channels
+
+Gumroad, Creative Market and ThemeForest offer no listing APIs, so the
+`sync-marketplaces.yml` workflow drives their seller dashboards in a headless
+browser instead. Plain-spoken caveats:
+
+- **Terms of service**: you're automating your own account listing your own
+  products, but these sites' terms may restrict automation — use at your own
+  judgement.
+- **Fragility**: a dashboard redesign can break the scripts. Every step is
+  screenshotted and uploaded as a CI artifact (`rpa-screenshots`), so
+  breakage is quick to diagnose and fix in `sync-browser.py`. Expect the
+  first run against each real site to need a round of selector fixes.
+- **Auth**: no passwords are stored. Run
+  `python3 marketing/platform/capture-session.py <site>` locally, log in by
+  hand (captcha/2FA and all), and save the printed blob as the repo secret it
+  names (`GUMROAD_SESSION`, `CREATIVEMARKET_SESSION`, `THEMEFOREST_SESSION`).
+  Sessions expire after weeks–months; the workflow tells you when to re-run it.
+- ThemeForest publication is gated on Envato's human review regardless — the
+  robot uploads and submits, people approve.
 
 ## One-time setup (the only manual work, ever)
 

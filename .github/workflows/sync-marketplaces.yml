@@ -1,0 +1,64 @@
+name: Sync listings to marketplaces (RPA)
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # state-file commits
+
+concurrency:
+  group: marketplace-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Playwright
+        run: |
+          pip install -q playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Package theme zips
+        run: ./marketing/package-zips.sh
+
+      - name: List on Gumroad
+        continue-on-error: true
+        env:
+          GUMROAD_SESSION: ${{ secrets.GUMROAD_SESSION }}
+        run: python3 marketing/platform/sync-browser.py gumroad
+
+      - name: List on Creative Market
+        continue-on-error: true
+        env:
+          CREATIVEMARKET_SESSION: ${{ secrets.CREATIVEMARKET_SESSION }}
+        run: python3 marketing/platform/sync-browser.py creativemarket
+
+      - name: Submit to ThemeForest
+        continue-on-error: true
+        env:
+          THEMEFOREST_SESSION: ${{ secrets.THEMEFOREST_SESSION }}
+        run: python3 marketing/platform/sync-browser.py themeforest
+
+      - name: Upload step screenshots (for diagnosing UI changes)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpa-screenshots
+          path: marketing/platform/shots/
+          if-no-files-found: ignore
+
+      - name: Commit listing state back to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/platform/*-listings.json 2>/dev/null || true
+          git diff --cached --quiet || {
+            git commit -m "Update marketplace listing state [bot]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          }

@@ -111,8 +111,8 @@ def main():
     for t in catalog:
         slug = t["slug"]
         title = f"{t['title']} — HTML + Tailwind, Instant Digital Download"[:140]
-        desc = t["oneliner"] + "\n\n" + DESC_FOOTER.format(
-            demo=f"https://desgnit.github.io/theme-forge/{slug}/")
+        desc = (t["oneliner"] + "\n\n" + t.get("description", "") + DESC_FOOTER.format(
+            demo=f"https://desgnit.github.io/theme-forge/{slug}/"))
         body = {
             "quantity": 999,
             "title": title,
