@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-contact"
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question" },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You have 30 days from delivery to return any unused item for a full refund. Returns are free.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2"]
+    }
+  },
+  "order": ["main", "faq"]
+}

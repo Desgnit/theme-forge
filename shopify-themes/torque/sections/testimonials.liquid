@@ -1,0 +1,97 @@
+<section class="section testimonials" data-slider>
+  <div class="page-width">
+    <div class="section__header">
+      <h2 class="section__heading">{{ section.settings.heading | escape }}</h2>
+      {%- if section.blocks.size > 1 -%}
+        <div class="testimonials__nav">
+          <button type="button" class="btn-icon" data-slider-prev aria-label="{{ 'accessibility.previous' | t }}">
+            {% render 'icon', name: 'chevron-left', size: 18 %}
+          </button>
+          <button type="button" class="btn-icon" data-slider-next aria-label="{{ 'accessibility.next' | t }}">
+            {% render 'icon', name: 'chevron-right', size: 18 %}
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="testimonials__track" data-slider-track>
+      {%- for block in section.blocks -%}
+        <blockquote class="testimonial" {{ block.shopify_attributes }}>
+          <div class="testimonial__stars" aria-label="{{ 'sections.testimonials.stars' | t: count: block.settings.stars }}">
+            {%- for i in (1..block.settings.stars) -%}
+              {% render 'icon', name: 'star', size: 16 %}
+            {%- endfor -%}
+          </div>
+          <p class="testimonial__quote">&ldquo;{{ block.settings.quote | escape }}&rdquo;</p>
+          <footer>
+            <p class="testimonial__author">{{ block.settings.author | escape }}</p>
+            {%- if block.settings.meta != blank -%}
+              <p class="testimonial__meta">{{ block.settings.meta | escape }}</p>
+            {%- endif -%}
+          </footer>
+        </blockquote>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What customers say"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "range",
+          "id": "stars",
+          "label": "Star rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "The quality genuinely surprised me. Ordered a second one for my brother a week later."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Jamie R."
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Detail",
+          "info": "e.g. Verified buyer, product purchased",
+          "default": "Verified buyer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial", "settings": { "quote": "Shipping was quick and the packaging was flawless. This is how e-commerce should feel.", "author": "Priya S." } },
+        { "type": "testimonial", "settings": { "quote": "I've bought from a lot of stores. The attention to detail here is on another level.", "author": "Marcus T." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

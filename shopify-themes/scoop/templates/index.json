@@ -1,0 +1,171 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "height": "large",
+        "content_alignment": "left",
+        "eyebrow": "Whey isolate — new drop",
+        "heading": "Fuel the obsession",
+        "text": "Clinically dosed protein, third-party tested, zero junk. Built for the ones who show up at 5am.",
+        "cta_primary_label": "Shop the drop",
+        "cta_secondary_label": "Read the label",
+        "overlay_opacity": 70
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "item", "settings": { "text": "LAB TESTED" } },
+        "m2": { "type": "item", "settings": { "text": "27G PROTEIN", "outline": true } },
+        "m3": { "type": "item", "settings": { "text": "ZERO JUNK" } },
+        "m4": { "type": "item", "settings": { "text": "THIRD-PARTY VERIFIED", "outline": true } },
+        "m5": { "type": "item", "settings": { "text": "NO FILLERS" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5"],
+      "settings": {
+        "color_scheme": "volt",
+        "speed": 26,
+        "text_size": 175
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "The stack",
+        "heading": "Best sellers",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true
+      }
+    },
+    "benefits": {
+      "type": "benefits-panel",
+      "blocks": {
+        "b1": { "type": "benefit", "settings": { "icon": "check", "value": "27g", "label": "Protein per scoop" } },
+        "b2": { "type": "benefit", "settings": { "icon": "check", "value": "5.5g", "label": "BCAAs" } },
+        "b3": { "type": "benefit", "settings": { "icon": "check", "value": "1.9g", "label": "Sugar" } },
+        "b4": { "type": "benefit", "settings": { "icon": "check", "value": "112", "label": "Calories" } },
+        "b5": { "type": "benefit", "settings": { "icon": "shield", "value": "0", "label": "Banned substances" } }
+      },
+      "block_order": ["b1", "b2", "b3", "b4", "b5"],
+      "settings": {
+        "eyebrow": "Full disclosure",
+        "heading": "Read the label. We dare you.",
+        "text": "<p>Every batch is third-party tested and every number is printed where you can see it. No proprietary blends, no fairy dust — just clinically dosed ingredients doing their job.</p>",
+        "cta_label": "See the lab results",
+        "label_title": "Supplement facts",
+        "label_subtitle": "Per 30g serving — vanilla whey isolate",
+        "footnote": "* Independently verified. Certificates published for every batch."
+      }
+    },
+    "promos": {
+      "type": "promo-tiles",
+      "blocks": {
+        "tile1": {
+          "type": "tile",
+          "settings": {
+            "heading": "Pre-workout",
+            "text": "Dialled-in energy, no crash",
+            "cta_label": "Shop pre"
+          }
+        },
+        "tile2": {
+          "type": "tile",
+          "settings": {
+            "heading": "Protein",
+            "text": "Isolate, clear whey and vegan blends",
+            "cta_label": "Shop protein"
+          }
+        },
+        "tile3": {
+          "type": "tile",
+          "settings": {
+            "heading": "Recovery",
+            "text": "Creatine, electrolytes, sleep",
+            "cta_label": "Shop recovery"
+          }
+        }
+      },
+      "block_order": ["tile1", "tile2", "tile3"]
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "The lab",
+        "heading": "Energy of a drop. Precision of a lab.",
+        "cta_label": "Our process"
+      }
+    },
+    "countdown": {
+      "type": "countdown-banner",
+      "settings": {
+        "heading": "Restock drops Friday — don't sleep on it",
+        "deadline": "2026-12-31T23:59"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "First protein I've used that tastes clean and mixes with zero clumps. The published lab sheets sealed it for me.",
+            "author": "Dani K. — powerlifter"
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "27 grams a scoop and my stomach doesn't hate me. Switched the whole gym over.",
+            "author": "Marcus T. — coach, Iron Works"
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The volt tub sits on my counter like a trophy. Oh, and PBs in three lifts since January.",
+            "author": "Priya S. — CrossFit L2"
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question" },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is every batch really tested?",
+            "answer": "<p>Yes — every production batch is independently tested for label accuracy and banned substances, and the certificate is published on the product page before it ships.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — we ship to most countries worldwide. Duties and taxes are calculated at checkout where applicable.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3"]
+    },
+    "newsletter": {
+      "type": "newsletter-signup"
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "featured",
+    "benefits",
+    "promos",
+    "story",
+    "countdown",
+    "testimonials",
+    "faq",
+    "newsletter"
+  ]
+}

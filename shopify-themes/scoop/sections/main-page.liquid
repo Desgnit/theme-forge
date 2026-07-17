@@ -1,0 +1,22 @@
+<section class="section">
+  <div class="page-width">
+    <div class="page-content{% if section.settings.full_width %} page-content--full{% endif %}">
+      <h1 style="margin-bottom: var(--space-5);">{{ page.title | escape }}</h1>
+      <div class="rte article__body">{{ page.content }}</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width content",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

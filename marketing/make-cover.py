@@ -41,6 +41,8 @@ def main():
         for slug in slugs:
             if kinds.get(slug) == "shopify":
                 index = os.path.join(ROOT, "shopify-themes", slug, "preview", "index.html")
+            elif kinds.get(slug) == "wordpress":
+                index = os.path.join(ROOT, "wordpress-themes", slug, "preview", "index.html")
             else:
                 index = os.path.join(ROOT, "themes", slug, "index.html")
             if not os.path.exists(index):

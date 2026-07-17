@@ -1,0 +1,263 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<section class="section" data-product-section>
+  <div class="page-width">
+    <div class="product-page">
+      {%- comment -%} Gallery {%- endcomment -%}
+      <div class="product-gallery" data-product-gallery>
+        <div class="product-gallery__main" data-gallery-main>
+          {%- if product.featured_media -%}
+            <img
+              src="{{ product.featured_media | image_url: width: 1200 }}"
+              alt="{{ product.featured_media.alt | default: product.title | escape }}"
+              width="{{ product.featured_media.width }}"
+              height="{{ product.featured_media.height }}"
+              fetchpriority="high"
+            >
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+        {%- if product.media.size > 1 -%}
+          <div class="product-gallery__thumbs" role="list">
+            {%- for media in product.media -%}
+              <button
+                type="button"
+                class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                data-gallery-thumb
+                data-media-id="{{ media.id }}"
+                data-full-src="{{ media | image_url: width: 1200 }}"
+                data-full-alt="{{ media.alt | default: product.title | escape }}"
+                aria-label="{{ 'products.gallery_thumbnail' | t: position: forloop.index }}"
+                aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+                <img
+                  src="{{ media | image_url: width: 180 }}"
+                  alt=""
+                  width="90"
+                  height="90"
+                  loading="lazy"
+                >
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Info column {%- endcomment -%}
+      <div class="product-info">
+        {%- if section.settings.show_vendor and product.vendor != blank -%}
+          <p class="product-info__vendor">{{ product.vendor | escape }}</p>
+        {%- endif -%}
+
+        <h1 class="product-info__title">{{ product.title | escape }}</h1>
+
+        <div class="product-info__price-row">
+          <div class="price price--large{% if current_variant.compare_at_price > current_variant.price %} price--on-sale{% endif %}" data-main-price>
+            <span class="price__current" data-price>{{ current_variant.price | money }}</span>
+            <span class="price__compare" data-compare-price {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
+              {%- if current_variant.compare_at_price > current_variant.price -%}
+                <s>{{ current_variant.compare_at_price | money }}</s>
+              {%- endif -%}
+            </span>
+          </div>
+          <span class="badge badge--sale" data-sale-badge {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
+            {{ 'products.on_sale' | t }}
+          </span>
+        </div>
+
+        {%- if section.settings.show_sku -%}
+          <p class="product-info__sku" data-product-sku {% if current_variant.sku == blank %}hidden{% endif %}>
+            {%- if current_variant.sku != blank %}SKU: {{ current_variant.sku }}{% endif -%}
+          </p>
+        {%- endif -%}
+
+        {%- form 'product', product, id: 'ProductForm', data-product-form: '' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+          {%- unless product.has_only_default_variant -%}
+            <div class="variant-picker" data-variant-picker data-product-json="ProductJson-{{ section.id }}">
+              {%- for option in product.options_with_values -%}
+                <fieldset class="variant-picker__option" data-option-index="{{ forloop.index0 }}">
+                  <legend class="variant-picker__label">
+                    {{ option.name | escape }}: <span data-selected-value>{{ option.selected_value | escape }}</span>
+                  </legend>
+                  <div class="variant-picker__values">
+                    {%- for value in option.values -%}
+                      <div class="variant-pill">
+                        <input
+                          type="radio"
+                          id="Option-{{ section.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}"
+                          name="options[{{ option.name | escape }}]"
+                          value="{{ value | escape }}"
+                          {% if option.selected_value == value %}checked{% endif %}
+                        >
+                        <label for="Option-{{ section.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}">
+                          {{ value | escape }}
+                        </label>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- endfor -%}
+            </div>
+          {%- endunless -%}
+
+          <div class="buy-buttons" data-buy-buttons>
+            <div class="buy-buttons__row">
+              {% render 'quantity-input', id: 'Quantity-main', name: 'quantity', value: 1, min: 1 %}
+              <button
+                type="submit"
+                name="add"
+                class="btn btn--primary btn--large"
+                data-add-to-cart
+                {% unless current_variant.available %}disabled{% endunless %}
+              >
+                {%- if current_variant.available -%}
+                  {{ 'products.add_to_cart' | t }}
+                {%- else -%}
+                  {{ 'products.sold_out' | t }}
+                {%- endif -%}
+              </button>
+            </div>
+            {%- if section.settings.show_dynamic_checkout -%}
+              {{ form | payment_button }}
+            {%- endif -%}
+          </div>
+        {%- endform -%}
+
+        {%- if product.description != blank -%}
+          <div class="product-description rte">{{ product.description }}</div>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="product-accordions">
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'accordion' -%}
+                  <details class="product-accordion" {{ block.shopify_attributes }}>
+                    <summary>
+                      {{ block.settings.heading | escape }}
+                      {% render 'icon', name: 'plus', size: 16 %}
+                    </summary>
+                    <div class="product-accordion__content rte">{{ block.settings.content }}</div>
+                  </details>
+                {%- when 'trust_row' -%}
+                  <div class="product-accordion" style="display: flex; align-items: center; gap: var(--space-3); padding-block: var(--space-4);" {{ block.shopify_attributes }}>
+                    {% render 'icon', name: block.settings.icon, size: 20 %}
+                    <span style="font-size: var(--text-sm);">{{ block.settings.text | escape }}</span>
+                  </div>
+              {%- endcase -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%} Sticky add-to-cart bar {%- endcomment -%}
+{%- if section.settings.show_sticky_atc -%}
+  <div class="sticky-atc" data-sticky-atc aria-hidden="true">
+    <div class="page-width">
+      <div class="sticky-atc__inner">
+        {%- if product.featured_media -%}
+          <img
+            class="sticky-atc__image"
+            src="{{ product.featured_media | image_url: width: 96 }}"
+            alt=""
+            width="48"
+            height="48"
+            loading="lazy"
+          >
+        {%- endif -%}
+        <div class="sticky-atc__details">
+          <p class="sticky-atc__title">{{ product.title | escape }}</p>
+          <span class="sticky-atc__price" data-sticky-price>{{ current_variant.price | money }}</span>
+        </div>
+        <button type="button" class="btn btn--primary" data-sticky-add>
+          {{ 'products.add_to_cart' | t }}
+        </button>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+<script type="application/json" id="ProductJson-{{ section.id }}">
+  {{ product | json }}
+</script>
+
+{% schema %}
+{
+  "name": "Product page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sticky_atc",
+      "label": "Show sticky add-to-cart bar",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shipping & returns"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Free shipping on orders over $75. Returns are free within 30 days of delivery.</p>"
+        }
+      ]
+    },
+    {
+      "type": "trust_row",
+      "name": "Trust row",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "check", "label": "Checkmark" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Ships within 24 hours from our warehouse"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

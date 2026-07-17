@@ -1,0 +1,71 @@
+/*
+Theme Name: Repset
+Theme URI: https://themeforge.example/themes/repset
+Author: Theme Forge
+Author URI: https://themeforge.example
+Description: Repset is a brutal, poster-grade block theme for independent gyms, strength clubs and functional fitness boxes. Deep charcoal, crimson accents, huge uppercase Oswald headlines and image-heavy sections with cinematic dark overlays. Built for Full Site Editing with ready-made patterns: hero, class timetable, membership pricing, trainers grid, testimonials, stats band, opening hours and CTA band.
+Requires at least: 6.2
+Tested up to: 6.5
+Requires PHP: 7.4
+Version: 1.0.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: repset
+Tags: full-site-editing, block-patterns, block-styles, one-column, custom-colors, custom-logo, editor-style, template-editing, dark
+*/
+
+/* ------------------------------------------------------------------
+   Repset — minimal extra CSS. Everything else lives in theme.json.
+   ------------------------------------------------------------------ */
+
+/* Crimson rule under display headings */
+.repset-rule {
+	width: 72px;
+	height: 5px;
+	background: var(--wp--preset--color--crimson);
+	border: none;
+	margin-left: 0;
+}
+
+.repset-rule.aligncenter {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Kicker / eyebrow label */
+.repset-kicker {
+	letter-spacing: 0.28em;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+/* Card hover lift for image cards */
+.repset-card img {
+	transition: transform 0.4s ease;
+}
+
+.repset-card:hover img {
+	transform: scale(1.04);
+}
+
+/* Timetable row divider */
+.repset-timetable-row {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Pricing highlight ring */
+.repset-tier-featured {
+	outline: 2px solid var(--wp--preset--color--crimson);
+	outline-offset: -2px;
+}
+
+/* Selection colour */
+::selection {
+	background: var(--wp--preset--color--crimson);
+	color: var(--wp--preset--color--white);
+}
+
+/* Sticky-feel header shadow */
+.repset-header {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}

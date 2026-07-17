@@ -1,0 +1,55 @@
+<section class="section">
+  <div class="page-width">
+    <div class="section__header">
+      <h1 class="section__heading">{{ 'collections.list_title' | t }}</h1>
+    </div>
+
+    {%- paginate collections by section.settings.collections_per_page -%}
+      <div class="collection-list__grid" style="--cols-desktop: {{ section.settings.columns }};">
+        {%- for collection in collections -%}
+          <a href="{{ collection.url }}" class="collection-card">
+            {%- if collection.featured_image -%}
+              <img
+                src="{{ collection.featured_image | image_url: width: 700 }}"
+                srcset="{{ collection.featured_image | image_url: width: 400 }} 400w, {{ collection.featured_image | image_url: width: 700 }} 700w"
+                sizes="(min-width: 990px) 25vw, 50vw"
+                alt="{{ collection.featured_image.alt | default: collection.title | escape }}"
+                width="{{ collection.featured_image.width }}"
+                height="{{ collection.featured_image.height }}"
+                loading="lazy"
+              >
+            {%- endif -%}
+            <span class="collection-card__label">{{ collection.title | escape }}</span>
+          </a>
+        {%- endfor -%}
+      </div>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections list page",
+  "settings": [
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "label": "Collections per page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    }
+  ]
+}
+{% endschema %}

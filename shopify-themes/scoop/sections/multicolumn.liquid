@@ -1,0 +1,82 @@
+<section class="section section--tight multicolumn">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section__header">
+        <h2 class="section__heading">{{ section.settings.heading | escape }}</h2>
+      </div>
+    {%- endif -%}
+    <div class="multicolumn__grid" style="--cols-desktop: {{ section.blocks.size | at_least: 1 | at_most: 4 }};">
+      {%- for block in section.blocks -%}
+        <div class="multicolumn__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != 'none' -%}
+            <span class="multicolumn__icon">
+              {% render 'icon', name: block.settings.icon, size: 24 %}
+            </span>
+          {%- endif -%}
+          <h3>{{ block.settings.heading | escape }}</h3>
+          <p>{{ block.settings.text | escape }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Multicolumn",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "star", "label": "Star" },
+            { "value": "check", "label": "Checkmark" },
+            { "value": "mail", "label": "Envelope" },
+            { "value": "cart", "label": "Cart" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Fast, free shipping"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Orders over $75 ship free, everywhere we deliver."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multicolumn",
+      "blocks": [
+        { "type": "column" },
+        { "type": "column", "settings": { "icon": "shield", "heading": "2-year warranty", "text": "If it breaks under normal use, we replace it. Simple." } },
+        { "type": "column", "settings": { "icon": "check", "heading": "Easy returns", "text": "30 days to change your mind, no questions asked." } },
+        { "type": "column", "settings": { "icon": "mail", "heading": "Human support", "text": "Real people answer within one business day." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

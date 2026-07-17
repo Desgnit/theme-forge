@@ -1,0 +1,154 @@
+<section class="section lookbook">
+  <div class="page-width">
+    <div class="section__header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="section__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="section__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.index_text != blank -%}
+        <span class="display-outline" style="font-size: clamp(2.5rem, 5vw, 4.5rem);" aria-hidden="true">
+          {{- section.settings.index_text | escape -}}
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="lookbook__grid">
+        {%- for block in section.blocks -%}
+          {%- capture look_index -%}{{ forloop.index | prepend: '0' | slice: -2, 2 }}{%- endcapture -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" class="lookbook__item" {{ block.shopify_attributes }}>
+          {%- else -%}
+            <div class="lookbook__item" {{ block.shopify_attributes }}>
+          {%- endif -%}
+
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 1200 }}"
+                srcset="{{ block.settings.image | image_url: width: 600 }} 600w, {{ block.settings.image | image_url: width: 900 }} 900w, {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                sizes="(min-width: 990px) 50vw, 100vw"
+                alt="{{ block.settings.image.alt | default: block.settings.caption | escape }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'lookbook__placeholder' }}
+            {%- endif -%}
+
+            {%- if section.settings.show_index_numbers -%}
+              <span class="display-outline lookbook__index" aria-hidden="true">{{ look_index }}</span>
+            {%- endif -%}
+
+            <span class="lookbook__caption">
+              {%- if block.settings.caption != blank -%}
+                {{ block.settings.caption | escape }}
+              {%- else -%}
+                {{ 'sections.lookbook.caption_placeholder' | t }}
+              {%- endif -%}
+              {%- if block.settings.caption_detail != blank -%}
+                <small>{{ block.settings.caption_detail | escape }}</small>
+              {%- endif -%}
+            </span>
+
+          {%- if block.settings.link != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shot on location"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The lookbook"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Worn, dropped, chalked and washed — then photographed."
+    },
+    {
+      "type": "text",
+      "id": "index_text",
+      "label": "Index number",
+      "info": "Oversized outlined text beside the heading, e.g. \"03 / LOOKBOOK\".",
+      "default": "03"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_index_numbers",
+      "label": "Number each image",
+      "info": "Outlined 01 / 02 / 03 counters in the image corners.",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "The first look renders as the tall editorial frame."
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "info": "Small caps, pinned to the lower-left corner.",
+          "default": "Session 01"
+        },
+        {
+          "type": "text",
+          "id": "caption_detail",
+          "label": "Caption detail",
+          "info": "Shown in signal orange after the caption.",
+          "default": "Track work"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook",
+      "blocks": [
+        { "type": "look" },
+        { "type": "look" },
+        { "type": "look" }
+      ]
+    }
+  ]
+}
+{% endschema %}

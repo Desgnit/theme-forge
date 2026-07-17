@@ -1,0 +1,236 @@
+{
+  "sections": {
+    "hero": {
+      "type": "split-hero",
+      "settings": {
+        "image_caption": "FW26 — Training Series",
+        "text_side": "right",
+        "index_text": "01 / GEAR",
+        "eyebrow": "The Torque Standard",
+        "eyebrow_detail": "EST. 2020",
+        "heading": "Built to be",
+        "heading_highlight": "worked",
+        "text": "Training gear and apparel with nothing to prove and everything to lift. Free shipping over $75.",
+        "cta_primary_label": "Shop the gear",
+        "cta_secondary_label": "See the lookbook"
+      }
+    },
+    "value_props": {
+      "type": "multicolumn",
+      "settings": {
+        "heading": "Why Torque"
+      },
+      "blocks": {
+        "col1": {
+          "type": "column",
+          "settings": {
+            "icon": "truck",
+            "heading": "Ships in 24h",
+            "text": "Orders over $75 ship free. Everything leaves the rack within one working day."
+          }
+        },
+        "col2": {
+          "type": "column",
+          "settings": {
+            "icon": "shield",
+            "heading": "5-year hard-use warranty",
+            "text": "Drop it, rack it, chalk it. If it fails under training, we replace it."
+          }
+        },
+        "col3": {
+          "type": "column",
+          "settings": {
+            "icon": "check",
+            "heading": "Athlete-tested",
+            "text": "Nothing ships until it survives twelve weeks on the gym floor."
+          }
+        },
+        "col4": {
+          "type": "column",
+          "settings": {
+            "icon": "mail",
+            "heading": "Coaches on support",
+            "text": "Sizing, programming, kit questions — answered by people who train."
+          }
+        }
+      },
+      "block_order": ["col1", "col2", "col3", "col4"]
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "02 / The rack",
+        "heading": "Training essentials",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true
+      }
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "settings": {
+        "eyebrow": "Shot on location",
+        "heading": "The lookbook",
+        "subheading": "Worn, dropped, chalked and washed — then photographed.",
+        "index_text": "03",
+        "show_index_numbers": true
+      },
+      "blocks": {
+        "look1": {
+          "type": "look",
+          "settings": {
+            "caption": "Session 01",
+            "caption_detail": "Track work"
+          }
+        },
+        "look2": {
+          "type": "look",
+          "settings": {
+            "caption": "Session 02",
+            "caption_detail": "Pulling day"
+          }
+        },
+        "look3": {
+          "type": "look",
+          "settings": {
+            "caption": "Session 03",
+            "caption_detail": "Conditioning"
+          }
+        }
+      },
+      "block_order": ["look1", "look2", "look3"]
+    },
+    "promos": {
+      "type": "promo-tiles",
+      "settings": {
+        "heading": "Departments"
+      },
+      "blocks": {
+        "tile1": {
+          "type": "tile",
+          "settings": {
+            "heading": "Iron & steel",
+            "text": "Kettlebells, plates, bands",
+            "cta_label": "Shop equipment"
+          }
+        },
+        "tile2": {
+          "type": "tile",
+          "settings": {
+            "heading": "Training wear",
+            "text": "Cut for full range of motion",
+            "cta_label": "Shop apparel"
+          }
+        },
+        "tile3": {
+          "type": "tile",
+          "settings": {
+            "heading": "Carry & accessories",
+            "text": "Bags, ropes, wraps, chalk",
+            "cta_label": "Shop accessories"
+          }
+        }
+      },
+      "block_order": ["tile1", "tile2", "tile3"]
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "04 / The standard",
+        "heading": "Overbuilt on purpose",
+        "text": "<p>Every Torque product is designed once, tested until it breaks, then rebuilt heavier. We publish the failure loads, the stitch counts and the fabric weights — because gear you trust under a bar should have nothing to hide.</p>",
+        "cta_label": "Read the standard"
+      }
+    },
+    "countdown": {
+      "type": "countdown-banner",
+      "settings": {
+        "heading": "Open gym sale — final week",
+        "text": "Last season's colourways at last season's prices. When it's gone, it's gone.",
+        "deadline": "2026-12-31T23:59"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "heading": "From the floor"
+      },
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Two years of daily garage sessions and the kettlebell handle still feels factory-fresh. The chalk wears off before the finish does.",
+            "author": "Dana K.",
+            "meta": "Garage athlete, verified buyer"
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The training shorts survived a full CrossFit open plus a season of rugby. Nothing else in my kit bag has.",
+            "author": "Marcus T.",
+            "meta": "Club coach, verified buyer"
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I outfitted our whole studio with Torque bands and ropes. Eighteen months, zero replacements, zero excuses.",
+            "author": "Priya S.",
+            "meta": "Studio owner, verified buyer"
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "Straight answers"
+      },
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How does the hard-use warranty work?",
+            "answer": "<p>If any Torque product fails under normal training use within five years, send us a photo and your order number — we ship a replacement. No forms, no fine print.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You have 30 days from delivery to return any unused item for a full refund. Returns are free.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — we ship to most countries worldwide. Duties and taxes are calculated at checkout where applicable.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3"]
+    },
+    "newsletter": {
+      "type": "newsletter-signup",
+      "settings": {
+        "heading": "Train on paper first",
+        "text": "One email a month: new drops, restocks and a training programme worth printing."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "value_props",
+    "featured",
+    "lookbook",
+    "promos",
+    "story",
+    "countdown",
+    "testimonials",
+    "faq",
+    "newsletter"
+  ]
+}

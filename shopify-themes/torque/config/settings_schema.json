@@ -1,0 +1,224 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Torque",
+    "theme_author": "Theme Forge",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "https://themeforge.example.com/docs/torque",
+    "theme_support_url": "https://themeforge.example.com/support"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Ink",
+        "info": "Buttons, rules, borders and display type.",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Signal orange",
+        "info": "Badges, highlights, underlines and hover states.",
+        "default": "#ff4d00"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Bone",
+        "default": "#f4f2ed"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_sale",
+        "label": "Sale badge",
+        "default": "#ff4d00"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Heading font",
+        "info": "Torque is drawn for Archivo — heavy, uppercase, condensed-feeling display type.",
+        "default": "archivo_n7"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body font",
+        "default": "archivo_n4"
+      },
+      {
+        "type": "range",
+        "id": "base_font_size",
+        "label": "Base font size",
+        "min": 14,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1000,
+        "max": 1600,
+        "step": 40,
+        "unit": "px",
+        "default": 1280
+      },
+      {
+        "type": "range",
+        "id": "button_radius",
+        "label": "Button corner radius",
+        "info": "Torque ships square — print catalogue, not pill buttons.",
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "card_radius",
+        "label": "Card corner radius",
+        "min": 0,
+        "max": 24,
+        "step": 2,
+        "unit": "px",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_sale_badge",
+        "label": "Show sale badges",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_soldout_badge",
+        "label": "Show sold-out badges",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quick_view",
+        "label": "Show quick view button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show product vendor",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "card_hover_swap",
+        "label": "Show second image on hover",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          { "value": "drawer", "label": "Slide-out drawer" },
+          { "value": "page", "label": "Cart page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_shipping_bar",
+        "label": "Show free shipping progress bar",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "info": "In your store's base currency, without decimals.",
+        "min": 0,
+        "max": 500,
+        "step": 5,
+        "default": 75
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "https://instagram.com/yourshop"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "X (Twitter)"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 32 x 32px."
+      }
+    ]
+  }
+]

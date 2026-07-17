@@ -1,0 +1,78 @@
+{% comment %}
+  Product card with hover image swap, badges and quick-view trigger.
+  Usage: {% render 'product-card', product: product %}
+  Accepts: product, show_vendor (boolean, overrides setting), sizes (string)
+{% endcomment %}
+{%- liquid
+  assign card_sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+  assign show_vendor_final = show_vendor | default: settings.show_vendor, allow_false: true
+-%}
+<article class="product-card" data-product-card>
+  <div class="product-card__media">
+    <a href="{{ product.url }}" class="product-card__link" tabindex="-1" aria-hidden="true">
+      {%- if product.featured_media -%}
+        <img
+          class="product-card__image product-card__image--primary"
+          src="{{ product.featured_media | image_url: width: 600 }}"
+          srcset="{{ product.featured_media | image_url: width: 360 }} 360w, {{ product.featured_media | image_url: width: 600 }} 600w, {{ product.featured_media | image_url: width: 900 }} 900w"
+          sizes="{{ card_sizes }}"
+          alt="{{ product.featured_media.alt | default: product.title | escape }}"
+          width="{{ product.featured_media.width }}"
+          height="{{ product.featured_media.height }}"
+          loading="lazy"
+        >
+        {%- if settings.card_hover_swap and product.media[1] != null -%}
+          <img
+            class="product-card__image product-card__image--secondary"
+            src="{{ product.media[1] | image_url: width: 600 }}"
+            alt=""
+            width="{{ product.media[1].width }}"
+            height="{{ product.media[1].height }}"
+            loading="lazy"
+            aria-hidden="true"
+          >
+        {%- endif -%}
+      {%- else -%}
+        <div class="product-card__placeholder" aria-hidden="true">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </a>
+
+    <div class="product-card__badges">
+      {%- if product.available == false and settings.show_soldout_badge -%}
+        <span class="badge badge--soldout">{{ 'products.sold_out' | t }}</span>
+      {%- elsif on_sale and settings.show_sale_badge -%}
+        {%- assign discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+        <span class="badge badge--sale">{{ 'products.save_percent' | t: percent: discount }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if settings.show_quick_view -%}
+      <button
+        type="button"
+        class="product-card__quick-view"
+        data-quick-view-trigger
+        data-product-url="{{ product.url }}"
+        aria-haspopup="dialog"
+      >
+        {% render 'icon', name: 'eye', size: 16 %}
+        <span>{{ 'products.quick_view' | t }}</span>
+      </button>
+    {%- endif -%}
+  </div>
+
+  <div class="product-card__info">
+    {%- if show_vendor_final -%}
+      <p class="product-card__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+    <h3 class="product-card__title">
+      <a href="{{ product.url }}">{{ product.title | escape }}</a>
+    </h3>
+    {% render 'price', product: product, class: 'price--card' %}
+  </div>
+</article>

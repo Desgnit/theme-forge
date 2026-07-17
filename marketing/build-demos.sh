@@ -16,8 +16,12 @@ for p in $PAIRS; do
   t=${p%%:*}; kind=${p##*:}
   mkdir -p "$OUT/$t"
   if [ "$kind" = "shopify" ]; then
-    # Shopify themes demo via their static design preview
+    # platform themes demo via their static design preview
     cp -r shopify-themes/"$t"/preview/. "$OUT/$t"/
+    continue
+  fi
+  if [ "$kind" = "wordpress" ]; then
+    cp -r wordpress-themes/"$t"/preview/. "$OUT/$t"/
     continue
   fi
   # ship only what a visitor needs — no sources, no tooling

@@ -1,0 +1,162 @@
+{% comment %}
+  Scoop — Benefits panel
+  Nutrition-fact styling: thick rules, mono numerals in volt, one row per
+  benefit block. Reads like the back of a supplement tub.
+{% endcomment %}
+
+<section class="section benefits">
+  <div class="page-width">
+    <div class="benefits__grid{% if section.settings.layout == 'reverse' %} benefits__grid--reverse{% endif %}">
+      <div class="benefits__content">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="section__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="benefits__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="benefits__text">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.cta_label != blank -%}
+          <a href="{{ section.settings.cta_link }}" class="btn btn--primary">{{ section.settings.cta_label | escape }}</a>
+        {%- endif -%}
+      </div>
+
+      <div class="benefits-label" role="region" aria-label="{{ 'sections.benefits.label' | t }}">
+        {%- if section.settings.label_title != blank -%}
+          <p class="benefits-label__title">{{ section.settings.label_title | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.label_subtitle != blank -%}
+          <p class="benefits-label__subtitle">{{ section.settings.label_subtitle | escape }}</p>
+        {%- endif -%}
+        <ul class="benefits-label__rows">
+          {%- for block in section.blocks -%}
+            <li class="benefits-label__row" {{ block.shopify_attributes }}>
+              <span class="benefits-label__info">
+                {%- if block.settings.icon != 'none' -%}
+                  <span class="benefits-label__icon">{% render 'icon', name: block.settings.icon, size: 18 %}</span>
+                {%- endif -%}
+                <span class="benefits-label__name">{{ block.settings.label | escape }}</span>
+              </span>
+              <span class="benefits-label__value">{{ block.settings.value | escape }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+        {%- if section.settings.footnote != blank -%}
+          <p class="benefits-label__footnote">{{ section.settings.footnote | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Benefits panel",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "default", "label": "Text left, label right" },
+        { "value": "reverse", "label": "Label left, text right" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Full disclosure"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Read the label. We dare you."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Every batch is third-party tested and every number is printed where you can see it. No proprietary blends, no fairy dust — just clinically dosed ingredients doing their job.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "See the lab results"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "label_title",
+      "label": "Panel title",
+      "default": "Supplement facts"
+    },
+    {
+      "type": "text",
+      "id": "label_subtitle",
+      "label": "Panel subtitle",
+      "default": "Per 30g serving — vanilla whey isolate"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Panel footnote",
+      "default": "* Independently verified. Certificates published for every batch."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit line",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "check", "label": "Checkmark" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "star", "label": "Star" },
+            { "value": "truck", "label": "Truck" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "info": "The big volt numeral, e.g. 27g.",
+          "default": "27g"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Protein per scoop"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits panel",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "check", "value": "27g", "label": "Protein per scoop" } },
+        { "type": "benefit", "settings": { "icon": "check", "value": "5.5g", "label": "BCAAs" } },
+        { "type": "benefit", "settings": { "icon": "check", "value": "1.9g", "label": "Sugar" } },
+        { "type": "benefit", "settings": { "icon": "shield", "value": "0", "label": "Banned substances" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

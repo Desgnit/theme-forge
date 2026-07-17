@@ -1,0 +1,55 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|70","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|50"}},"layout":{"type":"constrained","contentSize":"760px","wideSize":"1240px"}} -->
+<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--60);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--70);padding-left:var(--wp--preset--spacing--40)">
+	<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"constrained","justifyContent":"left"}} -->
+	<div class="wp-block-group">
+		<!-- wp:paragraph {"className":"repset-kicker","textColor":"crimson","fontSize":"small"} -->
+		<p class="repset-kicker has-crimson-color has-text-color has-small-font-size">From the gym floor</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:heading {"level":1,"style":{"typography":{"fontWeight":"700"}},"fontSize":"xx-large"} -->
+		<h1 class="wp-block-heading has-xx-large-font-size" style="font-weight:700">Latest posts</h1>
+		<!-- /wp:heading -->
+
+		<!-- wp:separator {"className":"repset-rule","backgroundColor":"crimson"} -->
+		<hr class="wp-block-separator has-text-color has-crimson-color has-alpha-channel-opacity has-crimson-background-color has-background repset-rule"/>
+		<!-- /wp:separator -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":1,"query":{"perPage":6,"postType":"post","inherit":true},"align":"wide"} -->
+	<div class="wp-block-query alignwide">
+		<!-- wp:post-template {"layout":{"type":"grid","columnCount":2}} -->
+			<!-- wp:group {"className":"repset-card","style":{"spacing":{"blockGap":"1rem"}},"backgroundColor":"asphalt","layout":{"type":"constrained","justifyContent":"left"}} -->
+			<div class="wp-block-group repset-card has-asphalt-background-color has-background">
+				<!-- wp:post-featured-image {"aspectRatio":"16/9"} /-->
+
+				<!-- wp:group {"style":{"spacing":{"padding":{"left":"1.5rem","right":"1.5rem","bottom":"1.75rem"},"blockGap":"0.6rem"}},"layout":{"type":"constrained","justifyContent":"left"}} -->
+				<div class="wp-block-group" style="padding-right:1.5rem;padding-bottom:1.75rem;padding-left:1.5rem">
+					<!-- wp:post-date {"textColor":"concrete","fontSize":"small"} /-->
+					<!-- wp:post-title {"isLink":true,"fontSize":"x-large"} /-->
+					<!-- wp:post-excerpt {"moreText":"Read more","excerptLength":24,"textColor":"concrete","fontSize":"small"} /-->
+				</div>
+				<!-- /wp:group -->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+			<!-- wp:query-pagination-previous /-->
+			<!-- wp:query-pagination-numbers /-->
+			<!-- wp:query-pagination-next /-->
+		<!-- /wp:query-pagination -->
+
+		<!-- wp:query-no-results -->
+			<!-- wp:paragraph {"textColor":"concrete"} -->
+			<p class="has-concrete-color has-text-color">No posts yet. Chalk up — the first one is coming.</p>
+			<!-- /wp:paragraph -->
+		<!-- /wp:query-no-results -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

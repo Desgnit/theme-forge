@@ -32,6 +32,13 @@ def main():
                 errors.append(f"{s}: shopify-themes/{s}/layout/theme.liquid missing")
             if not os.path.isfile(os.path.join(ROOT, "shopify-themes", s, "preview", "index.html")):
                 errors.append(f"{s}: shopify-themes/{s}/preview/index.html missing")
+        elif t.get("kind") == "wordpress":
+            if not os.path.isfile(os.path.join(ROOT, "wordpress-themes", s, "style.css")):
+                errors.append(f"{s}: wordpress-themes/{s}/style.css missing")
+            if not os.path.isfile(os.path.join(ROOT, "wordpress-themes", s, "theme.json")):
+                errors.append(f"{s}: wordpress-themes/{s}/theme.json missing")
+            if not os.path.isfile(os.path.join(ROOT, "wordpress-themes", s, "preview", "index.html")):
+                errors.append(f"{s}: wordpress-themes/{s}/preview/index.html missing")
         else:
             if not os.path.isdir(os.path.join(ROOT, "themes", s)):
                 errors.append(f"{s}: themes/{s}/ folder missing")
@@ -44,7 +51,8 @@ def main():
         if len(t.get("title", "")) > 120:  # leaves room for Etsy's suffix within 140
             errors.append(f"{s}: title too long ({len(t['title'])} chars)")
         if t.get("family") not in ("industrial", "trades", "football", "sport",
-                                   "services", "community", "retail", "shopify"):
+                                   "services", "community", "retail", "shopify",
+                                   "wordpress"):
             errors.append(f"{s}: unknown family {t.get('family')}")
 
     # every catalogued theme must be in the demo hub

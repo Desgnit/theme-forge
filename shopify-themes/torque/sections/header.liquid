@@ -1,0 +1,325 @@
+<header class="site-header" data-header>
+  <div class="page-width">
+    <div class="site-header__inner">
+      <div class="site-header__left">
+        <button
+          type="button"
+          class="btn-icon mobile-nav-toggle"
+          data-mobile-nav-toggle
+          aria-expanded="false"
+          aria-controls="MobileNav"
+          aria-label="{{ 'sections.header.menu' | t }}"
+        >
+          {% render 'icon', name: 'menu', size: 22 %}
+        </button>
+        <a href="{{ routes.root_url }}" class="site-header__logo">
+          {%- if section.settings.logo != blank -%}
+            <img
+              src="{{ section.settings.logo | image_url: width: 300 }}"
+              alt="{{ shop.name | escape }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio | round }}"
+              style="width: {{ section.settings.logo_width }}px;"
+            >
+          {%- else -%}
+            {{ shop.name }}
+          {%- endif -%}
+        </a>
+      </div>
+
+      <nav class="site-nav" aria-label="{{ 'sections.header.primary_navigation' | t }}">
+        <ul class="site-nav__list">
+          {%- for link in section.settings.menu.links -%}
+            {%- liquid
+              assign mega_block = null
+              for block in section.blocks
+                assign block_title = block.settings.menu_item | downcase | strip
+                assign link_title = link.title | downcase | strip
+                if block_title == link_title
+                  assign mega_block = block
+                endif
+              endfor
+            -%}
+            <li class="site-nav__item" data-nav-item>
+              {%- if mega_block -%}
+                <a
+                  href="{{ link.url }}"
+                  class="site-nav__link"
+                  data-nav-trigger
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                >
+                  {{ link.title | escape }}
+                  {% render 'icon', name: 'chevron-down', size: 14 %}
+                </a>
+                <div class="mega-menu" {{ mega_block.shopify_attributes }}>
+                  <div class="page-width">
+                    <div class="mega-menu__grid">
+                      <div class="mega-menu__columns">
+                        {%- for child in link.links -%}
+                          <div class="mega-menu__column">
+                            <p class="mega-menu__heading">
+                              {%- if child.url != blank and child.url != '#' -%}
+                                <a href="{{ child.url }}" class="mega-menu__heading-link">{{ child.title | escape }}</a>
+                              {%- else -%}
+                                {{ child.title | escape }}
+                              {%- endif -%}
+                            </p>
+                            {%- if child.links.size > 0 -%}
+                              <ul class="mega-menu__list">
+                                {%- for grandchild in child.links -%}
+                                  <li><a href="{{ grandchild.url }}">{{ grandchild.title | escape }}</a></li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- endif -%}
+                          </div>
+                        {%- endfor -%}
+                      </div>
+                      {%- if mega_block.settings.image_1 != blank or mega_block.settings.image_1_heading != blank -%}
+                        <a href="{{ mega_block.settings.image_1_link | default: link.url }}" class="mega-menu__feature">
+                          {%- if mega_block.settings.image_1 != blank -%}
+                            <img
+                              src="{{ mega_block.settings.image_1 | image_url: width: 600 }}"
+                              alt="{{ mega_block.settings.image_1.alt | default: mega_block.settings.image_1_heading | escape }}"
+                              width="{{ mega_block.settings.image_1.width }}"
+                              height="{{ mega_block.settings.image_1.height }}"
+                              loading="lazy"
+                            >
+                          {%- endif -%}
+                          <span class="mega-menu__feature-caption">
+                            <strong>{{ mega_block.settings.image_1_heading | escape }}</strong>
+                            <span>{{ mega_block.settings.image_1_subheading | escape }}</span>
+                          </span>
+                        </a>
+                      {%- endif -%}
+                      {%- if mega_block.settings.image_2 != blank or mega_block.settings.image_2_heading != blank -%}
+                        <a href="{{ mega_block.settings.image_2_link | default: link.url }}" class="mega-menu__feature">
+                          {%- if mega_block.settings.image_2 != blank -%}
+                            <img
+                              src="{{ mega_block.settings.image_2 | image_url: width: 600 }}"
+                              alt="{{ mega_block.settings.image_2.alt | default: mega_block.settings.image_2_heading | escape }}"
+                              width="{{ mega_block.settings.image_2.width }}"
+                              height="{{ mega_block.settings.image_2.height }}"
+                              loading="lazy"
+                            >
+                          {%- endif -%}
+                          <span class="mega-menu__feature-caption">
+                            <strong>{{ mega_block.settings.image_2_heading | escape }}</strong>
+                            <span>{{ mega_block.settings.image_2_subheading | escape }}</span>
+                          </span>
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+              {%- elsif link.links.size > 0 -%}
+                <a
+                  href="{{ link.url }}"
+                  class="site-nav__link"
+                  data-nav-trigger
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                >
+                  {{ link.title | escape }}
+                  {% render 'icon', name: 'chevron-down', size: 14 %}
+                </a>
+                <div class="dropdown-menu">
+                  <ul>
+                    {%- for child in link.links -%}
+                      <li><a class="dropdown-menu__link" href="{{ child.url }}">{{ child.title | escape }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- else -%}
+                <a href="{{ link.url }}" class="site-nav__link">{{ link.title | escape }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <button
+          type="button"
+          class="btn-icon"
+          data-search-toggle
+          aria-expanded="false"
+          aria-controls="HeaderSearch"
+          aria-label="{{ 'general.search.title' | t }}"
+        >
+          {% render 'icon', name: 'search' %}
+        </button>
+        {%- if shop.customer_accounts_enabled -%}
+          <a href="{{ routes.account_url }}" class="btn-icon" aria-label="{{ 'sections.header.account' | t }}">
+            {% render 'icon', name: 'account' %}
+          </a>
+        {%- endif -%}
+        <a
+          href="{{ routes.cart_url }}"
+          class="btn-icon cart-bubble"
+          {% if settings.cart_type == 'drawer' %}data-cart-drawer-open{% endif %}
+          aria-label="{{ 'sections.header.cart_count' | t: count: cart.item_count }}"
+        >
+          {% render 'icon', name: 'cart' %}
+          <span class="cart-bubble__count" data-cart-count data-count="{{ cart.item_count }}">{{ cart.item_count }}</span>
+        </a>
+      </div>
+
+      <div class="header-search" id="HeaderSearch" data-header-search>
+        <div class="page-width" style="width: 100%;">
+          <form action="{{ routes.search_url }}" method="get" role="search">
+            {% render 'icon', name: 'search' %}
+            <input
+              type="search"
+              name="q"
+              placeholder="{{ 'general.search.placeholder' | t }}"
+              aria-label="{{ 'general.search.title' | t }}"
+              autocomplete="off"
+            >
+            <input type="hidden" name="options[prefix]" value="last">
+            <button type="button" class="btn-icon" data-search-close aria-label="{{ 'accessibility.close' | t }}">
+              {% render 'icon', name: 'close' %}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="MobileNav" data-mobile-nav hidden>
+  <div class="mobile-nav__overlay" data-mobile-nav-close></div>
+  <div class="mobile-nav__panel" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}" tabindex="-1">
+    <div class="mobile-nav__header">
+      <span class="site-header__logo">{{ shop.name }}</span>
+      <button type="button" class="btn-icon" data-mobile-nav-close aria-label="{{ 'accessibility.close' | t }}">
+        {% render 'icon', name: 'close' %}
+      </button>
+    </div>
+    <div class="mobile-nav__body">
+      {%- for link in section.settings.menu.links -%}
+        {%- if link.links.size > 0 -%}
+          <details>
+            <summary>
+              {{ link.title | escape }}
+              {% render 'icon', name: 'chevron-down', size: 16 %}
+            </summary>
+            <ul>
+              <li><a href="{{ link.url }}">{{ 'sections.header.view_all' | t }}</a></li>
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}">{{ child.title | escape }}</a></li>
+                {%- for grandchild in child.links -%}
+                  <li><a href="{{ grandchild.url }}">&mdash; {{ grandchild.title | escape }}</a></li>
+                {%- endfor -%}
+              {%- endfor -%}
+            </ul>
+          </details>
+        {%- else -%}
+          <a class="mobile-nav__link" href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "shopify-section-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 60,
+      "max": 280,
+      "step": 10,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Mega menu"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add a 'Mega menu' block below and set its 'Menu item' to the exact title of a top-level item in your menu. That item's dropdown becomes a full-width mega menu with up to two promotional images."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Menu item",
+          "info": "Must exactly match a top-level menu item title, e.g. \"Shop\"."
+        },
+        {
+          "type": "header",
+          "content": "Promotional image 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_1_heading",
+          "label": "Heading",
+          "default": "New arrivals"
+        },
+        {
+          "type": "text",
+          "id": "image_1_subheading",
+          "label": "Subheading",
+          "default": "Fresh this week"
+        },
+        {
+          "type": "url",
+          "id": "image_1_link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Promotional image 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_2_heading",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "image_2_subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "url",
+          "id": "image_2_link",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

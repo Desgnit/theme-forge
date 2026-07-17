@@ -16,6 +16,8 @@ for p in $PAIRS; do
   if [ "$kind" = "shopify" ]; then
     # Shopify themes live in shopify-themes/; the static preview isn't part of the product
     (cd shopify-themes && zip -qr "../$OUT/$t-theme-v1.0.0.zip" "$t" -x "$t/preview/*")
+  elif [ "$kind" = "wordpress" ]; then
+    (cd wordpress-themes && zip -qr "../$OUT/$t-theme-v1.0.0.zip" "$t" -x "$t/preview/*")
   else
     (cd themes && zip -qr "../$OUT/$t-theme-v1.0.0.zip" "$t" -x "$t/node_modules/*")
   fi

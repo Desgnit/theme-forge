@@ -1,0 +1,70 @@
+<section class="section rich-text">
+  <div class="page-width">
+    <div class="rich-text__inner{% if section.settings.alignment == 'center' %} rich-text__inner--center{% endif %}">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="section__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rich-text__body rte" style="margin-top: var(--space-4);">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <p style="margin-top: var(--space-5);">
+          <a href="{{ section.settings.cta_link }}" class="btn btn--secondary">{{ section.settings.cta_label | escape }}</a>
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Talk about your brand"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Use this space for a manifesto, a guarantee, or the one paragraph that makes a first-time visitor trust you.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text"
+    }
+  ]
+}
+{% endschema %}

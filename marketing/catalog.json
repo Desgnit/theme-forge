@@ -657,6 +657,60 @@
         "conversion",
         "premium theme"
       ]
+    },
+    {
+      "slug": "scoop",
+      "title": "Scoop \u2014 Supplements & Protein Shopify Theme",
+      "price_gbp": 149,
+      "family": "shopify",
+      "kind": "shopify",
+      "oneliner": "A dark, high-energy Shopify OS 2.0 theme built for supplement brands \u2014 acid-volt accents, nutrition-label benefit panels, a scrolling claims marquee, and the full conversion kit (quick view, AJAX cart, sticky add-to-cart) with no apps needed.",
+      "description": "Scoop is built for protein powders, pre-workouts and supplement lines \u2014 dark, precise and loud in the right places.\n\n- **Signature sections**: a scrolling claims marquee (\"LAB TESTED \u2022 27G PROTEIN \u2022 ZERO JUNK\") and a nutrition-label-styled benefits panel with mono numerals and thick rules\n- The full conversion kit inherited from our Anvil engine: mega menu with image tiles, quick-view modals, slide-out AJAX cart with free-shipping progress bar, sticky add-to-cart, sale badges, storefront filtering\n- Near-black surfaces with acid-volt accents; Space Grotesk display type at poster sizes\n- 28 JSON-configurable sections; colours, typography, radius and layout width all editable in theme settings\n- Speed-first vanilla JavaScript \u2014 no jQuery, no frameworks; accessible drawers and modals\n- 100% original code, licensed for sale on any marketplace\n\nInstall: Online Store \u2192 Themes \u2192 Upload zip. Full customisation guide in the README.",
+      "tags": [
+        "shopify theme",
+        "supplements store",
+        "protein powder",
+        "fitness ecommerce",
+        "dark theme",
+        "conversion",
+        "premium theme"
+      ]
+    },
+    {
+      "slug": "torque",
+      "title": "Torque \u2014 Fitness Gear & Apparel Shopify Theme",
+      "price_gbp": 149,
+      "family": "shopify",
+      "kind": "shopify",
+      "oneliner": "An editorial Shopify OS 2.0 theme for fitness gear and training apparel \u2014 bone-white magazine layouts, ink-border product cards, an asymmetric lookbook grid and split heroes, on the same no-apps conversion engine.",
+      "description": "Torque sells gear the way a good print catalogue does: big photography, confident type, nothing fussy.\n\n- **Signature sections**: an asymmetric editorial lookbook grid and a split hero (huge condensed type one side, full-bleed image the other)\n- Magazine details throughout: index rule-lines with small-caps labels, outlined display numerals (\"01 / GEAR\"), ink-bordered product cards, signal-orange highlights\n- The full conversion kit from our Anvil engine: mega menu with images, quick view, slide-out AJAX cart with free-shipping bar, sticky add-to-cart, storefront filtering\n- Bone-white surfaces, ink black, signal orange; Archivo display type up to poster weights\n- 28 JSON-configurable sections; every colour and font editable in theme settings\n- Speed-first vanilla JavaScript, accessible drawers and modals; 100% original code, sellable on any marketplace\n\nInstall: Online Store \u2192 Themes \u2192 Upload zip. Full customisation guide in the README.",
+      "tags": [
+        "shopify theme",
+        "fitness apparel",
+        "gym equipment store",
+        "sportswear ecommerce",
+        "editorial design",
+        "conversion",
+        "premium theme"
+      ]
+    },
+    {
+      "slug": "repset",
+      "title": "Repset \u2014 Gym & Fitness Club WordPress Block Theme",
+      "price_gbp": 49,
+      "family": "wordpress",
+      "kind": "wordpress",
+      "oneliner": "A brutal, image-heavy WordPress block theme for gyms \u2014 cinematic dark heroes, class timetable and membership pricing patterns, trainer grids and stats bands, fully editable in the Site Editor.",
+      "description": "Repset gives an independent gym a site that looks like the gym feels \u2014 charcoal, crimson and full-bleed training photography.\n\n- **Full Site Editing block theme**: every layout is a pattern you edit visually in the WordPress Site Editor \u2014 no page builder plugins\n- Ready-made patterns: cinematic hero, weekly class timetable grid, three-tier membership pricing table (highlighted middle tier), trainers grid, stats band, testimonials, opening-hours strip, CTA band\n- Complete demo content for a believable gym (classes, coaches, memberships) \u2014 replace the words, keep the bones\n- Oswald display type at poster sizes over dark image overlays; crimson accent system defined in theme.json\n- Licensed demo photography included (Unsplash License)\n- Works with any modern WordPress (6.x); GPL-licensed theme code as WordPress requires\n\nInstall: Appearance \u2192 Themes \u2192 Add New \u2192 Upload zip. Setup notes in readme.txt.",
+      "tags": [
+        "wordpress theme",
+        "gym website",
+        "fitness club",
+        "block theme",
+        "full site editing",
+        "crossfit",
+        "personal trainer"
+      ]
     }
   ]
 }

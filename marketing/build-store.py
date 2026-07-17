@@ -16,6 +16,7 @@ RELEASE = "https://github.com/Desgnit/theme-forge/releases/download/themes-lates
 
 FAMILIES = [
     ("shopify", "Shopify Themes"),
+    ("wordpress", "WordPress Themes"),
     ("industrial", "Trade & Industry"),
     ("retail", "Food & Retail"),
     ("trades", "Local Trades"),

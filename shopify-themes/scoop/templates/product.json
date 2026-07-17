@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "shipping": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Shipping & returns",
+            "content": "<p>Free shipping on orders over $75. Returns are free within 30 days of delivery.</p>"
+          }
+        },
+        "care": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Care instructions",
+            "content": "<p>Wipe clean with a damp cloth. Avoid prolonged direct sunlight.</p>"
+          }
+        },
+        "trust": {
+          "type": "trust_row",
+          "settings": {
+            "icon": "truck",
+            "text": "Ships within 24 hours from our warehouse"
+          }
+        }
+      },
+      "block_order": ["trust", "shipping", "care"]
+    },
+    "related": {
+      "type": "related-products"
+    }
+  },
+  "order": ["main", "related"]
+}

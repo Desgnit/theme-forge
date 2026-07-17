@@ -1,0 +1,117 @@
+{% comment %}
+  Scoop — Marquee
+  Scrolling uppercase text strip. The track holds two identical groups so the
+  CSS keyframe (translateX(-50%)) loops seamlessly. Animation is disabled and
+  the duplicate group hidden under prefers-reduced-motion (see base.css).
+{% endcomment %}
+
+<div
+  class="marquee marquee--{{ section.settings.color_scheme }}{% if section.settings.direction == 'right' %} marquee--reverse{% endif %}"
+  style="--marquee-duration: {{ section.settings.speed }}s; --marquee-size: {{ section.settings.text_size | divided_by: 100.0 }}rem;"
+  role="region"
+  aria-label="{{ 'sections.marquee.label' | t }}"
+>
+  <div class="marquee__track">
+    {%- for copy in (1..2) -%}
+      <div class="marquee__group"{% if copy == 2 %} aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <span
+            class="marquee__item{% if block.settings.outline %} marquee__item--outline{% endif %}"
+            {% if copy == 1 %}{{ block.shopify_attributes }}{% endif %}
+          >
+            {{- block.settings.text | escape -}}
+            <span class="marquee__sep" aria-hidden="true">{{ section.settings.separator | default: '•' }}</span>
+          </span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "dark", "label": "Dark (volt separators)" },
+        { "value": "volt", "label": "Volt (black text)" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Right to left" },
+        { "value": "right", "label": "Left to right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Loop duration",
+      "info": "Lower is faster.",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "s",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "info": "In hundredths of a rem — 175 equals 1.75rem.",
+      "min": 100,
+      "max": 400,
+      "step": 25,
+      "default": 175
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator character",
+      "default": "•"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Text item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "LAB TESTED"
+        },
+        {
+          "type": "checkbox",
+          "id": "outline",
+          "label": "Outline style",
+          "info": "Renders as hollow stroked type.",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "blocks": [
+        { "type": "item", "settings": { "text": "LAB TESTED" } },
+        { "type": "item", "settings": { "text": "27G PROTEIN", "outline": true } },
+        { "type": "item", "settings": { "text": "ZERO JUNK" } },
+        { "type": "item", "settings": { "text": "THIRD-PARTY VERIFIED", "outline": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

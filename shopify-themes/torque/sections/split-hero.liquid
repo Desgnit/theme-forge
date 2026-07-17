@@ -1,0 +1,159 @@
+<section class="split-hero{% if section.settings.text_side == 'left' %} split-hero--text-left{% endif %}">
+  <div class="split-hero__media">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1800 }}"
+        srcset="{{ section.settings.image | image_url: width: 900 }} 900w, {{ section.settings.image | image_url: width: 1400 }} 1400w, {{ section.settings.image | image_url: width: 1800 }} 1800w"
+        sizes="(min-width: 990px) 60vw, 100vw"
+        alt="{{ section.settings.image.alt | escape }}"
+        width="{{ section.settings.image.width }}"
+        height="{{ section.settings.image.height }}"
+        {% if section.index == 1 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+      >
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'lookbook__placeholder' }}
+    {%- endif -%}
+    {%- if section.settings.image_caption != blank -%}
+      <span class="split-hero__media-caption">{{ section.settings.image_caption | escape }}</span>
+    {%- endif -%}
+  </div>
+
+  <div class="split-hero__content">
+    {%- if section.settings.index_text != blank -%}
+      <span class="display-outline split-hero__index" aria-hidden="true">{{ section.settings.index_text | escape }}</span>
+    {%- endif -%}
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="split-hero__eyebrow">
+        {{ section.settings.eyebrow | escape }}
+        {%- if section.settings.eyebrow_detail != blank -%}
+          <em>{{ section.settings.eyebrow_detail | escape }}</em>
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank or section.settings.heading_highlight != blank -%}
+      <h1 class="split-hero__heading">
+        {{- section.settings.heading | escape -}}
+        {%- if section.settings.heading_highlight != blank %}
+          <mark>{{ section.settings.heading_highlight | escape }}</mark>
+        {%- endif -%}
+      </h1>
+    {%- endif -%}
+
+    {%- if section.settings.text != blank -%}
+      <p class="split-hero__text">{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.cta_primary_label != blank or section.settings.cta_secondary_label != blank -%}
+      <div class="split-hero__actions">
+        {%- if section.settings.cta_primary_label != blank -%}
+          <a href="{{ section.settings.cta_primary_link }}" class="btn btn--primary btn--large">
+            {{ section.settings.cta_primary_label | escape }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.cta_secondary_label != blank -%}
+          <a href="{{ section.settings.cta_secondary_link }}" class="btn btn--secondary btn--large">
+            {{ section.settings.cta_secondary_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Split hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Editorial action photography works best — the image fills one full side."
+    },
+    {
+      "type": "text",
+      "id": "image_caption",
+      "label": "Image caption",
+      "info": "Small-caps label pinned to the bottom of the image.",
+      "default": "FW26 — Training Series"
+    },
+    {
+      "type": "select",
+      "id": "text_side",
+      "label": "Type side",
+      "options": [
+        { "value": "right", "label": "Image left, type right" },
+        { "value": "left", "label": "Type left, image right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "text",
+      "id": "index_text",
+      "label": "Index number",
+      "info": "Oversized outlined text, e.g. \"01 / GEAR\".",
+      "default": "01 / GEAR"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Torque Standard"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_detail",
+      "label": "Eyebrow detail",
+      "info": "Shown in signal orange after the eyebrow.",
+      "default": "EST. 2020"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built to be"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Highlighted heading word",
+      "info": "Appended to the heading with an orange underline.",
+      "default": "worked"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Training gear and apparel with nothing to prove and everything to lift. Free shipping over $75."
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_label",
+      "label": "Primary button label",
+      "default": "Shop the gear"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Secondary button label",
+      "default": "See the lookbook"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_link",
+      "label": "Secondary button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split hero"
+    }
+  ]
+}
+{% endschema %}
