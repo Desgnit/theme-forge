@@ -26,3 +26,13 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 reviews and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Commons.
+
+## Image credits
+
+Photographs sourced from Wikimedia Commons (via `marketing/stock/`):
+
+- `assets/img/hero.jpg` — "Binsted Village Hall (The Wickham Institute), Church Street, Binsted (NHLE Code 1302155) (May 2021)" by Hassocks5489, CC0. Source: https://commons.wikimedia.org/wiki/File:Binsted_Village_Hall_(The_Wickham_Institute),_Church_Street,_Binsted_(NHLE_Code_1302155)_(May_2021).JPG
+- `assets/img/about.jpg` — "Niton Village Hall (former Baptist Chapel), High Street, Niton (May 2016) (1)" by Hassocks5489, CC0. Source: https://commons.wikimedia.org/wiki/File:Niton_Village_Hall_(former_Baptist_Chapel),_High_Street,_Niton_(May_2016)_(1).JPG
+- `assets/img/house-modern.jpg` — "Niton Village Hall (former Baptist Chapel), High Street, Niton (May 2016) (2)" by Hassocks5489, CC0. Source: https://commons.wikimedia.org/wiki/File:Niton_Village_Hall_(former_Baptist_Chapel),_High_Street,_Niton_(May_2016)_(2).JPG
+- `assets/img/tools-wall.jpg` — "Niton Village Hall (former Baptist Chapel), High Street, Niton (May 2016) (3)" by Hassocks5489, CC0. Source: https://commons.wikimedia.org/wiki/File:Niton_Village_Hall_(former_Baptist_Chapel),_High_Street,_Niton_(May_2016)_(3).JPG
+- `assets/img/house-white.jpg` — "Binsted Village Hall (The Wickham Institute), Church Street, Binsted (NHLE Code 1302155) (May 2021)" by Hassocks5489, CC0 (alternate crop of the hero image). Source: https://commons.wikimedia.org/wiki/File:Binsted_Village_Hall_(The_Wickham_Institute),_Church_Street,_Binsted_(NHLE_Code_1302155)_(May_2021).JPG

@@ -25,3 +25,9 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Swim.
+
+## Image credits
+
+- `assets/img/hero.jpg` — "Carp Lake with angler" by The Angling Trust, CC BY-SA 4.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Carp_Lake_with_angler.jpg)
+- `assets/img/about.jpg` — "Seattle - Men fishing at Green Lake, circa 1970s" by Seattle Municipal Archives, CC BY 4.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Seattle_-_Men_fishing_at_Green_Lake,_circa_1970s.jpg)
+- `assets/img/house-white.jpg` — "Fishing Lake Ohrid" by Jason Rogers, CC BY 2.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Fishing_Lake_Ohrid.jpg)

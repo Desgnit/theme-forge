@@ -28,3 +28,7 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 prices and phone numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Vanguard.
+
+## Image credits
+
+- `assets/img/hero.jpg` — "1979 Fiat 130NT truck, The Van From Snowy River Removals (2010-07-05)" by OSX, Public domain, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:1979_Fiat_130NT_truck,_The_Van_From_Snowy_River_Removals_(2010-07-05).jpg)

@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Terrace — skin.css: cinematic photo + scoreboard uplift.
+   Palette-agnostic: every colour resolves through the --tc-* variables
+   (or neutral black/white alphas), so all colourways inherit it.
+   Load AFTER main.css on every page.
+   ========================================================================== */
+
+/* --- Hero band: stadium photography behind a cinematic club-tinted scrim -- */
+main > section.bg-terrace:first-child {
+  background-image:
+    radial-gradient(130% 100% at 50% 18%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.5) 100%),
+    linear-gradient(102deg, rgb(var(--tc-primary-dark) / 0.96) 8%, rgb(var(--tc-primary-dark) / 0.84) 46%, rgb(var(--tc-primary) / 0.55) 100%),
+    url("../img/hero-stadium.jpg");
+  background-size: cover;
+  background-position: center;
+  border-bottom: 3px solid rgb(var(--tc-accent) / 0.85);
+}
+
+/* --- Other dark bands: floodlight sheen up top, soft vignette at edges ---- */
+section.bg-terrace {
+  background-image:
+    radial-gradient(120% 95% at 50% 0%, rgba(255, 255, 255, 0.07) 0%, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.36) 100%),
+    repeating-linear-gradient(-55deg, hsla(0, 0%, 100%, 0.035) 0 2px, transparent 2px 18px);
+}
+
+/* --- Headline scale: let the hero h1 breathe, up to ~5rem ----------------- */
+.bg-terrace h1 {
+  font-size: clamp(2.75rem, 4.5vw + 1.1rem, 5rem);
+  line-height: 1.04;
+  letter-spacing: 0.005em;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* --- Match centre: scoreboard-style cards -------------------------------- */
+.bg-terrace .backdrop-blur {
+  border-top: 3px solid rgb(var(--tc-accent));
+  background-color: rgb(var(--tc-primary-dark) / 0.62);
+  box-shadow: 0 28px 56px -28px rgba(0, 0, 0, 0.75);
+}
+.scoreline {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  border: 1px solid rgb(var(--tc-accent) / 0.4);
+  box-shadow: inset 0 -2px 0 rgb(var(--tc-accent) / 0.7);
+}
+[data-countdown] > div {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 2px solid rgb(var(--tc-accent) / 0.8);
+}
+[data-countdown] .font-display,
+.stat-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Stat tables: accent top rule, sharper header ------------------------- */
+.stat-table thead th {
+  border-top: 3px solid rgb(var(--tc-accent));
+  letter-spacing: 0.09em;
+}
+.stat-table tbody tr:last-child td {
+  border-bottom-color: rgb(var(--tc-primary) / 0.35);
+}
+
+/* --- Cards: photo hover zoom ---------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .card.overflow-hidden img {
+    transition: transform 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  .card.overflow-hidden:hover img {
+    transform: scale(1.045);
+  }
+}

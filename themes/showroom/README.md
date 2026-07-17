@@ -32,3 +32,8 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and prices are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Showroom.
+
+## Image credits
+
+- `assets/img/hero.jpg` — "A person operates a pressure washer to clean a black car, surrounded by bright sunlight at an outdoor car wash" by Shixart1985, CC BY 2.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:A_person_operates_a_pressure_washer_to_clean_a_black_car,_surrounded_by_bright_sunlight_at_an_outdoor_car_wash.jpg)
+- `assets/img/house-white.jpg` — "Car washing activity at a residential driveway" by Shixart1985, CC BY 2.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Car_washing_activity_at_a_residential_driveway.jpg)

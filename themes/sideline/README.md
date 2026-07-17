@@ -114,8 +114,7 @@ filter states with a live results count, one-open accordion on native
 ## Credits & licence
 
 - [Tailwind CSS](https://tailwindcss.com) (MIT) — build-time only
-- [Nunito](https://fonts.google.com/specimen/Nunito) &
-  [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts (OFL)
+- [Karla](https://fonts.google.com/specimen/Karla) via Google Fonts (OFL)
 - Demo photographs from [Unsplash](https://unsplash.com/license) (free
   for commercial use, no attribution required). They are placeholders —
   replace them with your club's own consented photos before launch.
@@ -123,3 +122,12 @@ filter states with a live results count, one-open accordion on native
 
 Licence per the marketplace you purchased from (single-site licence
 unless stated otherwise). Thanks for buying Sideline — everyone plays.
+
+## Image credits
+
+The demo photographs in `assets/img/` are the theme's original Unsplash
+placeholders (free for commercial use, no attribution required). No
+Wikimedia stock was suitable for this theme's junior-club slots, so none
+was used. Following safeguarding good practice, replace `team-huddle.jpg`
+with your own consented photography — prefer shots where children are
+distant, from behind or otherwise unidentifiable.

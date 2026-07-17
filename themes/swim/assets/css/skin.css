@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Swim — skin layer
+   Loaded AFTER main.css. Misty-water identity: Bitter slab display face,
+   deep-blue gradient hero bands, reed-green accents, price-board cards.
+   ========================================================================== */
+
+:root {
+  --co-font-display: "Bitter", Georgia, "Times New Roman", serif;
+  --co-radius: 0.5rem;             /* rounded, but not bubbly */
+  --co-accent: 154 179 86;         /* reed green — stars, CTAs, highlights */
+  --co-accent-dark: 88 112 45;     /* deep reed — accent text on light */
+  --co-primary: 15 56 84;          /* deep lake blue — headings, buttons */
+  --co-primary-dark: 8 34 54;      /* darkest water — hero, footer, topbar */
+  --co-primary-light: 27 78 108;   /* raised dark surface */
+  --co-board: 243 247 246;         /* pale mist-on-water section tint */
+  --co-line: 222 231 230;          /* cool hairlines */
+}
+
+/* Bitter ships at 600/700 here — pin extrabold down so nothing faux-bolds. */
+.font-extrabold { font-weight: 700; }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* Misty-water treatment on the dark hero / CTA bands: a deep-blue gradient
+   rolling down from the top, a faint reed-green glow off the far bank, and
+   a low band of fog lifting from the foot of the section. */
+.bg-grid {
+  background-image:
+    linear-gradient(168deg, rgb(4 22 38 / 0.65) 0%, rgb(18 64 94 / 0.28) 48%, transparent 74%),
+    radial-gradient(120% 85% at 82% 118%, rgb(var(--co-accent) / 0.13), transparent 58%),
+    linear-gradient(to top, rgb(198 216 224 / 0.16), transparent 30%);
+  background-size: auto, auto, auto;
+}
+
+/* Price-board cards: every figure lines up like the board at the lodge —
+   tabular numerals, a reed-green rule along the top, a grounded shadow. */
+.card {
+  font-variant-numeric: tabular-nums lining-nums;
+  border-top: 3px solid rgb(var(--co-accent) / 0.85);
+  box-shadow: 0 1px 2px rgb(var(--co-primary-dark) / 0.05),
+              0 8px 20px -14px rgb(var(--co-primary-dark) / 0.22);
+}
+
+/* Stat figures and prices sit tighter in the slab face. */
+dd.font-display, .card .text-4xl {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Chips read like little peg tags on the misty board. */
+.spec-chip {
+  border-radius: 0.375rem;
+  background: rgb(var(--co-paper));
+  border-color: rgb(var(--co-accent) / 0.35);
+}
+
+/* Kicker rule-lines pick up the reed green. */
+.kicker::before { background-color: rgb(var(--co-accent)); }

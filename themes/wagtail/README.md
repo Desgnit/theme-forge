@@ -27,3 +27,11 @@ patterns throughout, apple-touch-icon included. All companies, people,
 dogs, reviews and prices are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Wagtail.
+
+## Image credits
+
+- `assets/img/hero.jpg` — "Dog Stylin'" by japanese_craft_construction, CC BY 2.0, https://commons.wikimedia.org/wiki/File:Dog_Stylin%27_(3406880422).jpg
+- `assets/img/about.jpg` — "Dog Grooming, Gospel Oak" by Simon from London, United Kingdom, CC BY 2.0, https://commons.wikimedia.org/wiki/File:Dog_Grooming,_Gospel_Oak_(51583702101).jpg
+- `assets/img/house-white.jpg` — "American Eskimo — GCH Anana's Look Into The Future CGC" by Pets Adviser from Brooklyn, USA, CC BY 2.0, https://commons.wikimedia.org/wiki/File:American_Eskimo-10-GCH-Anana%27s_Look_Into_The_Future_CGC_01_(16583766991).jpg
+- `assets/img/house-modern.jpg` — "2014 Westminster Kennel Club Dog Show" by Pets Adviser from Brooklyn, USA, CC BY 2.0, https://commons.wikimedia.org/wiki/File:2014_Westminster_Kennel_Club_Dog_Show_(12452143744).jpg
+- `assets/img/tools-wall.jpg` — "2014 Westminster Kennel Club Dog Show" by Pets Adviser from Brooklyn, USA, CC BY 2.0, https://commons.wikimedia.org/wiki/File:2014_Westminster_Kennel_Club_Dog_Show_(12451534873).jpg

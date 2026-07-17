@@ -23,3 +23,7 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Callout Building.
+
+## Image credits
+
+- `assets/img/hero.jpg` — "A worker ties together reinforcing bar, or rebar, to strengthen concrete floors…" by Bill Dowell, Public domain, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:A_worker_ties_together_reinforcing_bar,_or_rebar,_to_strengthen_concrete_floors_for_a_facility_that_will_house_372_students_as_part_of_the_Herat_University_Women%27s_Dormitory_Project_in_Herat_province_140311-A-DT641-242.jpg)

@@ -142,3 +142,13 @@ versions). No IE11.
 
 Licence per the marketplace you purchased from (single-site licence
 unless stated otherwise). Thanks for buying Tangerine — up the Rovers.
+
+## Image credits
+
+Replacement photography sourced from Wikimedia Commons (see `marketing/stock/credits.json`):
+
+- `assets/img/hero-stadium.jpg` — "Mecz piłkarski Wisła Kraków - Zagłębie Sosnowiec, 28 października 2022, Pożegnanie Stadionu Ludowego" by Krzysztof Popławski, CC BY 4.0.
+- `assets/img/club-history.jpg` — "Stade helvétique de Marseille contre Cercle athlétique de Paris amateurs Football 1909" by Agence Rol, public domain.
+- `assets/img/news-ground.jpg` — "NCFC Norwich & Peterborough Stand Apr07" by Mls11 at English Wikipedia, public domain.
+
+All other photography as originally supplied with the theme.

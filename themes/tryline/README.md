@@ -150,3 +150,19 @@ versions). No IE11.
 
 Licence per the marketplace you purchased from (single-site licence
 unless stated otherwise). Thanks for buying Tryline — up the Raiders.
+
+## Image credits
+
+The following photographs in `assets/img/` are from Wikimedia Commons
+(see `marketing/stock/credits.json` in the source repository):
+
+| File | Title | Author | Licence | Source |
+| --- | --- | --- | --- | --- |
+| `hero-stadium.jpg` | ManlySeaEagles CronullaSharks Tackle | Privatemusings | CC BY-SA 3.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:ManlySeaEagles_CronullaSharks_Tackle.JPG) |
+| `news-match.jpg` | Rugby League shirt pull | Jack86mkII | CC BY-SA 4.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rugby_League_shirt_pull.jpg) |
+| `news-training.jpg` | Tackle1 | Jack86mkII | CC BY-SA 4.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tackle1.jpg) |
+| `news-ground.jpg` | Hull KR vs Hull F.C. 7-9-2025 Second Half Ref and Minchella Confrontation | Hullian111 | CC BY-SA 4.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Hull_KR_vs_Hull_F.C._7-9-2025_Second_Half_Ref_and_Minchella_Confrontation.jpg) |
+| `club-history.jpg` | 1963 Challenge Cup Final | Unknown author | Public domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:1963_Challenge_Cup_Final.jpeg) |
+
+Remaining photographs (`academy-pitch.jpg`, `news-community.jpg`,
+`player-9.jpg`) are Unsplash placeholders as noted above.

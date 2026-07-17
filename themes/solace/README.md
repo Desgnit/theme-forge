@@ -32,3 +32,9 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for choosing Solace.
+
+## Image credits
+
+No suitable dignified stock was available for this theme in `marketing/stock/funeral/`
+(the candidates were branded retail product shots), so the original Unsplash demo
+photographs were retained. See the Unsplash licence note above.

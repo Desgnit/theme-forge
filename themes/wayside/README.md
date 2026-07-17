@@ -28,3 +28,9 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 prices and places are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Wayside.
+
+## Image credits
+
+- `assets/img/hero.jpg` — "Caravans with tents in Sävens camping in Skalhamn 1" by W.carter, CC0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Caravans_with_tents_in_S%C3%A4vens_camping_in_Skalhamn_1.jpg)
+- `assets/img/about.jpg` — "Caravans with tents in Sävens camping in Skalhamn 4" by W.carter, CC0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Caravans_with_tents_in_S%C3%A4vens_camping_in_Skalhamn_4.jpg)
+- `assets/img/house-white.jpg` — "Caravans with tents in Sävens camping in Skalhamn 2" by W.carter, CC0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Caravans_with_tents_in_S%C3%A4vens_camping_in_Skalhamn_2.jpg)

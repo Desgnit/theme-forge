@@ -151,8 +151,8 @@ versions). No IE11.
 ## Credits & licence
 
 - [Tailwind CSS](https://tailwindcss.com) (MIT) — build-time only
-- [Oswald](https://fonts.google.com/specimen/Oswald) &
-  [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts (OFL)
+- [Bitter](https://fonts.google.com/specimen/Bitter) &
+  [Source Sans 3](https://fonts.google.com/specimen/Source+Sans+3) via Google Fonts (OFL)
 - Demo photographs from [Unsplash](https://unsplash.com/license) (free
   for commercial use, no attribution required). They are placeholders —
   replace them with your club's own consented photography before launch,
@@ -162,3 +162,20 @@ versions). No IE11.
 Licence per the marketplace you purchased from (single-site licence
 unless stated otherwise). Thanks for buying Boundary — see you at The
 Meadow.
+
+## Image credits
+
+Photography in `assets/img/` (village cricket at Botany Bay CC, Coopersale CC,
+Eastons CC and Hatfield Heath CC), all by **Acabashi**, licensed
+**CC BY-SA 4.0**, via Wikimedia Commons:
+
+- `hero-stadium.jpg` — [Hatfield Heath CC v. Netteswell CC on Hatfield Heath village green, Essex, England 50](https://commons.wikimedia.org/wiki/File:Hatfield_Heath_CC_v._Netteswell_CC_on_Hatfield_Heath_village_green,_Essex,_England_50.jpg)
+- `news-match.jpg` — [Hatfield Heath CC v. Netteswell CC on Hatfield Heath village green, Essex, England 59](https://commons.wikimedia.org/wiki/File:Hatfield_Heath_CC_v._Netteswell_CC_on_Hatfield_Heath_village_green,_Essex,_England_59.jpg)
+- `news-ground.jpg` — [Eastons CC v Epping Foresters CC at Little Easton, Essex, England 034](https://commons.wikimedia.org/wiki/File:Eastons_CC_v_Epping_Foresters_CC_at_Little_Easton,_Essex,_England_034.jpg)
+- `news-training.jpg` — [Eastons CC v Epping Foresters CC at Little Easton, Essex, England 035](https://commons.wikimedia.org/wiki/File:Eastons_CC_v_Epping_Foresters_CC_at_Little_Easton,_Essex,_England_035.jpg)
+- `academy-pitch.jpg` — [Coopersale CC v. Old Sectonians CC at Coopersale, Essex 23](https://commons.wikimedia.org/wiki/File:Coopersale_CC_v._Old_Sectonians_CC_at_Coopersale,_Essex_23.jpg)
+- `news-community.jpg` and `player-9.jpg` (crop) — [Botany Bay CC v Rosaneri CC at Botany Bay, Enfield, London 24](https://commons.wikimedia.org/wiki/File:Botany_Bay_CC_v_Rosaneri_CC_at_Botany_Bay,_Enfield,_London_24.jpg)
+
+`club-history.jpg` (outfield close-up) remains the original Unsplash
+placeholder. CC BY-SA 4.0 requires attribution and share-alike for the
+images listed above — keep this section if you keep the photos.

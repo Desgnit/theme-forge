@@ -27,3 +27,14 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and stories are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Southpaw.
+
+## Image credits
+
+All photographs in `assets/img/` (`hero.jpg`, `about.jpg`,
+`house-white.jpg`, `house-modern.jpg`, `tools-wall.jpg`) are sourced
+from [Unsplash](https://unsplash.com/license) (free for commercial use,
+no attribution required). Individual author records are not tracked in
+`marketing/stock/credits.json` for the fitness collection; the images
+correspond to the stock files `boxing-training.jpg`,
+`gym-moody-equipment.jpg`, `team-high-five.jpg`, `athlete-chalk.jpg`
+and `crossfit-tire.jpg` in `marketing/stock/fitness/`.

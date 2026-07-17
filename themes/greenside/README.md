@@ -180,3 +180,19 @@ versions). No IE11.
 
 Licence per the marketplace you purchased from (single-site licence
 unless stated otherwise). Thanks for buying Greenside — the kettle's on.
+
+## Image credits
+
+The following photographs in `assets/img/` are from Wikimedia Commons
+(see `marketing/stock/credits.json` in the source repository):
+
+| File | Title | Author | Licence | Source |
+| --- | --- | --- | --- | --- |
+| `club-history.jpg` | Moonta Bowling Green (GN08135) | State Government Photographer | CC0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Moonta_Bowling_Green(GN08135).jpg) |
+| `news-match.jpg` | Port Lincoln Bowling Green (GN14469) | State Government Photographer | CC0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Port_Lincoln_Bowling_Green(GN14469).jpg) |
+| `academy-pitch.jpg` | Port Lincoln Bowling Green (GN14482) | State Government Photographer | CC0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Port_Lincoln_Bowling_Green(GN14482).jpg) |
+| `news-ground.jpg` | Bakewell Bowling Green | Derek Henry | CC BY-SA 2.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bakewell_Bowling_Green_-_geograph.org.uk_-_1892766.jpg) |
+
+Remaining photographs (`hero-stadium.jpg`, `news-training.jpg`,
+`news-community.jpg`, `player-9.jpg`) are Unsplash placeholders as
+noted above.

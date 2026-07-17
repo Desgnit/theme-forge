@@ -147,3 +147,9 @@ versions). No IE11.
 
 Licence per the marketplace you purchased from (single-site licence unless
 stated otherwise). Thanks for buying Hedgerow — grow something good.
+
+## Image credits
+
+- `assets/img/hero-warehouse.jpg` — "Vivid purple round eggplants piled with fresh green beans and cucumbers at a market stall" by PattayaPatrol, CC BY-SA 4.0, https://commons.wikimedia.org/wiki/File:DFC_2101_Vivid_purple_round_eggplants_piled_with_fresh_green_beans_and_cucumbers_at_a_market_stall.jpg
+- `assets/img/blog-warehouse-led.jpg` — "InSeason Farmer's Market, North Melbourne Australia" by Rexness, CC BY-SA 2.0, https://commons.wikimedia.org/wiki/File:InSeason_Farmer%27s_Market,_North_Melbourne_Australia_(4570521176).jpg
+- `assets/img/blog-compliance.jpg` — "Fresh root vegetables piled at a bustling market stall with fruits and produce blurred in the colorful background" by PattayaPatrol, CC BY-SA 4.0, https://commons.wikimedia.org/wiki/File:DSCF1116_Fresh_root_vegetables_piled_at_a_bustling_market_stall_with_fruits_and_produce_blurred_in_the_colorful_background.jpg

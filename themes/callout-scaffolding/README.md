@@ -23,3 +23,12 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Callout Scaffolding.
+
+## Image credits
+
+Replaced demo photographs (via Wikimedia Commons):
+
+- `assets/img/hero.jpg` — "Building under scaffolding, Lincoln" by David Howard, CC BY-SA 2.0, https://commons.wikimedia.org/wiki/File:Building_under_scaffolding,_Lincoln_-_geograph.org.uk_-_6193366.jpg
+- `assets/img/about.jpg`, `assets/img/tools-wall.jpg` — "US Capitol building scaffolding, April 2019" by Thomson200, CC0, https://commons.wikimedia.org/wiki/File:US_Capitol_building_scaffolding,_April_2019.jpg
+
+All other demo photographs from [Unsplash](https://unsplash.com/license).

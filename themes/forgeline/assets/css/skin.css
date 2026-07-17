@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Forgeline skin — "technical catalogue"
+   Loaded after main.css. Typography, sharp radii, engineering-grid dark
+   bands, heavy-ruled spec tables, tabular numerals, amber card hairlines.
+   ========================================================================== */
+
+:root {
+  --fl-font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --fl-font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --fl-radius: 0.25rem; /* sharp, machined corners */
+}
+
+/* IBM Plex Sans ships no 800 — pin extrabold usage to its true 700 cut */
+.font-extrabold { font-weight: 700; }
+
+/* --- Engineering-drawing grid tint on dark bands ------------------------ */
+/* Fine 24px minor grid + heavier 120px major rules over a faint amber wash */
+.bg-blueprint {
+  background-image:
+    linear-gradient(rgba(245, 158, 11, 0.045), rgba(245, 158, 11, 0.045)),
+    linear-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+}
+
+/* --- Spec tables: heavy top rule, datasheet header row ------------------ */
+.spec-table {
+  border-top: 3px solid rgb(var(--fl-primary));
+}
+.spec-table th {
+  font-family: var(--fl-font-display);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.spec-table td {
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* --- Mono-style numerals for prices, SKUs, chips and stats -------------- */
+.font-display,
+.spec-chip,
+.kicker {
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+body {
+  font-variant-numeric: lining-nums;
+}
+
+/* --- Cards: amber accent hairline along the top edge --------------------- */
+.card {
+  position: relative;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(var(--fl-accent)) 0%, rgba(245, 158, 11, 0.12) 85%);
+  z-index: 1;
+  pointer-events: none;
+}

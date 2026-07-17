@@ -23,3 +23,11 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Callout Skip Hire.
+
+## Image credits
+
+Replaced demo photographs (via Wikimedia Commons):
+
+- `assets/img/hero.jpg`, `assets/img/about.jpg` — "Berneck Waldhorn" by Ikar.us, CC0, https://commons.wikimedia.org/wiki/File:Berneck_Waldhorn.jpg
+
+All other demo photographs from [Unsplash](https://unsplash.com/license).

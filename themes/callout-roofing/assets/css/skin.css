@@ -1,0 +1,73 @@
+/* Callout skin — shared design uplift. Palette-agnostic: colours come from
+   the theme's --co-* variables only. Load AFTER main.css. */
+
+/* 1. Hero + dark bands: stronger dark gradient overlay so photo-behind-text
+      stays readable, with a faint accent glow for depth. */
+.bg-primary-dark.bg-grid {
+  background-image:
+    linear-gradient(160deg,
+      rgb(var(--co-primary-dark) / 0.94) 0%,
+      rgb(var(--co-primary-dark) / 0.66) 48%,
+      rgb(var(--co-primary) / 0.5) 100%),
+    radial-gradient(110% 90% at 88% 8%,
+      rgb(var(--co-accent) / 0.18), transparent 58%),
+    linear-gradient(hsla(0, 0%, 100%, 0.045) 1px, transparent 0),
+    linear-gradient(90deg, hsla(0, 0%, 100%, 0.045) 1px, transparent 0);
+  background-size: auto, auto, 44px 44px, 44px 44px;
+}
+
+/* 2. Display-scale headline: h1 climbs to ~4.5rem on wide screens. */
+h1[class] {
+  font-size: clamp(2.5rem, 1.15rem + 2.9vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+/* 3. Chunky trust strip: each guarantee becomes a plate with a left accent bar. */
+section[aria-label="Guarantees"] p {
+  border-left: 5px solid rgb(var(--co-accent));
+  border-radius: calc(var(--co-radius) / 2);
+  background-color: rgb(var(--co-paper));
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 2px rgb(var(--co-primary-dark) / 0.07),
+              0 4px 14px -8px rgb(var(--co-primary-dark) / 0.25);
+}
+
+/* 4. Card photo hover zoom (photo cards only). */
+.card.overflow-hidden img {
+  transition: transform 0.55s cubic-bezier(0.2, 0.65, 0.25, 1);
+  will-change: transform;
+}
+.card.overflow-hidden:hover img,
+.card.overflow-hidden:focus-within img {
+  transform: scale(1.06);
+}
+.card.overflow-hidden {
+  transition: box-shadow 0.3s ease;
+}
+.card.overflow-hidden:hover {
+  box-shadow: 0 14px 30px -14px rgb(var(--co-primary-dark) / 0.35);
+}
+
+/* 5. Spec chips become accent-tinted pills. */
+.spec-chip {
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  border-color: rgb(var(--co-accent) / 0.4);
+  background-color: rgb(var(--co-accent) / 0.09);
+  color: rgb(var(--co-accent-dark));
+  letter-spacing: 0.06em;
+}
+
+/* 6. Tightened button tracking, slightly heavier weight. */
+.btn-accent,
+.btn-outline,
+.btn-ghost-light {
+  letter-spacing: -0.005em;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.overflow-hidden img { transition: none; }
+  .card.overflow-hidden:hover img { transform: none; }
+}

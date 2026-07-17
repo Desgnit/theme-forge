@@ -1,0 +1,53 @@
+/* ==========================================================================
+   Boundary skin — heritage meets modern village cricket
+   Loaded after main.css; restyles via the theme's --tc-* variables only.
+   Bitter serif display over Source Sans 3, cream boards, fine warm rules,
+   scoreboard numerals, photo hero. Palette stays green and gold.
+   ========================================================================== */
+
+:root {
+  --tc-font-display: "Bitter", Georgia, "Times New Roman", serif;
+  --tc-font-body: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --tc-board: 250 246 238;         /* cream honours-board panels */
+  --tc-line: 227 219 202;          /* fine warm rules and dividers */
+  --tc-radius: 0.3125rem;          /* squarer, more traditional corners */
+}
+
+/* Serif display: calmer tracking than the old condensed caps */
+h1, h2, h3, h4, .section-title {
+  letter-spacing: 0;
+}
+.kicker { letter-spacing: 0.32em; }
+
+/* Photo hero band — bails flying at The Meadow under a dark green wash
+   so the headline and match-centre card stay fully legible */
+main > section.bg-terrace:first-child {
+  background-image:
+    linear-gradient(rgb(14 63 33 / 0.87), rgb(14 63 33 / 0.72) 55%, rgb(14 63 33 / 0.9)),
+    url("../img/hero-stadium.jpg");
+  background-size: cover, cover;
+  background-position: center, center 35%;
+}
+
+/* Scoreboard discipline: lining, tabular figures wherever numbers stack */
+.scoreline,
+.stat-table td,
+.stat-table th,
+dl dd,
+[data-count-days], [data-count-hours], [data-count-mins] {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Fine double rule under league/stat table headers — scorebook feel */
+.stat-table th {
+  border-bottom-width: 1px;
+  box-shadow: 0 3px 0 -1px rgb(var(--tc-primary) / 0.35);
+}
+
+/* Cards sit flat on cream with a hairline, not a heavy shadow */
+.card {
+  box-shadow: 0 1px 0 rgb(var(--tc-line) / 0.9), 0 8px 20px -16px rgb(14 63 33 / 0.35);
+}
+
+/* Chips read like scorebook stamps */
+.comp-chip { border-radius: 2px; }

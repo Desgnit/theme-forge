@@ -23,3 +23,7 @@ patterns throughout, apple-touch-icon included. Demo photographs from
 and numbers are fictional placeholder content.
 
 Licence per the marketplace you purchased from. Thanks for buying Callout Landscaping.
+
+## Image credits
+
+All demo photographs from [Unsplash](https://unsplash.com/license). No stock replacements were made in this edition — the reviewed niche stock set did not meet the photography bar, so the original imagery is retained.
