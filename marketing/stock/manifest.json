@@ -44,7 +44,8 @@
     "yoga-pose.jpg"
   ],
   "electrician": [
-    "electrician-1.jpg"
+    "electrician-1.jpg",
+    "electrician-2.jpg"
   ],
   "plumber": [
     "plumber-1.jpg",
@@ -53,7 +54,13 @@
     "plumber-4.jpg",
     "plumber-5.jpg"
   ],
-  "builder": [],
+  "builder": [
+    "builder-1.jpg",
+    "builder-2.jpg",
+    "builder-3.jpg",
+    "builder-4.jpg",
+    "builder-5.jpg"
+  ],
   "landscaping": [
     "landscaping-1.jpg",
     "landscaping-2.jpg",
@@ -82,7 +89,8 @@
     "scaffolding-5.jpg"
   ],
   "industrial": [
-    "industrial-1.jpg"
+    "industrial-1.jpg",
+    "industrial-2.jpg"
   ],
   "football": [
     "football-1.jpg",
@@ -133,9 +141,16 @@
     "window-cleaning-4.jpg"
   ],
   "removals": [
-    "removals-1.jpg"
+    "removals-1.jpg",
+    "removals-2.jpg"
   ],
-  "detailing": [],
+  "detailing": [
+    "detailing-1.jpg",
+    "detailing-2.jpg",
+    "detailing-3.jpg",
+    "detailing-4.jpg",
+    "detailing-5.jpg"
+  ],
   "dog-grooming": [
     "dog-grooming-1.jpg",
     "dog-grooming-2.jpg",
@@ -143,7 +158,14 @@
     "dog-grooming-4.jpg",
     "dog-grooming-5.jpg"
   ],
-  "farm-shop": [],
+  "farm-shop": [
+    "farm-shop-1.jpg",
+    "farm-shop-2.jpg",
+    "farm-shop-3.jpg",
+    "farm-shop-4.jpg",
+    "farm-shop-5.jpg",
+    "farm-shop-6.jpg"
+  ],
   "butchery": [
     "butchery-1.jpg",
     "butchery-2.jpg",
@@ -160,10 +182,12 @@
   "driving": [
     "driving-1.jpg",
     "driving-2.jpg",
-    "driving-3.jpg"
+    "driving-3.jpg",
+    "driving-4.jpg"
   ],
   "funeral": [
-    "funeral-1.jpg"
+    "funeral-1.jpg",
+    "funeral-2.jpg"
   ],
   "village-hall": [
     "village-hall-1.jpg",
