@@ -1,0 +1,5 @@
+anthropic>=0.69
+httpx>=0.27
+pydantic>=2.7
+# Only needed for MODE=live (real orders on Coinbase):
+# coinbase-advanced-py>=1.8
