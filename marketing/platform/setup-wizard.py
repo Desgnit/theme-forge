@@ -128,12 +128,29 @@ class GitHub:
             return
         self.gh = None
         import requests
+        # cached token from a previous run?
+        cache = os.path.expanduser("~/.theme-forge-setup.json")
+        try:
+            tok = json.load(open(cache)).get("github_token")
+            if tok and requests.get("https://api.github.com/user", timeout=15,
+                                    headers={"Authorization": f"Bearer {tok}"}).ok:
+                self.token = tok
+                say("GitHub: using your saved login.")
+                return
+        except Exception:
+            pass
         say("GitHub sign-in — a browser page is opening.")
-        r = requests.post("https://github.com/login/device/code",
-                          data={"client_id": GH_CLIENT_ID, "scope": "repo"},
-                          headers={"Accept": "application/json"}, timeout=30).json()
-        print(f"  Type this code on the page:   {r['user_code']}")
-        webbrowser.open(r.get("verification_uri", "https://github.com/login/device"))
+
+        def new_code():
+            r = requests.post("https://github.com/login/device/code",
+                              data={"client_id": GH_CLIENT_ID, "scope": "repo"},
+                              headers={"Accept": "application/json"}, timeout=30).json()
+            print(f"\n  >>> Type this code on the page NOW (expires in ~15 min):   "
+                  f"{r['user_code']}\n")
+            webbrowser.open(r.get("verification_uri", "https://github.com/login/device"))
+            return r
+
+        r = new_code()
         interval = int(r.get("interval", 5))
         while True:
             time.sleep(interval)
@@ -143,10 +160,19 @@ class GitHub:
             }, headers={"Accept": "application/json"}, timeout=30).json()
             if "access_token" in p:
                 self.token = p["access_token"]
-                print("  GitHub connected.")
+                try:
+                    json.dump({"github_token": self.token},
+                              open(os.path.expanduser("~/.theme-forge-setup.json"), "w"))
+                except Exception:
+                    pass
+                print("  GitHub connected (and remembered for next time).")
                 return
             if p.get("error") == "slow_down":
                 interval += 5
+            elif p.get("error") == "expired_token":
+                print("  That code expired — here's a fresh one:")
+                r = new_code()
+                interval = int(r.get("interval", 5))
             elif p.get("error") != "authorization_pending":
                 raise SystemExit(f"GitHub login failed: {p.get('error')}")
 
@@ -210,52 +236,20 @@ def find_keystring(page):
 
 
 def setup_etsy(gh, browser):
+    # Etsy's bot detection blocks automated browsers, so this whole step runs
+    # in YOUR normal browser (where you're already logged in).
     import requests
-    say("ETSY — log in when the window opens (create your shop at "
-        "etsy.com/sell first if you don't have one).")
-    ctx = browser.new_context()
-    page = ctx.new_page()
-    page.goto("https://www.etsy.com/developers/your-apps")
-    if not wait_for_login(ctx, "https://www.etsy.com/developers/your-apps"):
-        print("  Timed out waiting for Etsy login — skipping Etsy.")
-        ctx.close()
+    say("ETSY — using your normal browser (Etsy blocks automated ones).")
+    print("  1. Have a SHOP (not just an account): etsy.com/sell → Open your Etsy shop.")
+    print("  2. An app-registration page is opening in your browser. Create an app")
+    print("     with any name. IMPORTANT — set the Callback URL to exactly:")
+    print(f"        http://localhost:{ETSY_PORT}/callback")
+    print("  3. Copy the KEYSTRING it shows you and paste it below.")
+    webbrowser.open("https://www.etsy.com/developers/register")
+    keystring = ask("  Paste the app KEYSTRING (or press Enter to skip Etsy): ").strip()
+    if not keystring:
+        print("  Skipped Etsy — re-run later with: python setup-wizard.py etsy")
         return
-
-    # Find an existing app's keystring, or create the app ourselves.
-    page.goto("https://www.etsy.com/developers/your-apps")
-    keystring = find_keystring(page)
-    if not keystring:
-        print("  Creating your Etsy API app...")
-        try:
-            page.goto("https://www.etsy.com/developers/register")
-            page.locator("input[type='text']").first.fill(APP_NAME)
-            for box in page.locator("input[type='checkbox']").all():
-                try:
-                    box.check(timeout=1500)
-                except Exception:
-                    pass
-            page.get_by_role("button", name=re.compile("create|register|submit", re.I)).first.click()
-            page.wait_for_load_state("domcontentloaded")
-            keystring = find_keystring(page)
-        except Exception:
-            keystring = None
-    if not keystring:
-        print("  Couldn't create it automatically — in the browser window, create "
-              "an app at etsy.com/developers/register (any name), then return here.")
-        for _ in range(300):
-            time.sleep(2)
-            try:
-                page.goto("https://www.etsy.com/developers/your-apps")
-                keystring = find_keystring(page)
-            except Exception:
-                pass
-            if keystring:
-                break
-    if not keystring:
-        keystring = ask("  Paste the app KEYSTRING (or Enter to skip Etsy): ")
-        if not keystring:
-            ctx.close()
-            return
     print(f"  Using app keystring {keystring[:6]}…")
 
     # OAuth consent — the wizard clicks Allow itself.
@@ -280,20 +274,16 @@ def setup_etsy(gh, browser):
 
     srv = http.server.HTTPServer(("localhost", ETSY_PORT), H)
     threading.Thread(target=srv.handle_request, daemon=True).start()
-    page.goto("https://www.etsy.com/oauth/connect?" + urllib.parse.urlencode({
+    say("A consent page is opening in your browser — click 'Allow Access'.")
+    print(f"  (If Etsy shows a redirect error, add {redirect} as the callback URL "
+          "in your app's settings, then re-run: python setup-wizard.py etsy)")
+    webbrowser.open("https://www.etsy.com/oauth/connect?" + urllib.parse.urlencode({
         "response_type": "code", "client_id": keystring, "redirect_uri": redirect,
         "scope": ETSY_SCOPES, "state": state_tok, "code_challenge": challenge,
         "code_challenge_method": "S256"}))
-    try:
-        page.get_by_role("button", name=re.compile("allow|grant", re.I)).first.click(timeout=20000)
-    except Exception:
-        print("  If a consent page is showing, click 'Allow Access'. If Etsy shows a "
-              f"redirect error, add {redirect} as a callback URL in your app settings "
-              "and re-run: python3 setup-wizard.py etsy")
     t0 = time.time()
     while "code" not in holder and time.time() - t0 < 600:
         time.sleep(1)
-    ctx.close()
     if holder.get("state") != state_tok or "code" not in holder:
         print("  Etsy consent didn't complete — skipping (re-run: setup-wizard.py etsy).")
         return
@@ -309,7 +299,12 @@ def setup_etsy(gh, browser):
         f"https://api.etsy.com/v3/application/users/{user_id}/shops",
         headers={"x-api-key": keystring,
                  "Authorization": f"Bearer {tokens['access_token']}"}, timeout=30).json()
-    shop_id = shops.get("shop_id") or shops["results"][0]["shop_id"]
+    results = shops.get("results") or ([shops] if shops.get("shop_id") else [])
+    if not results:
+        print("  Your Etsy account has no SHOP yet — open one at etsy.com/sell, then")
+        print("  re-run: python setup-wizard.py etsy   (your app keystring stays valid)")
+        return
+    shop_id = results[0]["shop_id"]
     gh.set_secret("ETSY_API_KEY", keystring)
     gh.set_secret("ETSY_REFRESH_TOKEN", tokens["refresh_token"])
     gh.set_secret("ETSY_SHOP_ID", str(shop_id))
