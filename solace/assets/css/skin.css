@@ -1,0 +1,95 @@
+/* Solace skin — serene, dignified. Loads after main.css. */
+:root {
+  --co-font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --co-font-body: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --co-paper: 255 254 250;
+  --co-board: 248 246 240;
+  --co-line: 231 227 219;
+  --co-radius: 0.375rem;
+}
+
+/* Generous, unhurried whitespace */
+main .py-16 { padding-top: 5.5rem; padding-bottom: 5.5rem; }
+@media (min-width: 1024px) {
+  main .lg\:py-24 { padding-top: 8rem; padding-bottom: 8rem; }
+}
+
+/* Serif display voice: lighter weights, quiet tracking */
+h1, h2, h3, h4 { font-weight: 600; letter-spacing: 0; }
+h1 { font-weight: 500; line-height: 1.12; }
+.section-title { font-weight: 500; }
+.kicker { font-family: var(--co-font-body); font-weight: 600; letter-spacing: 0.3em; }
+
+/* Hairline rules everywhere a border appears */
+.card, .border-line, .border-t, .border-b { border-color: rgb(var(--co-line)); }
+.card { box-shadow: none; }
+.section-title { padding-bottom: 1.25rem; border-bottom: 1px solid rgb(var(--co-line)); }
+
+/* Muted, consoling photo treatment */
+main img { filter: saturate(0.78) contrast(0.96) brightness(1.02); }
+main img.shadow-2xl { box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+
+/* Understated outlined buttons — no fills, no shouting */
+.btn-accent, .btn-outline, .btn-ghost-light {
+  background-color: transparent;
+  border-width: 1px;
+  font-family: var(--co-font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  padding: 0.9rem 1.75rem;
+}
+.btn-accent { border: 1px solid rgb(var(--co-accent-dark)); color: rgb(var(--co-accent-dark)); }
+.text-white .btn-accent, .bg-primary-dark .btn-accent { border-color: rgb(255 255 255 / 0.7); color: #fff; }
+.btn-outline { border-color: rgb(var(--co-primary) / 0.45); }
+.btn-ghost-light { border-color: rgb(255 255 255 / 0.45); }
+.btn-accent:hover, .btn-outline:hover, .btn-ghost-light:hover { background-color: rgb(var(--co-board)); }
+.text-white .btn-accent:hover, .btn-ghost-light:hover { background-color: rgb(255 255 255 / 0.08); }
+
+/* Calm above all: soften the dark hero grid, quiet the cards */
+.bg-grid { background-image: none; }
+.card { background-color: rgb(var(--co-paper)); }
+.bg-board .card, section.bg-board { background-color: rgb(var(--co-board)); }
+
+/* ==========================================================================
+   hero v2 — quiet centered hero
+   No photo, warm white ground, centered serif headline, a hairline rule,
+   and the 24-hour line as an understated centered banner. The utilities
+   below (centering, the rule, the banner) are not in this theme's purged
+   main.css build, so they live here.
+   ========================================================================== */
+.hero-quiet { text-align: center; }
+.hero-quiet .kicker { justify-content: center; }
+/* Balance the kicker's built-in left dash with a matching right one */
+.hero-quiet .kicker::after {
+  content: "";
+  display: block;
+  height: 1px;
+  width: 2rem;
+  background-color: rgb(var(--co-accent));
+}
+.hero-quiet h1,
+.hero-quiet .max-w-xl { margin-left: auto; margin-right: auto; }
+
+/* Hairline rule beneath the headline */
+.hero-quiet .hero-rule {
+  width: 4.5rem;
+  height: 1px;
+  margin: 2.25rem auto 0;
+  background-color: rgb(var(--co-accent) / 0.65);
+}
+
+/* 24-hour line: an understated centered banner beneath the CTAs */
+.hero-quiet .hero-phone-banner {
+  display: inline-block;
+  border-top: 1px solid rgb(var(--co-line));
+  border-bottom: 1px solid rgb(var(--co-line));
+  padding: 0.8rem 2rem;
+  letter-spacing: 0.04em;
+}
+
+/* Even more air than the rest of the site — calm is the design */
+.hero-quiet > .container { padding-top: 6.5rem; padding-bottom: 6.5rem; }
+@media (min-width: 1024px) {
+  .hero-quiet > .container { padding-top: 9rem; padding-bottom: 9rem; }
+}

@@ -1,0 +1,114 @@
+/* ==========================================================================
+   Hedgerow — skin.css
+   Rustic-premium layer loaded AFTER main.css. Farmers-market chic:
+   cream paper, generous serif display, hand-drawn offset borders,
+   kraft-label price and produce tags. Delete this file to fall back
+   to the plain compiled theme.
+   ========================================================================== */
+
+:root {
+  /* Cream paper tint on page + tinted boards (warm, not yellow) */
+  --fl-paper: 250 246 238;
+  --fl-board: 243 236 222;
+  --fl-line: 226 215 196;
+}
+
+/* Generous serif display sizing — Fraunces breathes at looser leading */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+h1 { line-height: 1.12; }
+.section-title { line-height: 1.15; }
+.kicker { letter-spacing: 0.24em; }
+
+/* Hand-drawn feel: slightly offset 2px border-shadow on cards & buttons */
+.card {
+  border-color: rgb(61 46 33 / 0.28);
+  box-shadow: 2px 2px 0 rgb(61 46 33 / 0.22);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  box-shadow: 3px 3px 0 rgb(61 46 33 / 0.3);
+  transform: translate(-1px, -1px);
+}
+.btn-accent, .btn-outline {
+  box-shadow: 2px 2px 0 rgb(61 46 33 / 0.35);
+}
+.btn-accent:active, .btn-outline:active {
+  box-shadow: 1px 1px 0 rgb(61 46 33 / 0.35);
+  transform: translate(1px, 1px);
+}
+
+/* Kraft-label styling on price/produce tags (.spec-chip) */
+.spec-chip {
+  background: rgb(214 190 150 / 0.4);
+  border: 1px solid rgb(61 46 33 / 0.35);
+  border-radius: 2px;
+  box-shadow: 1px 1px 0 rgb(61 46 33 / 0.2);
+  color: rgb(72 56 41);
+  letter-spacing: 0.06em;
+}
+
+/* Price lines set in the display serif read like chalkboard tickets */
+.font-display.font-extrabold {
+  font-weight: 700; /* Fraunces ships 600/700 — keep tickets from faux-bolding */
+}
+
+/* Field inputs and provenance tables sit on cream, not white */
+.field-input { background-color: rgb(255 253 248); }
+.spec-table th { background-color: rgb(238 229 211); }
+
+/* Dark bands: soften the engineering grid into a faint field-drain check */
+.bg-blueprint {
+  background-image:
+    linear-gradient(rgb(250 246 238 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(250 246 238 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Pull-quotes get the same offset-label treatment */
+.prose-fl blockquote {
+  border-left-width: 3px;
+  box-shadow: 2px 2px 0 rgb(61 46 33 / 0.18);
+}
+
+/* --- Hero v2: full-bleed produce ----------------------------------------
+   Utilities the compiled main.css doesn't ship (inset-0 cover image,
+   directional scrim, mid-height frame, oversize serif headline,
+   overflow-x scroll on the season strip) live here instead. */
+.hh-hero2 { background-color: rgb(41 30 20); }
+.hh-hero2-img {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.hh-hero2-scrim {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  /* warm dark-brown scrim, heaviest across the left third */
+  background: linear-gradient(90deg,
+    rgb(41 30 20 / 0.93) 0%,
+    rgb(41 30 20 / 0.85) 33%,
+    rgb(41 30 20 / 0.42) 66%,
+    rgb(41 30 20 / 0.12) 100%);
+}
+.hh-hero2-frame { min-height: 32rem; } /* flex centring puts copy at mid-height */
+@media (min-width: 1024px) {
+  .hh-hero2-frame { min-height: 38rem; }
+  .hh-hero2-title { font-size: 4.25rem; line-height: 1.08; }
+}
+
+/* In-season strip: one row of kraft tickets that scrolls sideways */
+.hh-season2 {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 2px; /* room for the ticket drop-shadow */
+}
+.hh-season2 .spec-chip {
+  font-size: 0.8125rem;
+  padding: 0.4rem 0.9rem;
+}
