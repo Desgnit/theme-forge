@@ -1,92 +1,109 @@
 #!/usr/bin/env python3
-"""Download curated stock images (Unsplash CDN — free for commercial use
-under the Unsplash License) into marketing/stock/fitness/.
+"""Fetch niche-related stock images (Unsplash — free for commercial use
+under the Unsplash License) into marketing/stock/<category>/.
 
-Runs in CI where the network is open. Over-provisioned on purpose: any URL
-that 404s or returns junk is skipped; whatever lands cleanly gets committed.
-Each image is validated (JPEG magic bytes, >25 KB) before being kept.
+Runs in CI where the network is open. For each category it SEARCHES Unsplash
+for the subject and takes the top landscape results, so images actually match
+the niche instead of relying on hand-picked photo ids. Every file is
+validated (JPEG magic, >25 KB) before being kept. Existing files are never
+re-downloaded, so re-runs only fill gaps.
 """
 import json
 import os
+import time
+import urllib.parse
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "fitness")
+UA = {"User-Agent": "Mozilla/5.0 (theme-forge-fetch)"}
 W = "?w=1600&q=80&auto=format&fit=crop"
 
-IMAGES = {
-    # gym interiors / atmosphere
-    "gym-dark-interior": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48",
-    "gym-rack-row": "https://images.unsplash.com/photo-1540497077202-7c8a3999166f",
-    "gym-moody-equipment": "https://images.unsplash.com/photo-1558611848-73f7eb4001a1",
-    "gym-warehouse": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f",
-    "gym-neon": "https://images.unsplash.com/photo-1623874514711-0f321325f318",
-    # training action
-    "barbell-squat": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438",
-    "deadlift-setup": "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5",
-    "kettlebell-swing": "https://images.unsplash.com/photo-1579758629938-03607ccdbaba",
-    "battle-ropes": "https://images.unsplash.com/photo-1520787497953-1985ca467702",
-    "dumbbell-press": "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61",
-    "sprinter-track": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211",
-    "boxing-training": "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed",
-    "crossfit-tire": "https://images.unsplash.com/photo-1517963879433-6ad2b056d712",
-    "athlete-chalk": "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5",
-    "rowing-machine": "https://images.unsplash.com/photo-1519505907962-0a6cb0167c73",
-    "woman-weights": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e",
-    "man-cable-row": "https://images.unsplash.com/photo-1574680096145-d05b474e2155",
-    "stretching-floor": "https://images.unsplash.com/photo-1518611012118-696072aa579a",
-    "run-stairs": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8",
-    "yoga-pose": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b",
-    # supplements / nutrition
-    "protein-scoop": "https://images.unsplash.com/photo-1593095948071-474c5cc2989d",
-    "protein-shaker": "https://images.unsplash.com/photo-1594737625785-a6cbdabd333c",
-    "supplement-powder": "https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f",
-    "supplement-capsules": "https://images.unsplash.com/photo-1556909212-d5b604d0c90d",
-    "smoothie-bowl": "https://images.unsplash.com/photo-1502741224143-90386d7f8c82",
-    "healthy-meal-prep": "https://images.unsplash.com/photo-1547592180-85f173990554",
-    "banana-shake": "https://images.unsplash.com/photo-1553530666-ba11a7da3888",
-    "eggs-protein-food": "https://images.unsplash.com/photo-1482049016688-2d3e1b311543",
-    # gear / apparel / product-ish
-    "weight-plates-stack": "https://images.unsplash.com/photo-1558017487-06bf9f82613a",
-    "dumbbells-rack-close": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b",
-    "trainers-shoes": "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-    "apparel-flatlay": "https://images.unsplash.com/photo-1556906781-9a412961c28c",
-    "resistance-bands": "https://images.unsplash.com/photo-1598289431512-b97b0917affc",
-    "jump-rope": "https://images.unsplash.com/photo-1434682881908-b43d0467b798",
-    "water-bottle-gym": "https://images.unsplash.com/photo-1523362628745-0c100150b504",
-    "smartwatch-fitness": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1",
-    "gym-bag": "https://images.unsplash.com/photo-1547949003-9792a18a2601",
-    "foam-roller": "https://images.unsplash.com/photo-1600881333168-2ef49b341f30",
-    # portraits / community
-    "trainer-portrait": "https://images.unsplash.com/photo-1567013127542-490d757e51fc",
-    "team-high-five": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b",
-    "athlete-portrait-dark": "https://images.unsplash.com/photo-1583468982228-19f19164aee2",
-    "spotter-bench": "https://images.unsplash.com/photo-1534367507873-d2d7e24c797f",
+# category folder -> (search query, how many to keep)
+CATEGORIES = {
+    "fitness": ("gym training weights", 6),  # top-ups for the existing set
+    "electrician": ("electrician working", 5),
+    "plumber": ("plumber pipes work", 5),
+    "builder": ("construction builder site house", 5),
+    "landscaping": ("landscaping garden lawn work", 5),
+    "roofing": ("roofer roof tiles work", 5),
+    "skip-waste": ("skip container waste construction", 4),
+    "scaffolding": ("scaffolding building construction", 5),
+    "industrial": ("industrial warehouse lighting factory", 6),
+    "football": ("football stadium floodlights grass", 6),
+    "grassroots-football": ("amateur football match sunday league", 5),
+    "youth-football": ("kids football training", 4),
+    "cricket": ("cricket match batsman village", 6),
+    "rugby": ("rugby match tackle", 5),
+    "bowls": ("lawn bowls green bowling", 4),
+    "window-cleaning": ("window cleaner squeegee glass", 4),
+    "removals": ("moving boxes van removal", 5),
+    "detailing": ("car detailing polish wash", 5),
+    "dog-grooming": ("dog grooming bath", 5),
+    "farm-shop": ("farm shop fresh produce market", 6),
+    "butchery": ("butcher meat counter", 3),
+    "campsite": ("campsite tent caravan morning", 6),
+    "driving": ("learner driver car lesson", 4),
+    "funeral": ("white lilies flowers candle calm", 5),
+    "village-hall": ("village hall community event", 4),
+    "fishing": ("carp fishing lake dawn angler", 6),
 }
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
-    ok, skipped = [], []
-    for name, url in IMAGES.items():
-        dest = os.path.join(OUT, f"{name}.jpg")
-        if os.path.exists(dest):
-            ok.append(name)
-            continue
+def fetch(url, timeout=30):
+    req = urllib.request.Request(url, headers=UA)
+    return urllib.request.urlopen(req, timeout=timeout).read()
+
+
+def search(query, pages=1):
+    """Unsplash search; returns list of raw image URLs, landscape first."""
+    results = []
+    for page in range(1, pages + 1):
+        u = ("https://unsplash.com/napi/search/photos?per_page=20&page="
+             f"{page}&query=" + urllib.parse.quote(query))
         try:
-            req = urllib.request.Request(url + W, headers={"User-Agent": "theme-forge-fetch"})
-            data = urllib.request.urlopen(req, timeout=30).read()
-            if data[:3] == b"\xff\xd8\xff" and len(data) > 25_000:
-                open(dest, "wb").write(data)
-                ok.append(name)
-            else:
-                skipped.append(name)
-        except Exception as e:
-            skipped.append(f"{name} ({type(e).__name__})")
-    json.dump(sorted(ok), open(os.path.join(OUT, "available.json"), "w"), indent=2)
-    print(f"stock: {len(ok)} downloaded, {len(skipped)} skipped")
-    for s in skipped:
-        print("  skipped:", s)
+            data = json.loads(fetch(u))
+        except Exception:
+            break
+        for r in data.get("results", []):
+            if r.get("width", 0) >= 1400 and r.get("width", 0) > r.get("height", 0):
+                raw = (r.get("urls") or {}).get("raw")
+                if raw:
+                    results.append(raw.split("?")[0])
+    return results
+
+
+def main():
+    manifest = {}
+    for cat, (query, want) in CATEGORIES.items():
+        outdir = os.path.join(HERE, cat)
+        os.makedirs(outdir, exist_ok=True)
+        have = sorted(f for f in os.listdir(outdir) if f.endswith(".jpg"))
+        if len(have) >= want:
+            manifest[cat] = have
+            print(f"{cat}: {len(have)} already present")
+            continue
+        kept = list(have)
+        for url in search(query, pages=2):
+            if len(kept) >= want:
+                break
+            name = f"{cat}-{len(kept) + 1}.jpg"
+            dest = os.path.join(outdir, name)
+            if os.path.exists(dest):
+                kept.append(name)
+                continue
+            try:
+                data = fetch(url + W, timeout=40)
+                if data[:3] == b"\xff\xd8\xff" and len(data) > 25_000:
+                    open(dest, "wb").write(data)
+                    kept.append(name)
+            except Exception:
+                continue
+            time.sleep(0.4)
+        manifest[cat] = sorted(kept)
+        print(f"{cat}: {len(kept)}/{want}")
+    json.dump(manifest, open(os.path.join(HERE, "manifest.json"), "w"), indent=2)
+    total = sum(len(v) for v in manifest.values())
+    print(f"total images: {total}")
     return 0
 
 
