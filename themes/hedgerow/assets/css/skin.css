@@ -72,3 +72,43 @@ h1 { line-height: 1.12; }
   border-left-width: 3px;
   box-shadow: 2px 2px 0 rgb(61 46 33 / 0.18);
 }
+
+/* --- Hero v2: full-bleed produce ----------------------------------------
+   Utilities the compiled main.css doesn't ship (inset-0 cover image,
+   directional scrim, mid-height frame, oversize serif headline,
+   overflow-x scroll on the season strip) live here instead. */
+.hh-hero2 { background-color: rgb(41 30 20); }
+.hh-hero2-img {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.hh-hero2-scrim {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  /* warm dark-brown scrim, heaviest across the left third */
+  background: linear-gradient(90deg,
+    rgb(41 30 20 / 0.93) 0%,
+    rgb(41 30 20 / 0.85) 33%,
+    rgb(41 30 20 / 0.42) 66%,
+    rgb(41 30 20 / 0.12) 100%);
+}
+.hh-hero2-frame { min-height: 32rem; } /* flex centring puts copy at mid-height */
+@media (min-width: 1024px) {
+  .hh-hero2-frame { min-height: 38rem; }
+  .hh-hero2-title { font-size: 4.25rem; line-height: 1.08; }
+}
+
+/* In-season strip: one row of kraft tickets that scrolls sideways */
+.hh-season2 {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 2px; /* room for the ticket drop-shadow */
+}
+.hh-season2 .spec-chip {
+  font-size: 0.8125rem;
+  padding: 0.4rem 0.9rem;
+}

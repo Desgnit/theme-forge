@@ -78,3 +78,31 @@ footer .btn-accent:hover {
 /* Chips and badges soften to match. */
 .comp-chip { border-radius: 9999px; }
 .scoreline { border-radius: 9999px; letter-spacing: 0.06em; }
+
+/* --------------------------------------------------------------------------
+   hero v2 — classic centred heritage hero on cream, framed photo below
+   -------------------------------------------------------------------------- */
+
+/* Kicker sits between hairline rules, like the head of an order-of-play card */
+.hero-rule-kicker {
+  padding: 0.55rem 1.5rem;
+  border-top: 1px solid rgb(var(--tc-line));
+  border-bottom: 1px solid rgb(var(--tc-line));
+}
+.hero-rule-kicker::before { content: none; }
+
+/* The green's photograph, mounted and framed with a caption line */
+.hero-frame img {
+  display: block;
+  height: clamp(260px, 40vw, 460px);
+  object-fit: cover;
+  object-position: center 42%;
+  padding: 0.5rem;
+  background-color: rgb(var(--tc-paper));
+  border: 1px solid rgb(var(--tc-line));
+  border-radius: var(--tc-radius);
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--tc-paper)),
+    0 1px 0 rgb(var(--tc-line)),
+    0 18px 36px -24px rgb(0 0 0 / 0.35);
+}

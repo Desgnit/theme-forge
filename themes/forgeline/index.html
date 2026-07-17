@@ -70,26 +70,32 @@
 
   <main id="main">
 
-    <!-- ===== Hero ===== -->
-    <section class="relative overflow-hidden bg-primary-dark bg-blueprint text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
+    <!-- ===== Hero (v2: offset datasheet card) ===== -->
+    <section class="relative bg-primary-dark bg-blueprint text-white">
+      <div class="container py-16 lg:py-24">
         <div>
           <p class="kicker !text-accent">Trade &amp; project supply since 1987</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl lg:text-[3.4rem]">Commercial lighting and electrical, <span class="text-accent">delivered next day.</span></h1>
+          <h1 class="fl-hero2-title text-4xl leading-tight text-white md:text-5xl">Commercial lighting and electrical, <span class="text-accent">delivered next day.</span></h1>
           <p class="mt-5 max-w-xl text-lg text-white/75">Calder Industrial supplies contractors, wholesalers and facilities teams with LED luminaires, cable and switchgear — with free lighting design and the photometric files your spec demands.</p>
           <div class="mt-8 flex flex-wrap gap-4">
             <a href="products.html" class="btn-accent">Browse the range</a>
             <a href="contact.html" class="btn-ghost-light">Get a project price</a>
           </div>
-          <dl class="mt-12 grid grid-cols-3 gap-6 border-t border-white/15 pt-8 max-w-lg">
-            <div><dt class="text-sm text-white/60">Stocked lines</dt><dd class="font-display text-3xl font-extrabold text-white">4,000+</dd></div>
-            <div><dt class="text-sm text-white/60">OTIF delivery</dt><dd class="font-display text-3xl font-extrabold text-white">98.6%</dd></div>
-            <div><dt class="text-sm text-white/60">Luminaire warranty</dt><dd class="font-display text-3xl font-extrabold text-white">5 yr</dd></div>
-          </dl>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero-warehouse.jpg" alt="Welder working on a steel fabrication, sparks flying" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+        <div class="fl-hero2-card reveal ml-auto mt-10 max-w-xl overflow-hidden rounded-card border border-accent">
+          <img src="assets/img/hero-warehouse.jpg" alt="Welder working on a steel fabrication, sparks flying" class="w-full" width="880" height="560">
         </div>
+      </div>
+    </section>
+
+    <!-- ===== Hero stats strip (v2) ===== -->
+    <section class="border-b border-line bg-board" aria-label="Key numbers">
+      <div class="container">
+        <dl class="flex max-w-lg flex-wrap gap-x-10 gap-y-3 py-6">
+          <div><dt class="text-sm text-ink-faint">Stocked lines</dt><dd class="font-display text-2xl font-extrabold text-primary">4,000+</dd></div>
+          <div><dt class="text-sm text-ink-faint">OTIF delivery</dt><dd class="font-display text-2xl font-extrabold text-primary">98.6%</dd></div>
+          <div><dt class="text-sm text-ink-faint">Luminaire warranty</dt><dd class="font-display text-2xl font-extrabold text-primary">5 yr</dd></div>
+        </dl>
       </div>
     </section>
 

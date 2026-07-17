@@ -57,6 +57,48 @@ footer.bg-primary-dark {
     0 1px 3px rgb(var(--co-primary-dark) / 0.4);
 }
 
+/* --- hero v2: showroom floor -----------------------------------------------
+   Centered headline over a wide, low hero-car card sat like a car on a
+   plinth: cyan edge-glow, a gradient "floor reflection" beneath it, and a
+   row of number-plate price chips across the bottom of the band. */
+.sr-hero-center { text-align: center; }
+.sr-hero-plinth {
+  position: relative;
+  width: 100%;
+  max-width: 58rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sr-hero-plinth img {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 28vw, 330px); /* wide + low, like a plinth shot */
+  object-fit: cover;
+  object-position: center 60%;
+  border-radius: var(--co-radius);
+  box-shadow:
+    0 0 0 1px rgb(var(--co-accent) / 0.55),          /* cyan edge-glow */
+    0 0 34px -6px rgb(var(--co-accent) / 0.5),
+    0 22px 44px -20px rgb(0 0 0 / 0.85);
+}
+.sr-hero-plinth::after {
+  /* floor reflection: cyan gradient pooling under the car */
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 100%;
+  height: 3.25rem;
+  border-radius: 50% / 100% 100% 0 0;
+  background: linear-gradient(
+    rgb(var(--co-accent) / 0.28),
+    rgb(var(--co-accent) / 0.07) 55%,
+    transparent
+  );
+  filter: blur(6px);
+  pointer-events: none;
+}
+
 /* --- Accent buttons: a soft cyan gleam that sharpens on hover --- */
 .btn-accent {
   box-shadow: 0 0 16px -4px rgb(var(--co-accent) / 0.55);

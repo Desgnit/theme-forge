@@ -64,25 +64,29 @@
   </header>
 
   <main id="main">
-    <!-- ===== Hero ===== -->
+    <!-- ===== Hero (showroom floor) ===== -->
     <section class="relative overflow-hidden bg-primary-dark bg-grid text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        <div>
-          <p class="kicker !text-accent">Milton Keynes &middot; fully mobile &middot; est. 2018</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl">Showroom finish, on your driveway.</h1>
-          <p class="mt-5 max-w-xl text-lg text-white/80">From a proper hand wash to a ceramic coating measured in years — done at your home or workplace, anywhere within 20 miles of Milton Keynes. Two self-contained vans, water and power on board. You don't even need an outside tap.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="contact.html" class="btn-accent">Book your slot</a>
-            <a href="tel:+441908550412" class="btn-ghost-light">01908 550 412</a>
-          </div>
-          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-7">
-            <p class="flex items-center gap-2 font-display text-sm font-bold"><span class="text-accent" aria-hidden="true">★★★★★</span> 5.0 on Google</p>
-            <p class="text-sm text-white/70">Fully insured &middot; Trade-quality products &middot; Weekend slots</p>
-          </div>
+      <div class="sr-hero-center container flex flex-col items-center py-16 lg:py-24">
+        <p class="kicker !text-accent">Milton Keynes &middot; fully mobile &middot; est. 2018</p>
+        <h1 class="text-4xl leading-tight text-white md:text-5xl">Showroom finish, on your driveway.</h1>
+        <p class="mt-5 max-w-2xl text-lg text-white/80">From a proper hand wash to a ceramic coating measured in years — done at your home or workplace, anywhere within 20 miles of Milton Keynes. Two self-contained vans, water and power on board. You don't even need an outside tap.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="contact.html" class="btn-accent">Book your slot</a>
+          <a href="tel:+441908550412" class="btn-ghost-light">01908 550 412</a>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero.jpg" alt="Detailer pressure-rinsing the panels of a gloss-black car" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+        <div class="mt-10 flex w-full flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/15 pt-7">
+          <p class="flex items-center gap-2 font-display text-sm font-bold"><span class="text-accent" aria-hidden="true">★★★★★</span> 5.0 on Google</p>
+          <p class="text-sm text-white/70">Fully insured &middot; Trade-quality products &middot; Weekend slots</p>
         </div>
+        <div class="sr-hero-plinth reveal mt-12">
+          <img src="assets/img/hero.jpg" alt="Detailer pressure-rinsing the panels of a gloss-black car" class="w-full rounded-card border border-white/10" width="1320" height="560">
+        </div>
+        <ul class="mt-12 flex flex-wrap justify-center gap-3" aria-label="Package prices at a glance">
+          <li><span class="spec-chip !text-sm !py-1 !px-3">Mini valet £35</span></li>
+          <li><span class="spec-chip !text-sm !py-1 !px-3">Full valet £70</span></li>
+          <li><span class="spec-chip !text-sm !py-1 !px-3">Enhancement from £180</span></li>
+          <li><span class="spec-chip !text-sm !py-1 !px-3">Ceramic from £450</span></li>
+        </ul>
       </div>
     </section>
 

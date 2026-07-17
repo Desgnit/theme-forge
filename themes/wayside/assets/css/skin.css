@@ -70,3 +70,31 @@
   box-shadow: 0 1px 2px rgb(var(--co-primary-dark) / 0.05),
               0 6px 18px -12px rgb(var(--co-primary-dark) / 0.18);
 }
+
+/* ==========================================================================
+   hero v2 — postcard hero
+   Centred headline above a big postcard-bordered photo, CTAs beneath,
+   contour band (above) behind it all. Centring and the postcard frame are
+   not in this theme's purged main.css build, so they live here.
+   ========================================================================== */
+.hero-postcard-band { text-align: center; }
+.hero-postcard-band .kicker { justify-content: center; }
+.hero-postcard-band h1,
+.hero-postcard-band .max-w-xl { margin-left: auto; margin-right: auto; }
+
+/* Greetings from Wayside Meadow: thick white border, a wish-you-were-here
+   tilt and a proper drop onto the contour band. */
+.hero-postcard {
+  display: block;
+  width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
+  border: 12px solid #fff;
+  border-radius: 3px;
+  transform: rotate(-1.4deg);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.28),
+              0 26px 50px -22px rgb(0 0 0 / 0.6);
+}
+@media (min-width: 768px) {
+  .hero-postcard { border-width: 16px; }
+}

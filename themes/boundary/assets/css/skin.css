@@ -51,3 +51,20 @@ dl dd,
 
 /* Chips read like scorebook stamps */
 .comp-chip { border-radius: 2px; }
+
+/* --------------------------------------------------------------------------
+   hero v2 — full-bleed photo hero with centred copy, match-centre strip below
+   -------------------------------------------------------------------------- */
+
+/* Centred copy needs an even wash across the middle of the photo */
+main > section.bg-terrace:first-child {
+  background-image:
+    linear-gradient(rgb(14 63 33 / 0.88), rgb(14 63 33 / 0.78) 55%, rgb(14 63 33 / 0.9)),
+    url("../img/hero-stadium.jpg");
+}
+
+/* Slim full-width match-centre strip pinned under the photo hero */
+.hero-match-strip {
+  border-top: 3px solid rgb(var(--tc-accent));
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+}

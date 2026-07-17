@@ -16,6 +16,39 @@ main > section.bg-terrace:first-child {
   border-bottom: 3px solid rgb(var(--tc-accent) / 0.85);
 }
 
+/* --- Hero v2: centred stadium poster + scoreboard band (index.html) -------
+   The home hero is pure cinematic type, centred over the stadium photo
+   (.hero-poster); the match centre lives in .scoreboard-band, a full-width
+   three-across strip directly below the hero. */
+main > section.bg-terrace:first-child:has(.hero-poster) {
+  /* Symmetric tint for the centred composition (overrides the 102deg wash) */
+  background-image:
+    radial-gradient(130% 100% at 50% 18%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.55) 100%),
+    linear-gradient(180deg, rgb(var(--tc-primary-dark) / 0.94) 0%, rgb(var(--tc-primary-dark) / 0.7) 52%, rgb(var(--tc-primary) / 0.62) 100%),
+    url("../img/hero-stadium.jpg");
+}
+.hero-poster {
+  min-height: 78vh;
+}
+.bg-terrace .hero-poster h1 {
+  max-width: 24ch;
+  font-size: clamp(3rem, 5vw + 1.25rem, 6.25rem);
+  line-height: 1.02;
+}
+.scoreboard-band {
+  border-bottom: 3px solid rgb(var(--tc-accent) / 0.85);
+  box-shadow: inset 0 22px 40px -32px rgba(0, 0, 0, 0.85);
+}
+.scoreboard-band .scoreboard-cell {
+  min-width: 0;
+}
+@media (min-width: 768px) {
+  .scoreboard-band .scoreboard-cell + .scoreboard-cell {
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+    padding-left: 2.5rem;
+  }
+}
+
 /* --- Other dark bands: floodlight sheen up top, soft vignette at edges ---- */
 section.bg-terrace {
   background-image:

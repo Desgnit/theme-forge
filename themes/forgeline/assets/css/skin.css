@@ -71,3 +71,24 @@ body {
   z-index: 1;
   pointer-events: none;
 }
+
+/* --- Hero v2: offset datasheet card -------------------------------------
+   Utilities the compiled main.css doesn't ship (arbitrary 5rem headline,
+   negative pull margin, slight card shadow) live here instead. */
+@media (min-width: 1024px) {
+  .fl-hero2-title {
+    font-size: 5rem;
+    line-height: 1.02;
+  }
+}
+.fl-hero2-card {
+  position: relative;              /* paints above the strips that follow */
+  margin-bottom: -6rem;            /* outweighs the band's own pb-16 so the
+                                      card overhangs into the stats strip */
+  border-color: rgb(245 158 11 / 0.85); /* amber hairline */
+  background: rgb(16 24 40);
+  box-shadow: 0 18px 32px -18px rgb(0 0 0 / 0.55); /* slight, not shadow-2xl */
+}
+@media (min-width: 1024px) {
+  .fl-hero2-card { margin-bottom: -10.5rem; } /* band pb is 6rem at lg */
+}

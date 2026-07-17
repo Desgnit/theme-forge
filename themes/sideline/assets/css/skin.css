@@ -53,3 +53,28 @@ main > section.bg-pitch:first-child {
 
 /* Kicker keeps its flag but rounds off like everything else */
 .kicker::before { border-radius: 9999px; }
+
+/* --------------------------------------------------------------------------
+   hero v2 — stacked playful hero: full-width photo card with corner stickers
+   -------------------------------------------------------------------------- */
+.hero-photo-card { position: relative; }
+.hero-photo-card img {
+  height: clamp(240px, 38vw, 440px);
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+/* Corner stickers reuse the .age-badge sticker look, sized up and pinned
+   so they overlap the photo card's corners */
+.hero-sticker {
+  position: absolute;
+  height: 5.5rem;
+  width: 5.5rem;
+  padding: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.15;
+  text-align: center;
+  box-shadow: 0 8px 18px rgb(10 56 35 / 0.4);
+}
+.hero-sticker--tl { top: -1.25rem; left: -0.5rem; transform: rotate(-8deg); }
+.hero-sticker--br { bottom: -1.25rem; right: -0.5rem; transform: rotate(6deg); }

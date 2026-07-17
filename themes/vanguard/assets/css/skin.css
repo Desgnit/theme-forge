@@ -61,6 +61,60 @@ dl dd.font-display {
   color: rgb(var(--co-accent-dark));
 }
 
+/* --- hero v2: timeline hero + van band -------------------------------------
+   The homepage hero swaps its photo column for a 3-step "moving day"
+   mini-timeline joined by the skin's dashed route-line; the van photo moves
+   below the hero into a full-width band with the price strip overlaid. */
+.vg-hero-steps {
+  position: relative;
+  display: grid;
+  gap: 2.25rem;
+  padding-left: 3.4rem;
+  list-style: none;
+  margin: 0;
+}
+.vg-hero-steps::before {
+  /* the dashed route-line connecting the steps */
+  content: "";
+  position: absolute;
+  left: 1.2rem;
+  top: 1rem;
+  bottom: 1.4rem;
+  border-left: 3px dashed rgb(var(--co-accent) / 0.55);
+}
+.vg-hero-step { position: relative; }
+.vg-hero-step-dot {
+  position: absolute;
+  left: -3.4rem;
+  top: -0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 50%;
+  border: 2px dashed rgb(var(--co-accent));
+  background: rgb(var(--co-primary-dark));
+  color: rgb(var(--co-accent));
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.vg-van-band img {
+  display: block;
+  width: 100%;
+  height: clamp(240px, 34vw, 420px);
+  object-fit: cover;
+}
+.vg-van-band-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(var(--co-primary-dark) / 0.86);
+  border-top: 3px dashed rgb(var(--co-accent) / 0.6);
+  backdrop-filter: blur(2px);
+}
+
 /* --- Checklist ticks on card lists ---------------------------------------- */
 .card ul { margin-top: 0.9rem; display: grid; gap: 0.45rem; }
 .card ul li {

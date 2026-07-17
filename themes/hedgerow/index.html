@@ -70,13 +70,15 @@
 
   <main id="main">
 
-    <!-- ===== Hero ===== -->
-    <section class="relative overflow-hidden bg-primary-dark bg-blueprint text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        <div>
+    <!-- ===== Hero (v2: full-bleed produce) ===== -->
+    <section class="hh-hero2 relative overflow-hidden text-white">
+      <img src="assets/img/hero-warehouse.jpg" alt="Baby aubergines, green beans and cucumbers piled high and glistening on the veg stall" class="hh-hero2-img" width="880" height="560">
+      <div class="hh-hero2-scrim" aria-hidden="true"></div>
+      <div class="hh-hero2-frame container relative flex items-center py-16 lg:py-24">
+        <div class="max-w-2xl">
           <p class="kicker !text-accent">A working family farm since 1946</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl lg:text-[3.4rem]">Reared here, grown here, <span class="text-accent">sold at the gate.</span></h1>
-          <p class="mt-5 max-w-xl text-lg text-white/75">Hedgerow Farm Shop is the shop window of a working Peak District farm — a butchery counter fed by our own herd, greengrocery picked before the doors open, and a café corner that cooks whatever the shop sells best.</p>
+          <h1 class="hh-hero2-title text-4xl leading-tight text-white md:text-5xl">Reared here, grown here, <span class="text-accent">sold at the gate.</span></h1>
+          <p class="mt-5 max-w-xl text-lg text-white/85">Hedgerow Farm Shop is the shop window of a working Peak District farm — a butchery counter fed by our own herd, greengrocery picked before the doors open, and a café corner that cooks whatever the shop sells best.</p>
           <div class="mt-8 flex flex-wrap gap-4">
             <a href="products.html" class="btn-accent">See what's in the shop</a>
             <a href="contact.html" class="btn-ghost-light">Order a beef box</a>
@@ -87,20 +89,19 @@
             <div><dt class="text-sm text-white/60">Shop opened</dt><dd class="font-display text-3xl font-extrabold text-white">1998</dd></div>
           </dl>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero-warehouse.jpg" alt="Baby aubergines, green beans and cucumbers piled high and glistening on the veg stall" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
-        </div>
       </div>
     </section>
 
-    <!-- ===== In-season strip ===== -->
+    <!-- ===== In-season strip (v2: scrolling kraft tickets) ===== -->
     <section class="border-b border-line bg-board" aria-label="What's in season">
-      <div class="container flex flex-wrap items-center justify-center gap-x-10 gap-y-3 py-6 font-display text-sm font-bold uppercase tracking-widest text-ink-faint">
-        <span>In season now</span><span aria-hidden="true">&middot;</span>
-        <span>Asparagus</span><span aria-hidden="true">&middot;</span>
-        <span>Spring lamb</span><span aria-hidden="true">&middot;</span>
-        <span>Jersey Royals</span><span aria-hidden="true">&middot;</span>
-        <span>Forced rhubarb</span>
+      <div class="container py-6">
+        <div class="hh-season2 flex items-center gap-3">
+          <span class="shrink-0 whitespace-nowrap font-display text-sm font-bold uppercase tracking-widest text-ink-faint">In season now</span>
+          <span class="spec-chip shrink-0 whitespace-nowrap">Asparagus</span>
+          <span class="spec-chip shrink-0 whitespace-nowrap">Spring lamb</span>
+          <span class="spec-chip shrink-0 whitespace-nowrap">Jersey Royals</span>
+          <span class="spec-chip shrink-0 whitespace-nowrap">Forced rhubarb</span>
+        </div>
       </div>
     </section>
 

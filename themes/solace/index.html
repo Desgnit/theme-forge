@@ -64,24 +64,21 @@
   </header>
 
   <main id="main">
-    <!-- ===== Hero ===== -->
-    <section class="relative overflow-hidden bg-primary-dark bg-grid text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        <div>
-          <p class="kicker !text-accent">Fairbourne &amp; Sons &middot; Harrogate &middot; est. 1932</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl">Here when you need us, day or night.</h1>
-          <p class="mt-5 max-w-xl text-lg text-white/80">We are an independent, family-owned funeral directors, caring for Harrogate families for four generations. Whenever you call, you will speak to a member of our team. We will listen first, then guide you gently through what comes next.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="contact.html" class="btn-accent">Talk to us</a>
-            <a href="tel:+441423552132" class="btn-ghost-light">01423 552 132</a>
-          </div>
-          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-7">
-            <p class="flex items-center gap-2 font-display text-sm font-bold"><span class="text-accent" aria-hidden="true">★★★★★</span> Rated 5.0 by families on Google</p>
-            <p class="text-sm text-white/70">NAFD member &middot; Private chapel of rest &middot; Independent and family owned</p>
-          </div>
+    <!-- ===== Hero (v2 — quiet centered, no photo) ===== -->
+    <section class="hero-quiet border-b border-line bg-paper">
+      <div class="container flex flex-col items-center py-16 lg:py-24">
+        <p class="kicker">Fairbourne &amp; Sons &middot; Harrogate &middot; est. 1932</p>
+        <h1 class="max-w-2xl text-4xl leading-tight text-primary md:text-5xl">Here when you need us, day or night.</h1>
+        <div class="hero-rule" aria-hidden="true"></div>
+        <p class="mt-5 max-w-xl text-lg text-ink-soft">We are an independent, family-owned funeral directors, caring for Harrogate families for four generations. Whenever you call, you will speak to a member of our team. We will listen first, then guide you gently through what comes next.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="contact.html" class="btn-accent">Talk to us</a>
+          <a href="tel:+441423552132" class="btn-outline">01423 552 132</a>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero.jpg" alt="The quiet arrangement room at Fairbourne &amp; Sons in Harrogate" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+        <p class="hero-phone-banner mt-10 text-sm text-ink-soft">Our telephone is answered 24 hours a day, every day of the year &mdash; <a href="tel:+441423552132" class="font-semibold text-accent-dark hover:text-accent">01423 552 132</a></p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-line pt-7">
+          <p class="flex items-center gap-2 font-display text-sm font-bold text-primary"><span class="text-accent-dark" aria-hidden="true">★★★★★</span> Rated 5.0 by families on Google</p>
+          <p class="text-sm text-ink-soft">NAFD member &middot; Private chapel of rest &middot; Independent and family owned</p>
         </div>
       </div>
     </section>

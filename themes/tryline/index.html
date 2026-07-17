@@ -70,39 +70,50 @@
 
   <main id="main">
 
-    <!-- ===== Hero + match centre ===== -->
+    <!-- ===== Hero: typographic poster ===== -->
     <section class="relative overflow-hidden bg-primary-dark bg-terrace text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-5 lg:py-24">
-        <div class="lg:col-span-3">
-          <p class="kicker !text-accent">Est. 1923 &middot; NCL Division Two</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl lg:text-6xl">One club. One town. <span class="text-accent">Thirteen shirts.</span></h1>
-          <p class="mt-5 max-w-xl text-lg text-white/75">From the open-age side to the tag-rugby tots, Millbrook Raiders is run by volunteers, backed by the town and open to everyone. Come stand behind the sticks — your first pie's on us.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="fixtures.html" class="btn-accent">Fixtures &amp; results</a>
-            <a href="juniors.html" class="btn-ghost-light">Junior sign-on</a>
-          </div>
-          <dl class="mt-12 grid grid-cols-3 gap-6 border-t border-white/15 pt-8 max-w-lg">
-            <div><dt class="text-sm text-white/60">League position</dt><dd class="font-display text-3xl font-bold text-white">2nd</dd></div>
-            <div><dt class="text-sm text-white/60">Teams</dt><dd class="font-display text-3xl font-bold text-white">16</dd></div>
-            <div><dt class="text-sm text-white/60">Average gate</dt><dd class="font-display text-3xl font-bold text-white">517</dd></div>
-          </dl>
+      <div class="container flex flex-col items-center py-16 text-center lg:py-24">
+        <p class="kicker !text-accent justify-center">Est. 1923 &middot; NCL Division Two</p>
+        <h1 class="hero-poster w-full text-white">
+          <span class="hero-poster-line">One club.</span>
+          <span class="hero-poster-line hero-poster-line--outline">One town.</span>
+          <span class="hero-poster-line text-accent">Thirteen shirts.</span>
+        </h1>
+        <div class="hero-tryline-rule" aria-hidden="true"></div>
+        <p class="mt-6 max-w-xl text-lg text-white/75">From the open-age side to the tag-rugby tots, Millbrook Raiders is run by volunteers, backed by the town and open to everyone. Come stand behind the sticks — your first pie's on us.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="fixtures.html" class="btn-accent">Fixtures &amp; results</a>
+          <a href="juniors.html" class="btn-ghost-light">Junior sign-on</a>
         </div>
+        <dl class="mt-12 grid w-full max-w-lg grid-cols-3 gap-6 border-t border-white/15 pt-8">
+          <div><dt class="text-sm text-white/60">League position</dt><dd class="font-display text-3xl font-bold text-white">2nd</dd></div>
+          <div><dt class="text-sm text-white/60">Teams</dt><dd class="font-display text-3xl font-bold text-white">16</dd></div>
+          <div><dt class="text-sm text-white/60">Average gate</dt><dd class="font-display text-3xl font-bold text-white">517</dd></div>
+        </dl>
+      </div>
+    </section>
 
-        <!-- Match centre card -->
-        <div class="reveal lg:col-span-2">
+    <!-- ===== Photo band ===== -->
+    <section aria-label="Matchday at The Foundry Ground">
+      <img src="assets/img/news-match.jpg" alt="Millbrook Raiders in action at The Foundry Ground" class="hero-band-img w-full" width="1760" height="560">
+    </section>
+
+    <!-- ===== Match centre band ===== -->
+    <section class="bg-primary bg-terrace py-12 text-white" aria-label="Match centre">
+      <div class="container">
+        <h2 class="font-display text-sm font-semibold uppercase tracking-[0.25em] text-accent">Match centre</h2>
+        <div class="mt-6 grid gap-6 md:grid-cols-3">
           <div class="rounded-card border border-white/15 bg-primary-light/60 p-6 backdrop-blur">
-            <h2 class="font-display text-sm font-semibold uppercase tracking-[0.25em] text-accent">Match centre</h2>
-
-            <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-white/50">Last time out &middot; League</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-white/50">Last time out &middot; League</p>
             <div class="mt-2 flex items-center justify-between gap-3">
               <span class="font-display text-lg font-semibold uppercase text-white">Raiders</span>
-              <span class="scoreline !bg-white/10">24 – 18</span>
+              <span class="scoreline">24&nbsp;–&nbsp;18</span>
               <span class="font-display text-lg font-semibold uppercase text-white/70">Castleton</span>
             </div>
             <p class="mt-2 text-sm text-white/60">Tries: Mafi 2, Nuttall, Fenwick &middot; Goals: Lofthouse 4/5</p>
+          </div>
 
-            <hr class="my-5 border-white/15">
-
+          <div class="rounded-card border border-white/15 bg-primary-light/60 p-6 backdrop-blur">
             <p class="text-xs font-semibold uppercase tracking-wider text-white/50">Up next &middot; Sun 9 Aug, 2:30pm</p>
             <div class="mt-2 flex items-center justify-between gap-3">
               <span class="font-display text-lg font-semibold uppercase text-white">Raiders</span>
@@ -110,13 +121,14 @@
               <span class="font-display text-lg font-semibold uppercase text-white">Saltford Vik</span>
             </div>
             <p class="mt-1 text-sm text-white/60">The Foundry Ground &middot; NCL Division Two &middot; Gates 1pm</p>
+          </div>
 
-            <div class="mt-4 grid grid-cols-3 gap-2 text-center" data-countdown="2026-08-09T14:30:00" data-countdown-done="It's game day — up the Raiders!">
+          <div class="rounded-card border border-white/15 bg-primary-light/60 p-6 backdrop-blur">
+            <div class="grid grid-cols-3 gap-2 text-center" data-countdown="2026-08-09T14:30:00" data-countdown-done="It's game day — up the Raiders!">
               <div class="rounded-card bg-white/10 py-3"><span class="block font-display text-2xl font-bold text-accent" data-count-days>00</span><span class="text-xs uppercase tracking-wider text-white/60">days</span></div>
               <div class="rounded-card bg-white/10 py-3"><span class="block font-display text-2xl font-bold text-accent" data-count-hours>00</span><span class="text-xs uppercase tracking-wider text-white/60">hrs</span></div>
               <div class="rounded-card bg-white/10 py-3"><span class="block font-display text-2xl font-bold text-accent" data-count-mins>00</span><span class="text-xs uppercase tracking-wider text-white/60">mins</span></div>
             </div>
-
             <a href="fixtures.html" class="btn-accent mt-5 w-full">Full fixture list</a>
           </div>
         </div>

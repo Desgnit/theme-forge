@@ -55,3 +55,44 @@ dd.font-display, .card .text-4xl {
 
 /* Kicker rule-lines pick up the reed green. */
 .kicker::before { background-color: rgb(var(--co-accent)); }
+
+/* ==========================================================================
+   hero v2 — waterline hero
+   Full-bleed misty lake photo, text block held top-left, and the day-ticket
+   price board as a dark tabular band pinned to the very bottom of the hero.
+   Layout utilities used here (full-bleed bg, column pinning) are not in
+   this theme's purged main.css build, so they live here.
+   ========================================================================== */
+
+/* The lake itself: photo under the misty gradients, filling the hero. */
+.hero-waterline.bg-grid {
+  background-image:
+    linear-gradient(90deg, rgb(5 26 42 / 0.82) 0%, rgb(5 26 42 / 0.55) 42%, rgb(5 26 42 / 0.12) 68%, transparent 82%),
+    linear-gradient(168deg, rgb(4 22 38 / 0.6) 0%, rgb(18 64 94 / 0.28) 48%, rgb(8 34 54 / 0.15) 74%),
+    linear-gradient(to top, rgb(8 34 54 / 0.55), transparent 38%),
+    url("../img/hero.jpg");
+  background-size: cover, cover, cover, cover;
+  background-position: center, center, center, center 62%;
+}
+
+/* Text rides high on the water; open lake below, board at the foot. */
+.hero-waterline {
+  display: flex;
+  flex-direction: column;
+  min-height: 38rem;
+}
+@media (min-width: 1024px) {
+  .hero-waterline { min-height: 44rem; }
+}
+.hero-waterline > .container {
+  padding-bottom: 8rem; /* keep the text at the top — the water gets the rest */
+}
+.hero-waterline > .hero-priceboard { margin-top: auto; }
+
+/* The price board: dark band, lodge-board numerals. */
+.hero-priceboard {
+  background-color: rgb(var(--co-primary-dark) / 0.78);
+  font-variant-numeric: tabular-nums lining-nums;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}

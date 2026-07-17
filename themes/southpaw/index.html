@@ -64,10 +64,12 @@
   </header>
 
   <main id="main">
-    <!-- ===== Hero ===== -->
-    <section class="relative overflow-hidden bg-primary-dark bg-grid text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        <div>
+    <!-- ===== Hero: split-diagonal ===== -->
+    <section class="hero-diagonal relative overflow-hidden bg-primary-dark bg-grid text-white">
+      <div class="hero-diagonal-slash" aria-hidden="true"></div>
+      <div class="hero-diagonal-photo" role="img" aria-label="Pair of well-worn black leather boxing gloves resting on the ring canvas"></div>
+      <div class="container py-16 lg:py-24">
+        <div class="max-w-xl">
           <p class="kicker !text-accent">Salford's amateur boxing club &middot; est. 2011</p>
           <h1 class="text-4xl leading-tight text-white md:text-5xl">Everyone starts with the same first session</h1>
           <p class="mt-5 max-w-xl text-lg text-white/80">Fundamentals, juniors, ladies-only and boxfit under the railway arches in Salford. England Boxing affiliated, coached properly, and your first session is on us — whoever you are, whatever shape you're in.</p>
@@ -80,8 +82,18 @@
             <p class="text-sm text-white/70">England Boxing affiliated &middot; DBS-checked coaches &middot; Fully insured</p>
           </div>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero.jpg" alt="Pair of well-worn black leather boxing gloves resting on the ring canvas" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+      </div>
+      <div class="hero-chip-row" aria-label="This week's timetable">
+        <div class="container flex flex-wrap items-center gap-x-8 gap-y-3 py-4">
+          <p class="font-display text-sm font-bold uppercase tracking-widest text-white/70">This week at the arch</p>
+          <ul class="flex flex-wrap gap-2">
+            <li><span class="spec-chip !text-sm !py-1 !px-3">Mon–Fri 12:00–21:30</span></li>
+            <li><span class="spec-chip !text-sm !py-1 !px-3">Sat 9:00–13:00</span></li>
+            <li><span class="spec-chip !text-sm !py-1 !px-3">Fundamentals</span></li>
+            <li><span class="spec-chip !text-sm !py-1 !px-3">Juniors 8–16</span></li>
+            <li><span class="spec-chip !text-sm !py-1 !px-3">Ladies-only</span></li>
+            <li><span class="spec-chip !text-sm !py-1 !px-3">Boxfit</span></li>
+          </ul>
         </div>
       </div>
     </section>

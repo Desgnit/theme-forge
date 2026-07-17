@@ -64,10 +64,10 @@
   </header>
 
   <main id="main">
-    <!-- ===== Hero ===== -->
-    <section class="relative overflow-hidden bg-primary-dark bg-grid text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        <div>
+    <!-- ===== Hero (v2 — waterline: full-bleed misty lake, text top-left, price board on the waterline) ===== -->
+    <section class="hero-waterline relative overflow-hidden bg-primary-dark bg-grid text-white" aria-label="Welcome — an angler carrying rod and landing net along the reed-lined bank of Willow Pool in early morning mist">
+      <div class="container w-full py-16 lg:py-24">
+        <div class="max-w-2xl">
           <p class="kicker !text-accent">Shropshire day-ticket fishery &middot; est. 1987</p>
           <h1 class="text-4xl leading-tight text-white md:text-5xl">Three quiet lakes, fish that pull back, and the kettle always on.</h1>
           <p class="mt-5 max-w-xl text-lg text-white/80">Willow Pool Fisheries is three well-stocked coarse lakes on our family farm near Wem — carp to 35lb, tench, bream and roach, day tickets on the bank, open dawn till dusk every day.</p>
@@ -80,19 +80,15 @@
             <p class="text-sm text-white/70">Family run since 1987 &middot; Barbless only &middot; Disabled pegs on every lake</p>
           </div>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero.jpg" alt="Angler carrying rod and landing net along the reed-lined bank of Willow Pool in early morning mist" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+      </div>
+      <!-- Price board pinned to the waterline -->
+      <section class="hero-priceboard border-t border-white/15" aria-label="Day ticket prices">
+        <div class="container flex flex-wrap items-center justify-between gap-x-8 gap-y-3 py-4">
+          <p class="text-sm font-semibold text-white/80">Day ticket <span class="font-display text-lg font-bold text-accent">£8</span> — pay at the lodge or on the bank</p>
+          <p class="text-sm font-semibold text-white/80">Concessions <span class="font-display text-lg font-bold text-accent">£5</span> — juniors, over-65s and blue badge holders</p>
+          <p class="text-sm font-semibold text-white/80">Two rods <span class="font-display text-lg font-bold text-accent">£12</span> — second rod welcome on Willow and Kingfisher</p>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== Trust strip ===== -->
-    <section class="border-b border-line bg-board" aria-label="Day ticket prices">
-      <div class="container grid gap-6 py-8 sm:grid-cols-3">
-        <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.6-2.6A11.95 11.95 0 0112 21 11.95 11.95 0 013.4 7.4 11.95 11.95 0 0112 3a11.95 11.95 0 018.6 4.4z"/></svg>Day ticket £8 — pay at the lodge or on the bank</p>
-        <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Concessions £5 — juniors, over-65s and blue badge holders</p>
-        <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l4-2 3 2 3-2z"/></svg>Two rods £12 — second rod welcome on Willow and Kingfisher</p>
-      </div>
+      </section>
     </section>
 
     <!-- ===== Services ===== -->

@@ -62,6 +62,67 @@ main ul[class*="space-y"] > li::before {
 main ul[class*="space-y"] > li:has(> .spec-chip) { padding-left: 0; }
 main ul[class*="space-y"] > li:has(> .spec-chip)::before { content: none; }
 
+/* --- hero v2: polaroid cluster ---------------------------------------------
+   The hero photo column becomes two overlapping polaroid-style photo cards
+   at slight opposite rotations with a paw-print sticker badge across the
+   join — cosy, like snaps pinned up in the salon. */
+.wt-polaroid-cluster {
+  position: relative;
+  padding-bottom: 31%; /* room for the lower polaroid's overlap */
+}
+.wt-polaroid {
+  margin: 0;
+  background: rgb(255 252 247);
+  border: 1px solid rgb(var(--co-line));
+  border-radius: 1.1rem;
+  padding: 0.8rem 0.8rem 0.75rem;
+  box-shadow: 0 18px 36px -20px rgb(91 63 48 / 0.45),
+              0 6px 14px -8px rgb(91 63 48 / 0.18);
+}
+.wt-polaroid img {
+  display: block;
+  width: 100%;
+  border-radius: 0.7rem;
+}
+.wt-polaroid figcaption {
+  padding: 0.65rem 0.25rem 0.15rem;
+  text-align: center;
+}
+.wt-polaroid-a {
+  width: 76%;
+  transform: rotate(-3.5deg);
+}
+.wt-polaroid-a figcaption {
+  /* keep the caption clear of the overlapping lower polaroid */
+  text-align: left;
+  padding-left: 0.5rem;
+}
+.wt-polaroid-b {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 58%;
+  transform: rotate(4deg);
+}
+.wt-paw-badge {
+  position: absolute;
+  left: 62%;
+  top: 38%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: rgb(var(--co-accent));
+  border: 3px dashed rgb(255 252 247);
+  box-shadow: 0 0 0 4px rgb(var(--co-accent)),
+              0 10px 22px -10px rgb(91 63 48 / 0.5);
+  font-size: 1.6rem;
+  transform: translate(-50%, -50%) rotate(-10deg);
+}
+
 /* Chips become soft cream pills */
 .spec-chip { border-radius: 999px; background-color: rgb(255 252 247); }
 

@@ -40,3 +40,39 @@ section.bg-board, .bg-board { background-color: rgb(var(--co-board)); }
 
 /* Kickers as little noticeboard labels */
 .kicker { letter-spacing: 0.24em; }
+
+/* ==========================================================================
+   hero v2 — noticeboard hero
+   Full-bleed hall photo behind a cream "pinned notice" card, centred and
+   very slightly rotated, with the what's-on chips pinned along the hero's
+   bottom edge. Centring/rotation utilities are not in this theme's purged
+   main.css build, so they live here.
+   ========================================================================== */
+
+/* Lighter scrim than the old poster hero: the hall photo should read as a
+   photo now that the type sits on its own cream card. */
+main > section.hero-noticeboard.bg-grid:first-of-type {
+  background-image:
+    linear-gradient(rgb(var(--co-primary-dark) / 0.55), rgb(var(--co-primary-dark) / 0.72)),
+    url("../img/hero.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* The notice itself: cream card (accent pin-tab comes from .card above),
+   centred text, pinned a touch off-square. */
+.hero-notice {
+  text-align: center;
+  transform: rotate(-1deg);
+  box-shadow: 0 3px 8px rgb(20 24 16 / 0.25), 0 22px 44px -20px rgb(20 24 16 / 0.55);
+}
+.hero-notice .kicker { justify-content: center; }
+.hero-notice .max-w-xl { margin-left: auto; margin-right: auto; }
+
+/* What's-on chips row along the hero's bottom edge */
+.hero-whatson { background-color: rgb(var(--co-primary-dark) / 0.55); }
+.hero-whatson .spec-chip {
+  box-shadow: 0 1px 3px rgb(20 24 16 / 0.3);
+  transform: rotate(0.5deg);
+}
+.hero-whatson li:nth-child(2n) .spec-chip { transform: rotate(-0.75deg); }

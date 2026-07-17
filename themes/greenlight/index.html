@@ -64,24 +64,33 @@
   </header>
 
   <main id="main">
-    <!-- ===== Hero ===== -->
+    <!-- ===== Hero (dashboard) ===== -->
     <section class="relative overflow-hidden bg-primary-dark bg-grid text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        <div>
-          <p class="kicker !text-accent">Driving lessons in Leicester &middot; DVSA ADI Grade A</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl">Calm lessons. Confident driver. First-time passes.</h1>
-          <p class="mt-5 max-w-xl text-lg text-white/80">One-to-one lessons across Leicester in a manual or automatic car with dual controls — taught patiently, at your pace, by a Grade A instructor. £38 an hour, block of 10 for £350, intensive courses from £680.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="contact.html" class="btn-accent">Book your first lesson</a>
-            <a href="tel:+441164960210" class="btn-ghost-light">0116 496 0210</a>
-          </div>
-          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-7">
-            <p class="flex items-center gap-2 font-display text-sm font-bold"><span class="text-accent" aria-hidden="true">★★★★★</span> 71% pass first time (national average 48%)</p>
-            <p class="text-sm text-white/70">DVSA ADI Grade A &middot; Dual controls &middot; Fully insured</p>
-          </div>
+      <div class="gl-hero-center container flex flex-col items-center py-16 lg:py-24">
+        <p class="kicker !text-accent">Driving lessons in Leicester &middot; DVSA ADI Grade A</p>
+        <h1 class="text-4xl leading-tight text-white md:text-5xl">Calm lessons. Confident driver. First-time passes.</h1>
+        <p class="mt-5 max-w-2xl text-lg text-white/80">One-to-one lessons across Leicester in a manual or automatic car with dual controls — taught patiently, at your pace, by a Grade A instructor. £38 an hour, block of 10 for £350, intensive courses from £680.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="contact.html" class="btn-accent">Book your first lesson</a>
+          <a href="tel:+441164960210" class="btn-ghost-light">0116 496 0210</a>
         </div>
-        <div class="reveal">
-          <img src="assets/img/hero.jpg" alt="Learner driver smiling at the wheel during a lesson with an instructor beside them" class="w-full rounded-card border border-white/10 shadow-2xl" width="880" height="560">
+        <dl class="gl-hero-dash mt-10 grid w-full grid-cols-3 gap-4 reveal" aria-label="Greenlight key numbers">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-widest text-ink-soft">First-time passes</dt>
+            <dd class="mt-1 font-display text-3xl font-extrabold">71%</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-widest text-ink-soft">Lessons</dt>
+            <dd class="mt-1 font-display text-3xl font-extrabold">£38/hr</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-widest text-ink-soft">Block of 10</dt>
+            <dd class="mt-1 font-display text-3xl font-extrabold">£350</dd>
+          </div>
+        </dl>
+        <div class="mt-10 flex w-full flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/15 pt-7">
+          <p class="flex items-center gap-2 font-display text-sm font-bold"><span class="text-accent" aria-hidden="true">★★★★★</span> 71% pass first time (national average 48%)</p>
+          <p class="text-sm text-white/70">DVSA ADI Grade A &middot; Dual controls &middot; Fully insured</p>
         </div>
       </div>
     </section>
@@ -93,6 +102,11 @@
         <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Patient with nervous learners — no shouting, ever</p>
         <p class="flex items-center gap-3 text-sm font-semibold text-primary"><svg class="h-8 w-8 shrink-0 text-accent-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l4-2 3 2 3-2z"/></svg>Manual &amp; automatic cars, both with dual controls</p>
       </div>
+    </section>
+
+    <!-- ===== On the road (hero photo band) ===== -->
+    <section class="gl-photo-band relative overflow-hidden" aria-label="Learning on the road">
+      <img src="assets/img/hero.jpg" alt="Learner driver smiling at the wheel during a lesson with an instructor beside them" class="w-full" width="1760" height="560">
     </section>
 
     <!-- ===== Lessons & prices ===== -->

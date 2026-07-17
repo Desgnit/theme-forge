@@ -50,3 +50,56 @@ h1.text-4xl { font-size: clamp(2.75rem, 6.5vw, 4.5rem); line-height: .95; }
 /* Outline buttons inside darkened boards would be black-on-black */
 section.bg-board .btn-outline { border-color: #fff; color: #fff; }
 section.bg-board .btn-outline:hover { background-color: #fff; color: rgb(var(--co-primary-dark)); }
+
+/* --------------------------------------------------------------------------
+   hero v2 — asymmetric split-diagonal: hard-clipped ring photo behind a
+   left-anchored text block, red slash on the cut, timetable chips on the
+   bottom edge.
+   -------------------------------------------------------------------------- */
+.hero-diagonal .container { position: relative; z-index: 1; }
+
+/* Ring photo, hard diagonal cut on its left edge */
+.hero-diagonal-photo {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 60%;
+  background-image:
+    linear-gradient(100deg, rgb(10 10 10 / 0.88) 0%, rgb(10 10 10 / 0.42) 40%, rgb(10 10 10 / 0.18) 100%),
+    url("../img/hero.jpg");
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(26% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Red slash motif: same geometry nudged left, peeking out along the cut */
+.hero-diagonal-slash {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 60%;
+  transform: translateX(-1.1rem);
+  background-color: rgb(var(--co-accent));
+  clip-path: polygon(26% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Timetable chip-row pinned along the hero's bottom edge */
+.hero-chip-row {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgb(255 255 255 / 0.15);
+  background-color: rgb(10 10 10 / 0.6);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* Small screens: the diagonal collapses to a full-bleed photo background
+   under a heavy scrim so the copy stays readable */
+@media (max-width: 1023.98px) {
+  .hero-diagonal-photo {
+    width: 100%;
+    clip-path: none;
+    background-image:
+      linear-gradient(rgb(10 10 10 / 0.82), rgb(10 10 10 / 0.88)),
+      url("../img/hero.jpg");
+  }
+  .hero-diagonal-slash { display: none; }
+}

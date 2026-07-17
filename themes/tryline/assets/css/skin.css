@@ -78,3 +78,46 @@ h1,
   padding: 1.25rem 1.5rem;
   border-radius: 0;
 }
+
+/* --------------------------------------------------------------------------
+   hero v2 — typographic poster hero + full-width photo band
+   -------------------------------------------------------------------------- */
+
+/* Massive stacked condensed type, each phrase its own line */
+.hero-poster { margin-top: 0.5rem; }
+.hero-poster-line {
+  display: block;
+  font-family: var(--tc-font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  font-size: clamp(2.75rem, 7.6vw, 7.25rem);
+}
+
+/* Alternating outline line — hollow letters, amber stroke */
+.hero-poster-line--outline {
+  color: transparent;
+  -webkit-text-stroke: 2.5px rgb(var(--tc-accent));
+  text-stroke: 2.5px rgb(var(--tc-accent));
+}
+
+/* Amber tryline rule beneath the stacked type */
+.hero-tryline-rule {
+  width: min(26rem, 62%);
+  height: 6px;
+  margin-top: 2.25rem;
+  background-color: rgb(var(--tc-accent));
+}
+
+/* Score chips never break across lines, even at a dash */
+.scoreline { white-space: nowrap; }
+
+/* Full-width photo band directly after the poster — an image break */
+.hero-band-img {
+  display: block;
+  height: clamp(240px, 36vw, 430px);
+  object-fit: cover;
+  object-position: center 30%;
+  border-bottom: 4px solid rgb(var(--tc-accent));
+}

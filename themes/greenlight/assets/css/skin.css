@@ -60,6 +60,24 @@ dl.grid > div {
 }
 dl.grid > div > dd { color: rgb(var(--co-accent-dark)); }
 
+/* --- hero v2: dashboard hero + road band -----------------------------------
+   Centered headline with a wide 3-stat "dashboard" of L-plate style badges
+   (the existing dl.grid plates) directly under the CTAs; the learner-driver
+   photo leaves the hero and becomes a full-width band after the trust strip. */
+.gl-hero-center { text-align: center; }
+.gl-hero-dash {
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.gl-hero-dash > div > dt { color: rgb(var(--co-ink-soft)); }
+.gl-photo-band img {
+  display: block;
+  width: 100%;
+  height: clamp(240px, 32vw, 400px);
+  object-fit: cover;
+}
+
 /* --- Friendlier surfaces -------------------------------------------------- */
 .btn-accent, .btn-outline, .btn-ghost-light, .\!btn, .btn {
   border-radius: 999px;            /* pill buttons: optimistic and clear */

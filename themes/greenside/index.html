@@ -70,55 +70,65 @@
 
   <main id="main">
 
-    <!-- ===== Hero + match centre ===== -->
-    <section class="relative overflow-hidden bg-primary-dark bg-terrace text-white">
-      <div class="container grid items-center gap-12 py-16 lg:grid-cols-5 lg:py-24">
-        <div class="lg:col-span-3">
-          <p class="kicker !text-accent">Est. 1907 &middot; Three Counties League Division One</p>
-          <h1 class="text-4xl leading-tight text-white md:text-5xl lg:text-6xl">A fine green. A full kettle. <span class="text-accent">Everyone welcome.</span></h1>
-          <p class="mt-5 max-w-xl text-lg text-white/75">From the Saturday league team to the Tuesday-morning roll-up, Avonford Bowls Club is run by its members and open to anyone who fancies a bowl. Two greens, one clubhouse — and your first cup of tea is on us.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="fixtures.html" class="btn-accent">Fixtures &amp; results</a>
-            <a href="academy.html" class="btn-ghost-light">New to bowls?</a>
-          </div>
-          <dl class="mt-12 grid grid-cols-3 gap-6 border-t border-white/15 pt-8 max-w-lg">
-            <div><dt class="text-sm text-white/60">League position</dt><dd class="font-display text-3xl font-bold text-white">2nd</dd></div>
-            <div><dt class="text-sm text-white/60">Teams</dt><dd class="font-display text-3xl font-bold text-white">4</dd></div>
-            <div><dt class="text-sm text-white/60">Members</dt><dd class="font-display text-3xl font-bold text-white">148</dd></div>
-          </dl>
+    <!-- ===== Hero: heritage centrepiece ===== -->
+    <section class="relative overflow-hidden">
+      <div class="container flex flex-col items-center py-16 text-center lg:py-24">
+        <p class="kicker hero-rule-kicker justify-center">Est. 1907 &middot; Three Counties League Division One</p>
+        <h1 class="max-w-2xl text-4xl leading-tight text-primary md:text-5xl lg:text-6xl">A fine green. A full kettle. <span class="text-accent-dark">Everyone welcome.</span></h1>
+        <p class="mt-5 max-w-xl text-lg text-ink-soft">From the Saturday league team to the Tuesday-morning roll-up, Avonford Bowls Club is run by its members and open to anyone who fancies a bowl. Two greens, one clubhouse — and your first cup of tea is on us.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="fixtures.html" class="btn-accent">Fixtures &amp; results</a>
+          <a href="academy.html" class="btn-primary">New to bowls?</a>
         </div>
+        <dl class="mt-12 grid w-full max-w-lg grid-cols-3 gap-6 border-t border-line pt-8">
+          <div><dt class="text-sm text-ink-soft">League position</dt><dd class="font-display text-3xl font-bold text-primary">2nd</dd></div>
+          <div><dt class="text-sm text-ink-soft">Teams</dt><dd class="font-display text-3xl font-bold text-primary">4</dd></div>
+          <div><dt class="text-sm text-ink-soft">Members</dt><dd class="font-display text-3xl font-bold text-primary">148</dd></div>
+        </dl>
+      </div>
+    </section>
 
-        <!-- Match centre card -->
-        <div class="reveal lg:col-span-2">
-          <div class="rounded-card border border-white/15 bg-primary-light/60 p-6 backdrop-blur">
-            <h2 class="font-display text-sm font-semibold uppercase tracking-[0.25em] text-accent">Match centre</h2>
+    <!-- ===== The green, framed ===== -->
+    <section aria-label="The green at Orchard Lane">
+      <div class="container pb-16">
+        <figure class="hero-frame">
+          <img src="assets/img/news-ground.jpg" alt="Members bowling on the flat green at Orchard Lane on a summer afternoon, the clubhouse behind" class="w-full" width="1760" height="720">
+          <figcaption class="mt-3 text-center text-sm text-ink-faint">The flat green, Orchard Lane — rolled, rinsed of dew and ready for Saturday's league match.</figcaption>
+        </figure>
+      </div>
+    </section>
 
-            <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-white/50">Last time out &middot; League</p>
-            <div class="mt-2 flex items-center justify-between gap-3">
-              <span class="font-display text-lg font-semibold uppercase text-white">Avonford</span>
-              <span class="scoreline !bg-white/10">86&ndash;74</span>
-              <span class="font-display text-lg font-semibold uppercase text-white/70">Ledbury</span>
-            </div>
-            <p class="mt-2 text-sm text-white/60">Home, six rinks &middot; won on four rinks &middot; Donnelly's rink 24&ndash;9</p>
+    <!-- ===== Match centre ===== -->
+    <section class="border-t border-line bg-board py-12" aria-label="Match centre">
+      <div class="container">
+        <div class="card mx-auto max-w-2xl p-6">
+          <h2 class="font-display text-sm font-semibold uppercase tracking-[0.25em] text-accent-dark">Match centre</h2>
 
-            <hr class="my-5 border-white/15">
-
-            <p class="text-xs font-semibold uppercase tracking-wider text-white/50">Up next &middot; Sat 8 Aug, 2:00pm start</p>
-            <div class="mt-2 flex items-center justify-between gap-3">
-              <span class="font-display text-lg font-semibold uppercase text-white">Avonford</span>
-              <span class="font-display text-white/50">v</span>
-              <span class="font-display text-lg font-semibold uppercase text-white">Pershore</span>
-            </div>
-            <p class="mt-1 text-sm text-white/60">The flat green, Orchard Lane &middot; Three Counties League &middot; six rinks of four</p>
-
-            <div class="mt-4 grid grid-cols-3 gap-2 text-center" data-countdown="2026-08-08T14:00:00" data-countdown-done="The first woods are rolling — come and watch from the veranda!">
-              <div class="rounded-card bg-white/10 py-3"><span class="block font-display text-2xl font-bold text-accent" data-count-days>00</span><span class="text-xs uppercase tracking-wider text-white/60">days</span></div>
-              <div class="rounded-card bg-white/10 py-3"><span class="block font-display text-2xl font-bold text-accent" data-count-hours>00</span><span class="text-xs uppercase tracking-wider text-white/60">hrs</span></div>
-              <div class="rounded-card bg-white/10 py-3"><span class="block font-display text-2xl font-bold text-accent" data-count-mins>00</span><span class="text-xs uppercase tracking-wider text-white/60">mins</span></div>
-            </div>
-
-            <a href="fixtures.html" class="btn-accent mt-5 w-full">Full fixture list</a>
+          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-ink-faint">Last time out &middot; League</p>
+          <div class="mt-2 flex items-center justify-between gap-3">
+            <span class="font-display text-lg font-semibold uppercase text-primary">Avonford</span>
+            <span class="scoreline">86&ndash;74</span>
+            <span class="font-display text-lg font-semibold uppercase text-ink-soft">Ledbury</span>
           </div>
+          <p class="mt-2 text-sm text-ink-soft">Home, six rinks &middot; won on four rinks &middot; Donnelly's rink 24&ndash;9</p>
+
+          <hr class="my-5 border-line">
+
+          <p class="text-xs font-semibold uppercase tracking-wider text-ink-faint">Up next &middot; Sat 8 Aug, 2:00pm start</p>
+          <div class="mt-2 flex items-center justify-between gap-3">
+            <span class="font-display text-lg font-semibold uppercase text-primary">Avonford</span>
+            <span class="font-display text-ink-faint">v</span>
+            <span class="font-display text-lg font-semibold uppercase text-primary">Pershore</span>
+          </div>
+          <p class="mt-1 text-sm text-ink-soft">The flat green, Orchard Lane &middot; Three Counties League &middot; six rinks of four</p>
+
+          <div class="mt-4 grid grid-cols-3 gap-2 text-center" data-countdown="2026-08-08T14:00:00" data-countdown-done="The first woods are rolling — come and watch from the veranda!">
+            <div class="rounded-card bg-board py-3"><span class="block font-display text-2xl font-bold text-accent-dark" data-count-days>00</span><span class="text-xs uppercase tracking-wider text-ink-faint">days</span></div>
+            <div class="rounded-card bg-board py-3"><span class="block font-display text-2xl font-bold text-accent-dark" data-count-hours>00</span><span class="text-xs uppercase tracking-wider text-ink-faint">hrs</span></div>
+            <div class="rounded-card bg-board py-3"><span class="block font-display text-2xl font-bold text-accent-dark" data-count-mins>00</span><span class="text-xs uppercase tracking-wider text-ink-faint">mins</span></div>
+          </div>
+
+          <a href="fixtures.html" class="btn-accent mt-5 w-full">Full fixture list</a>
         </div>
       </div>
     </section>
