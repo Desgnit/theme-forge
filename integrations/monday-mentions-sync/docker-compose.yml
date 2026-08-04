@@ -1,0 +1,10 @@
+services:
+  monday-mentions-sync:
+    build: .
+    container_name: monday-mentions-sync
+    ports:
+      - "8712:8080"
+    env_file: .env
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
