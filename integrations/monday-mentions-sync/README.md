@@ -75,6 +75,21 @@ nothing (extra safety against duplicates).
 
 `GET /health` on the container returns `{"ok":true,...}` for monitoring.
 
+## API usage (why this won't eat the Monday quota)
+
+This service is **push-based**: Monday calls it when a comment is posted, and
+incoming webhooks cost no API quota at all. The only API calls it makes are:
+
+- the board scan + user-directory refresh every 6 hours (a handful of queries
+  in total, regardless of how many comments are posted), and
+- **one** small query per mention-comment to fetch the item's name and link
+  for the task title.
+
+Sitting idle it uses essentially nothing — unlike scheduled polling (e.g. a
+recurring pull into a spreadsheet), which pays the full query cost on every
+run whether anything changed or not. If the account's daily limit is being
+exhausted, the polling jobs are where the quota is going.
+
 ## Notes
 
 - Only **user** mentions create tasks; team mentions are ignored.

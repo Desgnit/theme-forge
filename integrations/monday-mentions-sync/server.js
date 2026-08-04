@@ -176,13 +176,42 @@ function htmlToText(html) {
 // Lookups
 // ---------------------------------------------------------------------------
 
+// The whole user directory is cached and refreshed on the resync interval, so
+// handling a comment normally costs zero user-lookup API calls.
+const userCache = new Map();
+
+async function refreshUserCache() {
+  for (let page = 1; ; page++) {
+    const data = await monday(
+      `query ($page: Int!) { users (limit: 200, page: $page) { id name email } }`,
+      { page },
+    );
+    const batch = data.users || [];
+    for (const u of batch) userCache.set(String(u.id), u);
+    if (batch.length < 200) break;
+  }
+  console.log(`User cache refreshed: ${userCache.size} users`);
+}
+
 async function getUsers(ids) {
-  if (!ids.length) return [];
-  const data = await monday(
-    `query ($ids: [ID!]) { users (ids: $ids) { id name email } }`,
-    { ids },
-  );
-  return data.users || [];
+  const users = [];
+  const missing = [];
+  for (const id of ids) {
+    const cached = userCache.get(String(id));
+    if (cached) users.push(cached);
+    else missing.push(String(id));
+  }
+  if (missing.length) {
+    const data = await monday(
+      `query ($ids: [ID!]) { users (ids: $ids) { id name email } }`,
+      { ids: missing },
+    );
+    for (const u of data.users || []) {
+      userCache.set(String(u.id), u);
+      users.push(u);
+    }
+  }
+  return users;
 }
 
 async function getItemContext(itemId) {
@@ -326,8 +355,14 @@ const server = http.createServer((req, res) => {
 
 server.listen(Number(PORT), () => {
   console.log(`monday-mentions-sync listening on :${PORT}`);
-  const resync = () =>
-    ensureWebhooks().catch((err) => console.error(`Resync failed: ${err.message}`));
+  const resync = async () => {
+    try {
+      await ensureWebhooks();
+      await refreshUserCache();
+    } catch (err) {
+      console.error(`Resync failed: ${err.message}`);
+    }
+  };
   resync();
   setInterval(resync, Number(RESYNC_INTERVAL_MINUTES) * 60 * 1000);
 });
