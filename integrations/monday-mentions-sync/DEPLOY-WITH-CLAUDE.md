@@ -24,7 +24,15 @@ The code is on GitHub: repo `Desgnit/theme-forge`, branch
    already exists, return 200 and do nothing (duplicate protection).
    Generate a long random bearer token for it.
 
-3. **Deploy the bridge container** on the Synology next to the tasks app:
+3. **Fix cross-department task assignment in the tasks app**: users report
+   they cannot assign a task to a person in another department (e.g. a
+   lighting designer assigning to Production or Technical). Find whatever
+   filter restricts the assignee picker to the current user's own
+   department/team and remove or widen it so any active user can be chosen
+   as assignee, regardless of department. Keep department grouping in the
+   picker UI if it exists — just don't restrict selection by it.
+
+4. **Deploy the bridge container** on the Synology next to the tasks app:
    copy the `monday-mentions-sync` folder to the Docker share, create `.env`
    from `.env.example`:
    - `MONDAY_API_TOKEN` — ask me for it (I'll create it in Monday under
@@ -39,13 +47,13 @@ The code is on GitHub: repo `Desgnit/theme-forge`, branch
    - `WEBHOOK_SECRET` — generate a long random string.
    Then `docker compose up -d --build`.
 
-4. **Verify**: `docker logs -f monday-mentions-sync` should show
+5. **Verify**: `docker logs -f monday-mentions-sync` should show
    `Resync: found N boards` and `Registered create_update webhook on board …`
    lines, then `User cache refreshed: N users`. Note: if Monday returns
    "Daily limit exceeded", the account's API quota is exhausted for today —
    the service retries every 6 hours on its own, so just check the log again
    later.
 
-5. When registration has succeeded, tell me — I'll post a test comment in
+6. When registration has succeeded, tell me — I'll post a test comment in
    Monday tagging someone, and we'll confirm a task appears for them in the
    tasks app within a few seconds.
