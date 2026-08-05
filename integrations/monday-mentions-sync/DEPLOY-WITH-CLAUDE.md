@@ -17,12 +17,17 @@ The code is on GitHub: repo `Desgnit/theme-forge`, branch
 
 2. **Add a task-creation endpoint to the tasks app** (tasks.ricoman.com):
    a POST endpoint, e.g. `/api/integrations/tasks`, protected by a bearer
-   token, accepting JSON:
-   `{title, description, assignee_email, source, external_id, link}`.
-   It should find the user by `assignee_email` and create a task for them
-   with the given title/description. If a task with the same `external_id`
-   already exists, return 200 and do nothing (duplicate protection).
-   Generate a long random bearer token for it.
+   token, accepting two payload shapes (full contract in the README):
+   - personal task: `{title, description, assignee_email, source,
+     external_id, link}` — find the user by email, create a task for them;
+   - shared team task: `{title, description, assignee_emails: [...],
+     team_name, shared: true, source, external_id, link}` — create ONE task
+     visible to all listed users; when ANY of them completes it, it is
+     completed for everyone (add shared-task support to the app if it
+     doesn't exist yet).
+   In both cases `external_id` is unique: if a task with it already exists,
+   return 200 and do nothing (duplicate protection). Generate a long random
+   bearer token for the endpoint.
 
 3. **Fix cross-department task assignment in the tasks app**: users report
    they cannot assign a task to a person in another department (e.g. a
@@ -47,7 +52,25 @@ The code is on GitHub: repo `Desgnit/theme-forge`, branch
    - `WEBHOOK_SECRET` — generate a long random string.
    Then `docker compose up -d --build`.
 
-5. **Verify**: `docker logs -f monday-mentions-sync` should show
+5. **Fix the Monday API quota exhaustion.** The account's daily Monday API
+   limit is being fully consumed (it reset today and was exhausted again
+   within ~30 minutes), which starves every other Monday integration. Audit
+   EVERY process you run that calls the Monday API — the Google Sheet puller
+   that generates the "OTIF - Auto atttempt" dashboard (it pulls the entire
+   order book from the WAREHOUSE ORDERS and PT Production Schedule boards),
+   the Rico bot, and anything else on the Synology or in scheduled scripts.
+   For each one:
+   - log how often it actually runs and how many API requests per run;
+   - fetch **only changed items** (filter on `updated_at` / use
+     `items_page` with a cursor) instead of re-pulling whole boards;
+   - request only the columns actually used, never all columns;
+   - on a 429/"Daily limit exceeded" response, STOP until the reset time in
+     the error — never retry in a loop, that burns the next day's quota too;
+   - run each job no more often than it genuinely needs (the OTIF dashboard
+     needs at most hourly, probably daily).
+   Report back what was calling the API, how often, and what you changed.
+
+6. **Verify**: `docker logs -f monday-mentions-sync` should show
    `Resync: found N boards` and `Registered create_update webhook on board …`
    lines, then `User cache refreshed: N users`. Note: if Monday returns
    "Daily limit exceeded", the account's API quota is exhausted for today —

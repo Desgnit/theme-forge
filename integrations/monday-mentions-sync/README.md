@@ -16,10 +16,11 @@ automatically.
    registers a `create_update` (and `create_subitem_update`) webhook on each,
    pointing at `PUBLIC_WEBHOOK_URL`.
 2. When someone posts a comment, Monday calls the webhook. The service parses
-   the comment HTML for @mentioned users **and teams** — mentioning a team
-   (e.g. @Production or @Technical) creates a task for every member of that
-   team, titled "…mentioned Production on…". The comment's author never gets
-   a task for their own comment.
+   the comment HTML for @mentioned users **and teams**. A mentioned person
+   gets a personal task. A mentioned team (e.g. @Production or @Technical)
+   gets **one shared task** for the whole team — every member sees it, and
+   when any member completes it, it is completed for everyone. The comment's
+   author never gets a task for their own comment.
 3. For each mentioned person it looks up their **email** in Monday (the tasks
    app also identifies people by email, so that is the join key) and POSTs a
    task to `TASKS_API_URL`.
@@ -42,10 +43,23 @@ if configured):
 }
 ```
 
-The tasks app needs one endpoint that accepts this payload, finds (or creates)
-the user by `assignee_email`, and creates the task. Treat `external_id` as
-unique — if a task with that `external_id` already exists, return 200 and do
-nothing (extra safety against duplicates).
+For a **team mention** the payload is a single shared task instead —
+`assignee_email` is replaced by:
+
+```json
+{
+  "assignee_emails": ["rob@ricoman.com", "ana@ricoman.com"],
+  "team_name": "Production",
+  "shared": true
+}
+```
+
+The tasks app needs one endpoint that accepts both shapes, finds (or creates)
+users by email, and creates the task. For `shared: true` tasks it must create
+ONE task linked to all `assignee_emails` — shown to each of them, and marked
+complete for everyone as soon as any one of them completes it. Treat
+`external_id` as unique — if a task with that `external_id` already exists,
+return 200 and do nothing (extra safety against duplicates).
 
 > **If the tasks app doesn't have such an endpoint yet**, ask the Claude that
 > maintains it: *"Add a POST endpoint (e.g. `/api/integrations/tasks`),
@@ -95,8 +109,9 @@ exhausted, the polling jobs are where the quota is going.
 
 ## Notes
 
-- User mentions create a task for that person; team mentions create a task
-  for every member of the team (using the team roster cached from Monday).
+- User mentions create a personal task; team mentions create one shared task
+  for the whole team (roster cached from Monday) — completing it by any
+  member completes it for all.
 - A mentioned user with no email in Monday is skipped (logged in the container
   log).
 - If the Monday API daily quota is exhausted at startup, the service reads

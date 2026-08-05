@@ -290,27 +290,30 @@ async function handleUpdateEvent(event) {
   const { userIds, teamIds } = extractMentions(html);
   if (!userIds.length && !teamIds.length) return;
 
-  // Expand mentioned teams (e.g. @Production, @Technical) into their members.
-  // Track which team each person came from so the task title can say so.
   const authorId = event.userId ? String(event.userId) : null;
-  const viaTeam = new Map();
-  for (const teamId of teamIds) {
-    const team = teamCache.get(String(teamId));
-    if (!team) {
-      console.error(`Mentioned team ${teamId} not in cache — will resolve on next resync`);
-      continue;
+  const directIds = [...new Set(userIds)].filter((id) => id !== authorId);
+  const mentionedTeams = teamIds
+    .map((id) => teamCache.get(String(id)))
+    .filter(Boolean);
+  for (const id of teamIds) {
+    if (!teamCache.has(String(id))) {
+      console.error(`Mentioned team ${id} not in cache — will resolve on next resync`);
     }
-    for (const memberId of team.memberIds) viaTeam.set(memberId, team.name);
   }
-  const directIds = new Set(userIds);
-  const allIds = [...new Set([...directIds, ...viaTeam.keys()])]
-    .filter((id) => id !== authorId); // no task for commenting on your own mention
 
-  const [mentionedUsers, authorArr, item] = await Promise.all([
-    getUsers(allIds),
+  const idsToResolve = new Set(directIds);
+  for (const team of mentionedTeams) {
+    for (const memberId of team.memberIds) {
+      if (memberId !== authorId) idsToResolve.add(memberId);
+    }
+  }
+
+  const [resolvedUsers, authorArr, item] = await Promise.all([
+    getUsers([...idsToResolve]),
     getUsers(authorId ? [authorId] : []),
     getItemContext(event.pulseId),
   ]);
+  const usersById = new Map(resolvedUsers.map((u) => [String(u.id), u]));
   const author = authorArr[0];
   const authorName = author ? author.name : 'Someone';
   const itemName = item ? item.name : `item ${event.pulseId}`;
@@ -318,28 +321,55 @@ async function handleUpdateEvent(event) {
     ? item.url
     : `https://monday.com/boards/${event.boardId}/pulses/${event.pulseId}`;
   const text = event.textBody || htmlToText(html);
+  const description =
+    `${text}\n\nFrom a Monday comment by ${authorName} on "${itemName}"\n${itemUrl}`;
 
-  for (const user of mentionedUsers) {
-    if (!user.email) {
-      console.error(`No email for mentioned Monday user ${user.id} (${user.name}) — skipping`);
+  const tasks = [];
+
+  // A personal task for each directly @mentioned person.
+  for (const id of directIds) {
+    const user = usersById.get(String(id));
+    if (!user || !user.email) {
+      console.error(`No email for mentioned Monday user ${id} — skipping`);
       continue;
     }
-    const teamName = !directIds.has(String(user.id)) && viaTeam.get(String(user.id));
-    const task = {
-      title: teamName
-        ? `${authorName} mentioned ${teamName} on "${itemName}"`
-        : `${authorName} mentioned you on "${itemName}"`,
-      description: `${text}\n\nFrom a Monday comment by ${authorName} on "${itemName}"\n${itemUrl}`,
+    tasks.push({
+      title: `${authorName} mentioned you on "${itemName}"`,
+      description,
       assignee_email: user.email,
       source: 'monday-mention',
       external_id: `monday-update-${updateId}-user-${user.id}`,
       link: itemUrl,
-    };
+    });
+  }
+
+  // ONE shared task per @mentioned team — visible to every member, and
+  // completing it (by any member) completes it for the whole team.
+  for (const team of mentionedTeams) {
+    const emails = team.memberIds
+      .filter((id) => id !== authorId)
+      .map((id) => usersById.get(String(id)))
+      .filter((u) => u && u.email)
+      .map((u) => u.email);
+    if (!emails.length) continue;
+    tasks.push({
+      title: `${authorName} mentioned ${team.name} on "${itemName}"`,
+      description,
+      assignee_emails: emails,
+      team_name: team.name,
+      shared: true,
+      source: 'monday-mention',
+      external_id: `monday-update-${updateId}-team-${team.id}`,
+      link: itemUrl,
+    });
+  }
+
+  for (const task of tasks) {
     try {
       await createTask(task);
-      console.log(`Task created for ${user.email} (update ${updateId})`);
+      console.log(`Task created (${task.external_id})`);
     } catch (err) {
-      console.error(`Task creation failed for ${user.email}: ${err.message}`);
+      console.error(`Task creation failed (${task.external_id}): ${err.message}`);
     }
   }
 }
