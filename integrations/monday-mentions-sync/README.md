@@ -16,7 +16,10 @@ automatically.
    registers a `create_update` (and `create_subitem_update`) webhook on each,
    pointing at `PUBLIC_WEBHOOK_URL`.
 2. When someone posts a comment, Monday calls the webhook. The service parses
-   the comment HTML for @mentioned users (team mentions are ignored).
+   the comment HTML for @mentioned users **and teams** — mentioning a team
+   (e.g. @Production or @Technical) creates a task for every member of that
+   team, titled "…mentioned Production on…". The comment's author never gets
+   a task for their own comment.
 3. For each mentioned person it looks up their **email** in Monday (the tasks
    app also identifies people by email, so that is the join key) and POSTs a
    task to `TASKS_API_URL`.
@@ -92,8 +95,12 @@ exhausted, the polling jobs are where the quota is going.
 
 ## Notes
 
-- Only **user** mentions create tasks; team mentions are ignored.
+- User mentions create a task for that person; team mentions create a task
+  for every member of the team (using the team roster cached from Monday).
 - A mentioned user with no email in Monday is skipped (logged in the container
   log).
+- If the Monday API daily quota is exhausted at startup, the service reads
+  the reset time from Monday's error and retries automatically right after
+  the quota resets — no manual intervention needed.
 - Webhooks registered by this service are visible in Monday under each board's
   **Integrations → Board integrations**.

@@ -31,7 +31,7 @@ if (!MONDAY_API_TOKEN || !PUBLIC_WEBHOOK_URL || !TASKS_API_URL) {
 // Persistent state (processed updates for dedup + registered webhooks)
 // ---------------------------------------------------------------------------
 
-let state = { processedUpdates: [], webhooks: {} };
+let state = { processedUpdates: [], webhooks: {}, users: {}, teams: {} };
 try {
   state = { ...state, ...JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')) };
 } catch (_) { /* first run */ }
@@ -63,7 +63,11 @@ async function monday(query, variables = {}) {
   });
   const json = await res.json();
   if (json.errors) {
-    throw new Error(`Monday API error: ${JSON.stringify(json.errors)}`);
+    const err = new Error(`Monday API error: ${JSON.stringify(json.errors)}`);
+    const retryIn = json.errors[0] && json.errors[0].extensions
+      && json.errors[0].extensions.retry_in_seconds;
+    if (retryIn) err.retryInSeconds = Number(retryIn);
+    throw err;
   }
   return json.data;
 }
@@ -136,26 +140,29 @@ function webhookUrl() {
 // Mention parsing
 // ---------------------------------------------------------------------------
 
-// Monday renders user mentions in the update HTML body as anchors carrying the
-// mentioned user's id. The markup has varied across Monday versions, so try
-// several known attribute patterns plus the /users/<id> href fallback.
-function extractMentionedUserIds(html) {
-  if (!html) return [];
-  const ids = new Set();
+// Monday renders mentions in the update HTML body as anchors carrying the
+// mentioned user's or team's id. The markup has varied across Monday
+// versions, so try several known attribute patterns plus href fallbacks.
+function extractMentions(html) {
+  const userIds = new Set();
+  const teamIds = new Set();
+  if (!html) return { userIds: [], teamIds: [] };
   const anchorRe = /<a\b[^>]*>/gi;
   for (const [anchor] of html.matchAll(anchorRe)) {
-    const isUserMention =
-      /user_mention/i.test(anchor) ||
-      /data-mention-type\s*=\s*["']user["']/i.test(anchor);
-    const isTeamMention = /data-mention-type\s*=\s*["']team["']/i.test(anchor);
-    if (!isUserMention || isTeamMention) continue;
+    const isTeam = /data-mention-type\s*=\s*["']team["']/i.test(anchor) ||
+      /team_mention/i.test(anchor);
+    const isUser = !isTeam &&
+      (/user_mention/i.test(anchor) ||
+        /data-mention-type\s*=\s*["']user["']/i.test(anchor));
+    if (!isTeam && !isUser) continue;
     const idMatch =
       anchor.match(/data-mentioned-object-id\s*=\s*["'](\d+)["']/i) ||
       anchor.match(/data-mention-id\s*=\s*["'](\d+)["']/i) ||
-      anchor.match(/\/users\/(\d+)/);
-    if (idMatch) ids.add(idMatch[1]);
+      anchor.match(/\/(?:users|teams)\/(\d+)/);
+    if (!idMatch) continue;
+    (isTeam ? teamIds : userIds).add(idMatch[1]);
   }
-  return [...ids];
+  return { userIds: [...userIds], teamIds: [...teamIds] };
 }
 
 function htmlToText(html) {
@@ -176,9 +183,11 @@ function htmlToText(html) {
 // Lookups
 // ---------------------------------------------------------------------------
 
-// The whole user directory is cached and refreshed on the resync interval, so
-// handling a comment normally costs zero user-lookup API calls.
-const userCache = new Map();
+// The whole user + team directory is cached, refreshed on the resync
+// interval, and persisted to the state file — so handling a comment normally
+// costs zero directory API calls, and a quota outage can't blind the service.
+const userCache = new Map(Object.entries(state.users || {}));
+const teamCache = new Map(Object.entries(state.teams || {}));
 
 async function refreshUserCache() {
   for (let page = 1; ; page++) {
@@ -190,7 +199,25 @@ async function refreshUserCache() {
     for (const u of batch) userCache.set(String(u.id), u);
     if (batch.length < 200) break;
   }
+  state.users = Object.fromEntries(userCache);
+  saveState();
   console.log(`User cache refreshed: ${userCache.size} users`);
+}
+
+async function refreshTeamCache() {
+  const data = await monday(
+    `query { teams { id name users { id } } }`,
+  );
+  for (const t of data.teams || []) {
+    teamCache.set(String(t.id), {
+      id: String(t.id),
+      name: t.name,
+      memberIds: (t.users || []).map((u) => String(u.id)),
+    });
+  }
+  state.teams = Object.fromEntries(teamCache);
+  saveState();
+  console.log(`Team cache refreshed: ${teamCache.size} teams`);
 }
 
 async function getUsers(ids) {
@@ -260,12 +287,28 @@ async function handleUpdateEvent(event) {
   saveState();
 
   const html = event.body || '';
-  const mentionedIds = extractMentionedUserIds(html);
-  if (!mentionedIds.length) return;
+  const { userIds, teamIds } = extractMentions(html);
+  if (!userIds.length && !teamIds.length) return;
+
+  // Expand mentioned teams (e.g. @Production, @Technical) into their members.
+  // Track which team each person came from so the task title can say so.
+  const authorId = event.userId ? String(event.userId) : null;
+  const viaTeam = new Map();
+  for (const teamId of teamIds) {
+    const team = teamCache.get(String(teamId));
+    if (!team) {
+      console.error(`Mentioned team ${teamId} not in cache — will resolve on next resync`);
+      continue;
+    }
+    for (const memberId of team.memberIds) viaTeam.set(memberId, team.name);
+  }
+  const directIds = new Set(userIds);
+  const allIds = [...new Set([...directIds, ...viaTeam.keys()])]
+    .filter((id) => id !== authorId); // no task for commenting on your own mention
 
   const [mentionedUsers, authorArr, item] = await Promise.all([
-    getUsers(mentionedIds),
-    getUsers(event.userId ? [String(event.userId)] : []),
+    getUsers(allIds),
+    getUsers(authorId ? [authorId] : []),
     getItemContext(event.pulseId),
   ]);
   const author = authorArr[0];
@@ -281,8 +324,11 @@ async function handleUpdateEvent(event) {
       console.error(`No email for mentioned Monday user ${user.id} (${user.name}) — skipping`);
       continue;
     }
+    const teamName = !directIds.has(String(user.id)) && viaTeam.get(String(user.id));
     const task = {
-      title: `${authorName} mentioned you on "${itemName}"`,
+      title: teamName
+        ? `${authorName} mentioned ${teamName} on "${itemName}"`
+        : `${authorName} mentioned you on "${itemName}"`,
       description: `${text}\n\nFrom a Monday comment by ${authorName} on "${itemName}"\n${itemUrl}`,
       assignee_email: user.email,
       source: 'monday-mention',
@@ -355,12 +401,21 @@ const server = http.createServer((req, res) => {
 
 server.listen(Number(PORT), () => {
   console.log(`monday-mentions-sync listening on :${PORT}`);
+  let retryTimer = null;
   const resync = async () => {
     try {
       await ensureWebhooks();
       await refreshUserCache();
+      await refreshTeamCache();
     } catch (err) {
       console.error(`Resync failed: ${err.message}`);
+      // If the account's daily API quota is exhausted, Monday tells us when
+      // it resets — schedule a one-off retry for just after that moment.
+      if (err.retryInSeconds && !retryTimer) {
+        const mins = Math.ceil(err.retryInSeconds / 60) + 5;
+        console.log(`API daily limit exhausted — retrying resync in ${mins} minutes`);
+        retryTimer = setTimeout(() => { retryTimer = null; resync(); }, mins * 60 * 1000);
+      }
     }
   };
   resync();
