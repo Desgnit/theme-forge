@@ -81,9 +81,47 @@
 
   /* ---------------------------------------------------------------- Log menu */
 
+  /* Days from today to the plan start; negative once it has begun. */
+  function daysToPlan() {
+    var start = PB.store.athlete().planStart;
+    if (!start) return null;
+    return PB.dayDiff(PB.today(), start);
+  }
+
+  /* The card the coach's message asks for: get the key baselines logged
+   * before the plan begins. Shown through test week and the first week. */
+  function baselineCard() {
+    var d = daysToPlan();
+    if (d === null || d < -6) return "";
+    var rows = PB.BASELINE.map(function (id) {
+      var m = PB.metric(id);
+      var b = PB.store.best(id);
+      var formId = (PB.FORMS.filter(function (f) {
+        return f.fields.some(function (x) { return x.metric === id; });
+      })[0] || {}).id;
+      return '<a class="base-row' + (b ? " done" : "") + '" href="#/log/' + formId + '">' +
+        '<span class="base-tick">' + (b ? "✓" : "") + "</span>" +
+        '<span class="base-name">' + esc(m.short) + "</span>" +
+        '<span class="base-val">' + (b ? esc(PB.formatFull(m.unit, b.value)) : "log it") + "</span></a>";
+    });
+    var left = PB.BASELINE.filter(function (id) { return !PB.store.best(id); }).length;
+    var when = d > 1 ? "Plan starts in " + d + " days"
+      : d === 1 ? "Plan starts tomorrow"
+        : d === 0 ? "The plan starts today"
+          : "The plan has started";
+    var line = left === 0 ? "All four baselines are in — ready to go."
+      : when + " — " + (left === PB.BASELINE.length ? "get these baselines logged first." :
+        left + " baseline" + (left === 1 ? "" : "s") + " still to log.");
+    return '<section class="card baseline-card"><h2 class="card-head">' + icon("pulse") +
+      'Baseline test week</h2><p class="body">' + esc(line) + "</p>" +
+      '<div class="base-rows">' + rows.join("") + "</div>" +
+      '<p class="fine">These four are what the coach wants before day one. Change the start date from the cog.</p></section>';
+  }
+
   function viewLogMenu() {
     var html = ['<header class="screen-head"><h1>Log an activity</h1>' +
       '<p class="sub">Pick what you did. Two taps and you are done.</p></header>'];
+    html.push(baselineCard());
 
     PB.SECTIONS.forEach(function (s) {
       var forms = PB.FORMS.filter(function (f) { return f.section === s.id; });
@@ -336,6 +374,22 @@
       html.push('<p class="improve ' + (imp >= 0 ? "up" : "down") + '">' +
         (imp >= 0 ? "▲ " + imp + "% better" : "▼ " + Math.abs(imp) + "% off") +
         " than your first logged effort.</p>");
+    }
+
+    var planStart = PB.store.athlete().planStart;
+    if (planStart) {
+      var pre = PB.store.entriesFor(metricId).filter(function (e) { return e.date < planStart; });
+      var post = PB.store.entriesFor(metricId).filter(function (e) { return e.date >= planStart; });
+      if (pre.length && post.length) {
+        var sign = m.better === "lower" ? 1 : -1;
+        var preBest = pre.slice().sort(function (a, x) { return sign * (a.value - x.value); })[0].value;
+        var postBest = post.slice().sort(function (a, x) { return sign * (a.value - x.value); })[0].value;
+        var delta = m.better === "lower" ? (preBest - postBest) / preBest : (postBest - preBest) / preBest;
+        delta = Math.round(delta * 1000) / 10;
+        html.push('<p class="improve ' + (delta >= 0 ? "up" : "down") + '">' +
+          (delta >= 0 ? "▲ " + delta + "% on" : "▼ " + Math.abs(delta) + "% off") +
+          " your pre-plan baseline of " + esc(PB.formatFull(m.unit, preBest)) + ".</p>");
+      }
     }
 
     html.push('<section class="card"><h2 class="card-head">Progress</h2>' + PB.chart.render(metricId) + "</section>");
@@ -618,6 +672,17 @@
         toast("<div><strong>Entry deleted</strong></div>");
         return;
       }
+      var drop = e.target.closest("[data-drop-coach]");
+      if (drop) {
+        if (!confirm("Remove this coach's access to your data?")) return;
+        PB.sync.dropCoach(drop.getAttribute("data-drop-coach")).then(function () {
+          render();
+          toast("<div><strong>Access removed</strong></div>");
+        }, function () {
+          toast("<div><strong>Could not remove access</strong><span>Try again when you are online</span></div>");
+        });
+        return;
+      }
       var sh = e.target.closest("[data-share]");
       if (sh) {
         var target = sh.getAttribute("data-share");
@@ -709,11 +774,15 @@
       '<section class="card"><h2 class="card-head">Your name</h2>' +
       '<label class="field"><span class="field-input"><input type="text" id="athlete-name" maxlength="40" ' +
       'placeholder="Shown at the top of the app" value="' + esc(a.name) + '"></span></label>' +
-      '<button class="btn" id="save-name">Save name</button></section>' +
+      '<label class="field"><span class="field-label">Plan start date</span>' +
+      '<span class="field-input"><input type="date" id="plan-start" value="' + esc(a.planStart) + '"></span>' +
+      '<span class="hint">Everything logged before this date counts as your baseline. Clear it to switch the plan features off.</span></label>' +
+      '<button class="btn" id="save-name">Save</button></section>' +
       '<section class="card"><h2 class="card-head">Back up</h2>' +
       '<p class="body">' + PB.store.totalEntries() + " entries stored on this device. Download a copy before you clear your browser data or change phone — a backup file is the only way to move your history to another phone or browser.</p>" +
       '<p class="fine" id="storage-status">Checking storage…</p>' +
       '<button class="btn" id="export-btn">Download backup file</button>' +
+      '<button class="btn" id="csv-btn">Download as CSV (for a spreadsheet)</button>' +
       '<button class="btn" id="copy-btn">Copy to clipboard</button></section>' +
       '<section class="card"><h2 class="card-head">Restore</h2>' +
       '<p class="body">Load a backup file. Merge keeps what is here and adds anything missing; replace wipes first.</p>' +
@@ -740,6 +809,7 @@
 
     $("save-name").onclick = function () {
       PB.store.setName($("athlete-name").value.trim());
+      PB.store.setPlanStart($("plan-start").value);
       PB.sync.pushProfile().then(null, function () { /* offline is fine */ });
       paintHeader();
       toast("<div><strong>Name saved</strong></div>");
@@ -747,6 +817,19 @@
 
     $("export-btn").onclick = function () {
       saveFile("pb-tracker-" + PB.today() + ".json", PB.store.exportJSON());
+    };
+
+    $("csv-btn").onclick = function () {
+      var q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+      var lines = ["date,section,activity,result,unit,note"];
+      PB.store.live().slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; })
+        .forEach(function (e) {
+          var m = PB.metric(e.metric);
+          lines.push([e.date, q(PB.section(m.section).name), q(m.name),
+            q(PB.formatValue(m.unit, e.value)), q((PB.UNITS[m.unit].suffix || "time").replace("/500m", "per 500m")),
+            q(e.note)].join(","));
+        });
+      saveFile("pb-tracker-" + PB.today() + ".csv", lines.join("\r\n"));
     };
 
     $("copy-btn").onclick = function () {
@@ -883,13 +966,6 @@
           toast("<div><strong>Linked</strong><span>Their PBs are on the coach screen</span></div>");
         }, fail("coach-error"));
       };
-      view.addEventListener("click", function once(e) {
-        var btn = e.target.closest("[data-drop-coach]");
-        if (!btn) return;
-        if (!confirm("Remove this coach's access to your data?")) return;
-        PB.sync.dropCoach(btn.getAttribute("data-drop-coach")).then(function () { render(); }, function () {});
-        view.removeEventListener("click", once);
-      });
     }
   }
 

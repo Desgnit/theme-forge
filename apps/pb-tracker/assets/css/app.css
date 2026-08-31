@@ -136,6 +136,24 @@ button { font: inherit; }
 .empty-card { text-align: center; padding: 28px 16px; }
 .empty-card p { color: var(--muted); }
 
+/* ------------------------------------------------------------ baseline card */
+
+.baseline-card { border-color: var(--accent-dim); }
+.base-rows { display: grid; gap: 6px; }
+.base-row {
+  display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px;
+  padding: 9px 10px; background: var(--panel-2); border-radius: 10px;
+}
+.base-tick {
+  display: grid; place-items: center; width: 22px; height: 22px;
+  border: 1px solid var(--line); border-radius: 50%;
+  font-size: 13px; color: #0f0c02;
+}
+.base-row.done .base-tick { background: var(--good); border-color: var(--good); }
+.base-name { font-size: 14px; font-weight: 600; }
+.base-val { font-size: 13px; color: var(--accent); }
+.base-row.done .base-val { color: var(--muted); }
+
 /* --------------------------------------------------------------- log tiles */
 
 .art { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }

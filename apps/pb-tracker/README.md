@@ -52,6 +52,18 @@ Log a new best and the app tells you straight away.
 
 ---
 
+## The plan start date
+
+The cog screen holds a **plan start date** (set for 7 September out of the
+box). Until then the Log screen carries a **Baseline test week** card
+tracking the four tests the coach wants first — 5km run, 2km ski, 2km row and
+the 20-minute bike — ticking them off as they are logged. Afterwards, any
+activity with entries on both sides of the date shows your gain on the
+pre-plan baseline. Clear the date and the plan features disappear.
+
+The Data screen also exports a **CSV** of every entry, for a spreadsheet or
+for sending numbers on in bulk.
+
 ## Sync and coach access (optional)
 
 Out of the box nothing leaves the device. The **Sync & coach** card on the

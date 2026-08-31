@@ -135,6 +135,10 @@
     byId[m.id] = m;
   });
 
+  /* The four tests the coach wants filled in before the plan starts —
+   * "Most important is the running 5k, ski 2k and row 2k. Also 20min bike." */
+  PB.BASELINE = ["run5k_total", "ski2k_total", "row2k_total", "bike20_watts"];
+
   PB.SECTIONS = SECTIONS;
   PB.METRICS = METRICS;
   PB.UNITS = UNITS;

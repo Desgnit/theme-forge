@@ -9,7 +9,7 @@
   var listeners = [];
 
   function blank() {
-    return { version: 2, athlete: { name: "" }, entries: [], sync: {} };
+    return { version: 2, athlete: { name: "", planStart: "2026-09-07" }, entries: [], sync: {} };
   }
 
   function now() { return new Date().toISOString(); }
@@ -20,6 +20,7 @@
   function migrate(st) {
     if (!st.entries) st.entries = [];
     if (!st.athlete) st.athlete = { name: "" };
+    if (st.athlete.planStart === undefined) st.athlete.planStart = "2026-09-07";
     if (!st.sync) st.sync = {};
     st.entries.forEach(function (e) {
       if (!e.updated) e.updated = new Date(e.date + "T12:00:00").toISOString();
@@ -167,6 +168,13 @@
     save();
   }
 
+  /* The date the training plan begins. Everything logged before it is the
+   * baseline; clear it and the plan features simply disappear. */
+  function setPlanStart(date) {
+    load().athlete.planStart = /^\d{4}-\d{2}-\d{2}$/.test(date || "") ? date : "";
+    save();
+  }
+
   function exportJSON() {
     return JSON.stringify(load(), null, 2);
   }
@@ -274,7 +282,7 @@
     addSession: addSession, updateEntry: updateEntry,
     deleteEntry: deleteEntry, deleteSession: deleteSession,
     recentSessions: recentSessions, totalEntries: totalEntries,
-    athlete: athlete, setName: setName,
+    athlete: athlete, setName: setName, setPlanStart: setPlanStart,
     exportJSON: exportJSON, importJSON: importJSON, clearAll: clearAll,
     requestPersistence: requestPersistence, storageReport: storageReport,
     changedSince: changedSince, applyRemote: applyRemote,
