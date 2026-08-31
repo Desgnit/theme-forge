@@ -24,6 +24,9 @@ jobs:
       - name: Test catalog integrity
         run: python3 tests/test_catalog.py
 
+      - name: Test PB tracker app integrity
+        run: python3 tests/test_pb_tracker.py
+
       - name: Package theme zips
         run: ./marketing/package-zips.sh
 

@@ -31,6 +31,12 @@ for p in $PAIRS; do
     "$OUT/$t"/.gitignore "$OUT/$t"/README.md
 done
 
+# the PB tracker app rides along at /pb-tracker/ — not a catalogue theme,
+# just a static app that wants a URL to install from on a phone
+mkdir -p "$OUT/pb-tracker"
+cp -r apps/pb-tracker/. "$OUT/pb-tracker"/
+rm -rf "$OUT"/pb-tracker/tools "$OUT"/pb-tracker/README.md
+
 python3 marketing/build-store.py
 
 echo "Demo site assembled at $OUT ($(du -sh "$OUT" | cut -f1))."
