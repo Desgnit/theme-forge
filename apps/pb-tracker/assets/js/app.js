@@ -33,6 +33,45 @@
 
   function go(hash) { location.hash = hash; }
 
+  /* Handing the viewer a file.
+   *
+   * Served as an ordinary page — GitHub Pages, a local server, the single-file
+   * build — a blob link downloads it. Inside the claude.ai artifact viewer
+   * that link is inert by design, and the host mediates saves instead, so ask
+   * it and fall back only when it is not there. Either way the clipboard
+   * button on the same screen is a second route out. */
+  var downloadsReady = (window.claude && typeof window.claude.use === "function")
+    ? window.claude.use("downloads").catch(function () { return null; })
+    : Promise.resolve(null);
+
+  function blobDownload(filename, text) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  function saveFile(filename, text) {
+    downloadsReady.then(function (downloads) {
+      if (!downloads) { blobDownload(filename, text); return; }
+      downloads.save({ filename: filename, data: text }).then(function () {
+        toast("<div><strong>Backup saved</strong><span>" + esc(filename) + "</span></div>");
+      }, function (err) {
+        var code = err && err.code;
+        if (code === "declined") return;
+        if (code === "rate_limited") {
+          toast("<div><strong>Try that again in a moment</strong><span>A save is already waiting</span></div>");
+          return;
+        }
+        toast('<div><strong>Could not save the file here</strong>' +
+          "<span>Use Copy to clipboard instead</span></div>");
+      });
+    });
+  }
+
   function toast(html, kind) {
     toastEl.className = "toast show " + (kind || "");
     toastEl.innerHTML = html;
@@ -259,6 +298,9 @@
       });
       html.push("</div></section>");
     });
+    if (PB.store.totalEntries()) {
+      html.push('<button class="btn" type="button" data-share="all">Share my personal bests</button>');
+    }
     return html.join("");
   }
 
@@ -325,6 +367,7 @@
           '<span class="hist-main"><strong>' + esc(PB.formatFull(m.unit, e.value)) + "</strong>" +
           '<span class="muted">' + esc(PB.formatDate(e.date)) +
           (e.note ? " · " + esc(e.note) : "") + "</span></span>" +
+          '<a class="icon-btn" href="#/edit/' + e.id + '" aria-label="Edit this entry">✎</a>' +
           '<button class="icon-btn" data-delete="' + e.id + '" aria-label="Delete this entry">✕</button></li>');
       });
       html.push("</ul>");
@@ -335,7 +378,130 @@
       return f.fields.some(function (x) { return x.metric === metricId; });
     })[0] || {}).id;
     if (formId) html.push('<a class="btn btn-primary" href="#/log/' + formId + '">Log a new ' + esc(m.short) + "</a>");
+    if (ranked.length) html.push('<button class="btn" type="button" data-share="' + metricId + '">Share this PB</button>');
     return html.join("");
+  }
+
+  /* ------------------------------------------------------------ Edit entry */
+
+  function viewEdit(entryId) {
+    var entry = PB.store.load().entries.filter(function (e) { return e.id === entryId; })[0];
+    if (!entry) return notFound();
+    var m = PB.metric(entry.metric);
+    var u = PB.UNITS[m.unit];
+
+    return '<header class="screen-head"><a class="back" href="#/activity/' + entry.metric + '">Back</a>' +
+      "<h1>Edit entry</h1><p class=\"sub\">" + esc(m.name) + "</p></header>" +
+      '<form class="card form" id="edit-form" novalidate>' +
+      '<label class="field" for="edit-value"><span class="field-label">Result</span>' +
+      '<span class="field-input"><input id="edit-value" type="text" ' +
+      'inputmode="' + (u.input === "time" ? "numeric" : "decimal") + '" autocomplete="off" value="' +
+      esc(PB.formatValue(m.unit, entry.value)) + '">' +
+      (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
+      '</span><span class="hint" id="edit-hint">' + esc(u.hint) + "</span></label>" +
+      '<label class="field"><span class="field-label">Date</span>' +
+      '<span class="field-input"><input type="date" id="edit-date" value="' + esc(entry.date) +
+      '" max="' + PB.today() + '"></span></label>' +
+      '<label class="field"><span class="field-label">Note <em class="opt">optional</em></span>' +
+      '<span class="field-input"><input type="text" id="edit-note" maxlength="120" value="' + esc(entry.note) + '"></span></label>' +
+      '<p class="form-error" id="edit-error" hidden></p>' +
+      '<button class="btn btn-primary" type="submit">Save changes</button>' +
+      '<button class="btn btn-danger" type="button" id="edit-delete">Delete this entry</button></form>' +
+      (m.derived ? '<p class="fine">This row was worked out from your ' + esc(PB.metric(m.derived).name) +
+        ". Editing it here changes this row only.</p>" : "");
+  }
+
+  function wireEdit(match) {
+    var entryId = match[1];
+    var entry = PB.store.load().entries.filter(function (e) { return e.id === entryId; })[0];
+    if (!entry) return;
+    var m = PB.metric(entry.metric);
+    var form = document.getElementById("edit-form");
+    var input = document.getElementById("edit-value");
+    var hint = document.getElementById("edit-hint");
+
+    input.addEventListener("input", function () {
+      var v = PB.parseValue(m.unit, input.value.trim());
+      if (!input.value.trim()) { hint.textContent = PB.UNITS[m.unit].hint; hint.className = "hint"; return; }
+      if (v == null) { hint.textContent = "Not a valid entry — " + PB.UNITS[m.unit].hint; hint.className = "hint bad"; return; }
+      var shown = PB.formatValue(m.unit, v);
+      hint.textContent = shown === input.value.trim() ? PB.UNITS[m.unit].hint : "Reads as " + PB.formatFull(m.unit, v);
+      hint.className = shown === input.value.trim() ? "hint" : "hint good";
+    });
+
+    document.getElementById("edit-delete").onclick = function () {
+      if (!confirm("Delete this entry? It cannot be undone.")) return;
+      PB.store.deleteEntry(entryId);
+      go("#/activity/" + entry.metric);
+      toast("<div><strong>Entry deleted</strong></div>");
+    };
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var err = document.getElementById("edit-error");
+      var v = PB.parseValue(m.unit, input.value.trim());
+      var date = document.getElementById("edit-date").value || entry.date;
+      if (v == null) {
+        err.textContent = "That result is not a value we can read. " + PB.UNITS[m.unit].hint + ".";
+        err.hidden = false;
+        return;
+      }
+      if (date > PB.today()) { err.textContent = "That date is in the future."; err.hidden = false; return; }
+      PB.store.updateEntry(entryId, v, date, document.getElementById("edit-note").value.trim());
+      go("#/activity/" + entry.metric);
+      toast("<div><strong>Entry updated</strong><span>" + esc(PB.formatFull(m.unit, v)) + "</span></div>");
+    });
+  }
+
+  /* ----------------------------------------------------------------- Share */
+
+  /* A plain-text card: the phone share sheet takes it, and anything without
+   * one falls back to the clipboard. */
+  function shareText(metricId) {
+    var name = PB.store.athlete().name;
+    var lines = [];
+    if (metricId) {
+      var m = PB.metric(metricId);
+      var ranked = PB.store.ranked(metricId).slice(0, 3);
+      lines.push((name ? name + " — " : "") + m.name);
+      ranked.forEach(function (e, i) {
+        lines.push(["1st", "2nd", "3rd"][i] + "  " + PB.formatFull(m.unit, e.value) + "  (" + PB.formatDate(e.date) + ")");
+      });
+      var ms = PB.score.metricScore(metricId);
+      if (ms && ms.logged) lines.push("Score " + ms.score + "/100 · " + ms.band.name);
+    } else {
+      var o = PB.score.overall();
+      lines.push((name ? name + " — " : "") + "Client PB Tracker");
+      if (o.score != null) lines.push("Fitness score " + o.score + "/100 · " + o.band.name);
+      lines.push("");
+      PB.SECTIONS.forEach(function (s) {
+        var rows = PB.metricsIn(s.id).filter(function (mm) { return PB.store.best(mm.id); });
+        if (!rows.length) return;
+        lines.push(s.name.toUpperCase());
+        rows.forEach(function (mm) {
+          var b = PB.store.best(mm.id);
+          lines.push("  " + mm.list + ": " + PB.formatFull(mm.unit, b.value) + " (" + PB.formatDate(b.date) + ")");
+        });
+        lines.push("");
+      });
+    }
+    return lines.join("\n").trim();
+  }
+
+  function share(metricId) {
+    var text = shareText(metricId);
+    var title = metricId ? PB.metric(metricId).name : "My personal bests";
+    if (navigator.share) {
+      navigator.share({ title: title, text: text }).catch(function () { /* dismissed */ });
+      return;
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () {
+        toast("<div><strong>Copied</strong><span>Paste it into a message</span></div>");
+      }, function () { prompt("Copy your bests:", text); });
+      return;
+    }
+    prompt("Copy your bests:", text);
   }
 
   /* ----------------------------------------------------------------- Score */
@@ -361,6 +527,11 @@
       (o.band ? '<span class="band ' + o.band.cls + '">' + esc(o.band.name) + "</span>" : "") +
       '<span class="muted">' + o.logged + " of " + o.total + " scored activities logged" +
       (o.complete ? " — full picture" : " — the rest are not counted yet") + "</span></div></section>");
+
+    if (PB.score.history().length > 1) {
+      html.push('<section class="card"><h2 class="card-head">Score over time</h2>' +
+        PB.chart.scoreTrend() + "</section>");
+    }
 
     var weak = PB.score.weakestLogged();
     var next = PB.score.nextUnlogged();
@@ -444,6 +615,12 @@
         toast("<div><strong>Entry deleted</strong></div>");
         return;
       }
+      var sh = e.target.closest("[data-share]");
+      if (sh) {
+        var target = sh.getAttribute("data-share");
+        share(target === "all" ? null : target);
+        return;
+      }
       var sess = e.target.closest("[data-del-session]");
       if (sess) {
         if (!confirm("Delete every entry logged in this session?")) return;
@@ -499,14 +676,7 @@
     };
 
     $("export-btn").onclick = function () {
-      var blob = new Blob([PB.store.exportJSON()], { type: "application/json" });
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "pb-tracker-" + PB.today() + ".json";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      saveFile("pb-tracker-" + PB.today() + ".json", PB.store.exportJSON());
     };
 
     $("copy-btn").onclick = function () {
@@ -564,6 +734,7 @@
     { re: /^#\/activity\/([\w-]+)$/, render: function (m) { return viewActivity(m[1]); }, tab: "pbs" },
     { re: /^#\/score$/, render: viewScore, tab: "score" },
     { re: /^#\/history$/, render: viewHistory, tab: "history" },
+    { re: /^#\/edit\/([\w-]+)$/, render: function (m) { return viewEdit(m[1]); }, wire: wireEdit, tab: "pbs" },
     { re: /^#\/data$/, render: viewData, wire: wireData, tab: "" }
   ];
 

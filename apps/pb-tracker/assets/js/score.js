@@ -36,6 +36,42 @@
     return zero - (target / 100) * (zero - hundred);
   }
 
+  /* Scores a set of entries directly, rather than whatever is in the store —
+   * this is what lets the score be replayed as it stood on any past day. */
+  function overallFor(entries) {
+    var bestOf = {};
+    entries.forEach(function (e) {
+      var metric = PB.metric(e.metric);
+      if (!metric || !metric.scored) return;
+      if (PB.store.isBetter(metric, e.value, bestOf[e.metric])) bestOf[e.metric] = e.value;
+    });
+    var sectionScores = [];
+    PB.SECTIONS.forEach(function (s) {
+      var got = PB.metricsIn(s.id).filter(function (m) { return m.scored && bestOf[m.id] != null; })
+        .map(function (m) { return scoreValue(m, bestOf[m.id]); });
+      if (got.length) {
+        sectionScores.push(got.reduce(function (a, v) { return a + v; }, 0) / got.length);
+      }
+    });
+    if (!sectionScores.length) return null;
+    return Math.round(sectionScores.reduce(function (a, v) { return a + v; }, 0) / sectionScores.length);
+  }
+
+  /* One point per day you logged on, each showing the score you held that day. */
+  function history() {
+    var all = PB.store.load().entries.slice()
+      .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    var days = [];
+    all.forEach(function (e) { if (days[days.length - 1] !== e.date) days.push(e.date); });
+    var out = [];
+    days.forEach(function (day) {
+      var upTo = all.filter(function (e) { return e.date <= day; });
+      var v = overallFor(upTo);
+      if (v != null) out.push({ date: day, value: v });
+    });
+    return out;
+  }
+
   function metricScore(metricId) {
     var metric = PB.metric(metricId);
     if (!metric.scored) return null;
@@ -106,6 +142,7 @@
   PB.score = {
     BANDS: BANDS, band: band, scoreValue: scoreValue, valueForScore: valueForScore,
     metricScore: metricScore, sectionScore: sectionScore, overall: overall,
+    overallFor: overallFor, history: history,
     improvement: improvement, weakestLogged: weakestLogged, nextUnlogged: nextUnlogged
   };
 })(window.PB = window.PB || {});

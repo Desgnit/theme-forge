@@ -60,7 +60,7 @@ with it. So:
 
 - The app asks the browser to mark its data as permanent (`navigator.storage
   .persist()`), which stops routine eviction on Android and desktop Chrome.
-- **Data & backup** (the cog, top right) downloads a `.json` file of
+- **Data & backup** (the cog, top right) saves a `.json` file of
   everything. That file is the backup, and it is also how you move your
   history to a new phone — download on the old one, then *Restore → Merge in*
   on the new one. Merge keeps what is already there and adds anything missing,
@@ -117,6 +117,14 @@ direction, so a faster time and a heavier lift are handled by the same line of
 maths — put the worse value first either way.
 
 ---
+
+## Getting a copy out of the repo
+
+`python3 tools/bundle.py` inlines the stylesheet and every script into a
+single `dist/pb-tracker.html` — one file, no dependencies, still saves your
+entries. Handy for emailing the app to someone or keeping a copy on a USB
+stick. `--fragment` does the same without the outer `<html>` wrapper, for
+hosts that supply their own document shell.
 
 ## The files
 

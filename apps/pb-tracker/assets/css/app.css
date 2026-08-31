@@ -3,6 +3,10 @@
    Desktop is the same layout centred and given more air. */
 
 :root {
+  /* the app commits to one dark world, matching the printed tracker — telling
+     the browser so keeps date pickers, scrollbars and file inputs in step */
+  color-scheme: dark;
+
   --bg: #000;
   --panel: #0d0d0f;
   --panel-2: #141417;
@@ -192,11 +196,14 @@ button { font: inherit; }
 .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
 .btn-row .btn + .btn { margin-top: 0; }
 .icon-btn {
-  margin-left: auto; width: 32px; height: 32px; flex: none;
+  display: grid; place-items: center; width: 32px; height: 32px; flex: none;
   color: var(--muted); background: transparent; border: 1px solid var(--line-soft);
-  border-radius: 8px; cursor: pointer;
+  border-radius: 8px; cursor: pointer; font-size: 13px;
 }
-.icon-btn:hover { color: var(--bad); border-color: var(--bad); }
+.hist-row .icon-btn:first-of-type, .sess-head .icon-btn { margin-left: auto; }
+.hist-row .icon-btn + .icon-btn { margin-left: 6px; }
+.icon-btn:hover { color: var(--text); border-color: var(--line); }
+.icon-btn[data-delete]:hover, #edit-delete:hover { color: var(--bad); border-color: var(--bad); }
 input[type="file"] { width: 100%; font-size: 13px; color: var(--muted); }
 
 .note-card { display: grid; gap: 2px; }

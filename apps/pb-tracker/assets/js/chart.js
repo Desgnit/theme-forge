@@ -18,23 +18,14 @@
     return out;
   }
 
-  function render(metricId) {
-    var metric = PB.metric(metricId);
-    var entries = PB.store.entriesFor(metricId);
-    if (!entries.length) {
-      return '<p class="chart-empty">No entries yet. Log this activity and your progress line starts here.</p>';
-    }
-    if (entries.length === 1) {
-      return '<p class="chart-empty">One entry so far — <strong>' +
-        esc(PB.formatFull(metric.unit, entries[0].value)) +
-        "</strong>. Log it again to draw a progress line.</p>";
-    }
-
+  /* points: [{date, value}] oldest first. opts: {unit, betterUp, id, caption} */
+  function draw(entries, opts) {
+    var unit = opts.unit;
+    var betterUp = opts.betterUp;
     var values = entries.map(function (e) { return e.value; });
     var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
     var span = max - min || Math.max(max * 0.1, 1);
     var lo = min - span * 0.18, hi = max + span * 0.18;
-    var betterUp = metric.better === "higher";
 
     var x = function (i) { return PAD_L + (i / (entries.length - 1)) * (W - PAD_L - PAD_R); };
     var y = function (v) {
@@ -48,19 +39,20 @@
     var area = line + " L" + pts[pts.length - 1][0].toFixed(1) + " " + (H - PAD_B) +
       " L" + pts[0][0].toFixed(1) + " " + (H - PAD_B) + " Z";
 
-    var bestEntry = PB.store.best(metricId);
-    var svg = ['<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Progress chart for ' +
-      esc(metric.name) + '">'];
+    var bestValue = betterUp ? max : min;
+    var bestIndex = values.indexOf(bestValue);
+    var svg = ['<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' +
+      esc(opts.label || "Progress chart") + '">'];
 
-    svg.push('<defs><linearGradient id="cg-' + metricId + '" x1="0" y1="0" x2="0" y2="1">' +
+    svg.push('<defs><linearGradient id="cg-' + opts.id + '" x1="0" y1="0" x2="0" y2="1">' +
       '<stop offset="0%" stop-color="var(--accent)" stop-opacity="0.30"/>' +
       '<stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>');
 
-    var timeAxis = PB.isTime(metric.unit);
+    var timeAxis = PB.isTime(unit);
     var seen = {};
     niceTicks(lo, hi, 4).forEach(function (v) {
       var at = timeAxis && span > 20 ? Math.round(v) : v;   // whole seconds once the range is wide
-      var label = PB.formatValue(metric.unit, at);
+      var label = PB.formatValue(unit, at);
       if (seen[label]) return;
       seen[label] = true;
       var yy = y(v).toFixed(1);
@@ -69,22 +61,21 @@
         '" text-anchor="end">' + esc(label) + "</text>");
     });
 
-    svg.push('<path class="area" d="' + area + '" fill="url(#cg-' + metricId + ')"/>');
+    svg.push('<path class="area" d="' + area + '" fill="url(#cg-' + opts.id + ')"/>');
     svg.push('<path class="line" d="' + line + '"/>');
 
     entries.forEach(function (e, i) {
-      var isBest = bestEntry && e.id === bestEntry.id;
+      var isBest = i === bestIndex;
       svg.push('<circle class="dot' + (isBest ? " dot-best" : "") + '" cx="' + pts[i][0].toFixed(1) +
         '" cy="' + pts[i][1].toFixed(1) + '" r="' + (isBest ? 5 : 3.2) + '"><title>' +
-        esc(PB.formatFull(metric.unit, e.value) + " — " + PB.formatDate(e.date)) + "</title></circle>");
+        esc(PB.formatFull(unit, e.value) + " — " + PB.formatDate(e.date)) + "</title></circle>");
     });
 
-    var bi = entries.map(function (e) { return e.id; }).indexOf(bestEntry.id);
-    if (bi >= 0) {
-      var lx = Math.min(Math.max(pts[bi][0], PAD_L + 18), W - PAD_R - 18);
+    if (bestIndex >= 0) {
+      var lx = Math.min(Math.max(pts[bestIndex][0], PAD_L + 18), W - PAD_R - 18);
       svg.push('<text class="best-label" x="' + lx.toFixed(1) + '" y="' +
-        Math.max(pts[bi][1] - 9, 10).toFixed(1) + '" text-anchor="middle">' +
-        esc(PB.formatFull(metric.unit, bestEntry.value)) + "</text>");
+        Math.max(pts[bestIndex][1] - 9, 10).toFixed(1) + '" text-anchor="middle">' +
+        esc(PB.formatFull(unit, bestValue)) + "</text>");
     }
 
     svg.push('<text class="axis" x="' + PAD_L + '" y="' + (H - 8) + '">' + esc(PB.formatDate(entries[0].date)) + "</text>");
@@ -92,10 +83,27 @@
       esc(PB.formatDate(entries[entries.length - 1].date)) + "</text>");
     svg.push("</svg>");
 
-    var caption = betterUp
+    var caption = opts.caption || (betterUp
       ? "Higher is better — the line rising means you are improving."
-      : "Faster is better — the axis is flipped, so a rising line means quicker times.";
+      : "Faster is better — the axis is flipped, so a rising line means quicker times.");
     return svg.join("") + '<p class="chart-caption">' + caption + "</p>";
+  }
+
+  function render(metricId) {
+    var metric = PB.metric(metricId);
+    var entries = PB.store.entriesFor(metricId);
+    if (!entries.length) {
+      return '<p class="chart-empty">No entries yet. Log this activity and your progress line starts here.</p>';
+    }
+    if (entries.length === 1) {
+      return '<p class="chart-empty">One entry so far — <strong>' +
+        esc(PB.formatFull(metric.unit, entries[0].value)) +
+        "</strong>. Log it again to draw a progress line.</p>";
+    }
+    return draw(entries, {
+      unit: metric.unit, betterUp: metric.better === "higher",
+      id: metricId, label: "Progress chart for " + metric.name
+    });
   }
 
   /* Tiny inline trend line for list rows. */
@@ -117,5 +125,18 @@
     return '<svg class="spark" viewBox="0 0 52 18" aria-hidden="true"><path d="' + d + '"/></svg>';
   }
 
-  PB.chart = { render: render, spark: spark };
+  /* The overall fitness score plotted as it stood on each day you logged. */
+  function scoreTrend() {
+    var points = PB.score.history();
+    if (points.length < 2) {
+      return '<p class="chart-empty">Your score line starts once you have logged on two different days.</p>';
+    }
+    return draw(points, {
+      unit: "score", betterUp: true, id: "score-trend",
+      label: "Overall fitness score over time",
+      caption: "Your overall score as it stood on each day you logged something."
+    });
+  }
+
+  PB.chart = { render: render, spark: spark, scoreTrend: scoreTrend };
 })(window.PB = window.PB || {});
