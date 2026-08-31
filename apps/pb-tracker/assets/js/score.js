@@ -139,8 +139,38 @@
     return rows[0] || null;
   }
 
+  /* Beginner / Average / Elite marks for one activity, read straight off the
+   * same 0-100 scale the score uses, so this card and the score can never
+   * disagree. Values are rounded to what someone would actually say out
+   * loud: times to 5 seconds, kilos to 2.5, watts to 5. */
+  var LEVELS = [["Beginner", 20], ["Average", 50], ["Elite", 90]];
+
+  function roundLevel(metric, v) {
+    if (PB.isTime(metric.unit)) return Math.round(v / 5) * 5;
+    if (metric.unit === "kg") return Math.round(v / 2.5) * 2.5;
+    if (metric.unit === "watts") return Math.round(v / 5) * 5;
+    return Math.round(v);
+  }
+
+  function levels(metricId) {
+    var metric = PB.metric(metricId);
+    if (!metric.scored) return null;
+    var ms = metricScore(metricId);
+    var rows = LEVELS.map(function (lv) {
+      return { name: lv[0], at: lv[1], value: roundLevel(metric, valueForScore(metric, lv[1])) };
+    });
+    if (ms && ms.logged) {
+      var nearest = rows.reduce(function (a, r) {
+        return Math.abs(r.at - ms.score) < Math.abs(a.at - ms.score) ? r : a;
+      }, rows[0]);
+      nearest.here = true;
+    }
+    return rows;
+  }
+
   PB.score = {
     BANDS: BANDS, band: band, scoreValue: scoreValue, valueForScore: valueForScore,
+    levels: levels,
     metricScore: metricScore, sectionScore: sectionScore, overall: overall,
     overallFor: overallFor, history: history,
     improvement: improvement, weakestLogged: weakestLogged, nextUnlogged: nextUnlogged

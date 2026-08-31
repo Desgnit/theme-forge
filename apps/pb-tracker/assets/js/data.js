@@ -148,11 +148,13 @@
 
   /* Official Hyrox race loads, 2025/26 season — identical at every event,
    * Manchester included. Men open / women open first, pro in brackets. */
+  /* Shown on the entry forms. Men's open loads, since that is the division
+   * being trained for — every division is in the standards card. */
   var RACE = {
-    wallball60: "In the race: 100 reps, 6kg ball to a 3.0m target (men open) · 75 reps, 4kg to 2.7m (women open) · pro 9kg / 6kg.",
-    sledpush60_m: "In the race: 50m at 152kg incl. sled (men open) · 102kg (women open) · pro 202kg / 152kg.",
-    sledpull60_m: "In the race: 50m at 103kg incl. sled (men open) · 78kg (women open) · pro 153kg / 103kg.",
-    lunge60_m: "In the race: 100m with a 20kg sandbag (men open) · 10kg (women open) · pro 30kg / 20kg.",
+    wallball60: "In the race (men's open): 100 wall balls, 6kg ball to a 3.0m target.",
+    sledpush60_m: "In the race (men's open): 50m sled push at 152kg including the sled.",
+    sledpull60_m: "In the race (men's open): 50m sled pull at 103kg including the sled.",
+    lunge60_m: "In the race (men's open): 100m of walking lunges with a 20kg sandbag.",
     burpee60_m: "In the race: 80m of burpee broad jumps, bodyweight.",
     ski2k: "In the race: station 1 is 1,000m on the SkiErg.",
     row2k: "In the race: station 5 is 1,000m on the RowErg.",

@@ -169,6 +169,13 @@
       '<div class="head-with-art"><div><h1>' + esc(f.title) + '</h1><p class="sub">' + esc(f.blurb) + "</p></div>" +
       PB.art(f.art, "art-form") + "</div>" + videoLink(f) + "</header>"];
     if (f.race) html.push('<p class="race-line">' + esc(f.race) + "</p>");
+    var formLevels = PB.score.levels(f.fields[0].metric);
+    if (formLevels) {
+      var mainMetric = PB.metric(f.fields[0].metric);
+      html.push('<p class="levels-line">' + formLevels.map(function (row) {
+        return esc(row.name) + " " + esc(PB.formatFull(mainMetric.unit, row.value));
+      }).join(" · ") + "</p>");
+    }
 
     html.push('<form class="card form" id="entry-form" novalidate>');
     var grouped = f.sumTo ? f.sumTo.from : [];
@@ -447,6 +454,17 @@
       html.push("</ul>");
     }
     html.push("</section>");
+
+    var lv = PB.score.levels(metricId);
+    if (lv) {
+      html.push('<section class="card"><h2 class="card-head">Where you stand</h2><ul class="levels-list">');
+      lv.forEach(function (row) {
+        html.push('<li class="' + (row.here ? "here" : "") + '"><span class="lvl-name">' + esc(row.name) + "</span>" +
+          '<span class="lvl-val">' + esc(PB.formatFull(m.unit, row.value)) + "</span>" +
+          (row.here ? '<span class="lvl-you">you are here</span>' : "") + "</li>");
+      });
+      html.push('</ul><p class="fine">Reference marks for a male open-division athlete — the same scale the score uses. Log an entry and your nearest mark lights up.</p></section>');
+    }
 
     var parentForm = PB.FORMS.filter(function (f) {
       return f.fields.some(function (x) { return x.metric === metricId; });
