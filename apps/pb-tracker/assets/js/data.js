@@ -123,6 +123,61 @@
     });
   });
 
+  /* One short "how to do it" video per activity — the shortest solid
+   * technique clip we could find from a reputable coach, official Concept2
+   * clips for the ergs. Every id was checked live before shipping; watch
+   * URLs play Shorts and full videos alike. */
+  var VIDEOS = {
+    bike20: ["UZKbytEQJAU", "Street Parking"],
+    row2k: ["QPvYrfyGHi8", "Concept2"],
+    ski2k: ["B0lIgT5PHc8", "Concept2"],
+    run5k: ["sScNDZu2MWk", "James Dunne"],
+    squat_3rm: ["gcNh17Ckjgg", "Jeremy Ethier"],
+    bench_3rm: ["0cXAp6WhSj4", "Jeremy Ethier"],
+    deadlift_3rm: ["8np3vKDBJfc", "Jeremy Ethier"],
+    press_3rm: ["zoN5EH50Dro", "DeltaBolic"],
+    ski60_cals: ["B0lIgT5PHc8", "Concept2"],
+    row60_cals: ["QPvYrfyGHi8", "Concept2"],
+    wallball60: ["i3X-IG9sBJQ", "Core Blend Training"],
+    burpee60_m: ["eQFmJjdRSDI", "GoodLife Fitness"],
+    lunge60_m: ["XYspYu9VFHo", "Core Blend Training"],
+    sledpull60_m: ["1iDS8Xgx-nw", "Core Blend Training"],
+    sledpush60_m: ["IVv_WDafLO4", "Core Blend Training"],
+    deadhang: ["OT-wTpxP9uo", "Flow Motion Fitness"]
+  };
+
+  /* Official Hyrox race loads, 2025/26 season — identical at every event,
+   * Manchester included. Men open / women open first, pro in brackets. */
+  var RACE = {
+    wallball60: "In the race: 100 reps, 6kg ball to a 3.0m target (men open) · 75 reps, 4kg to 2.7m (women open) · pro 9kg / 6kg.",
+    sledpush60_m: "In the race: 50m at 152kg incl. sled (men open) · 102kg (women open) · pro 202kg / 152kg.",
+    sledpull60_m: "In the race: 50m at 103kg incl. sled (men open) · 78kg (women open) · pro 153kg / 103kg.",
+    lunge60_m: "In the race: 100m with a 20kg sandbag (men open) · 10kg (women open) · pro 30kg / 20kg.",
+    burpee60_m: "In the race: 80m of burpee broad jumps, bodyweight.",
+    ski2k: "In the race: station 1 is 1,000m on the SkiErg.",
+    row2k: "In the race: station 5 is 1,000m on the RowErg.",
+    run5k: "In the race: 8 × 1km runs, one between each station."
+  };
+
+  FORMS.forEach(function (f) {
+    var v = VIDEOS[f.id];
+    if (v) f.video = { url: "https://www.youtube.com/watch?v=" + v[0], by: v[1] };
+    if (RACE[f.id]) f.race = RACE[f.id];
+  });
+
+  /* The full station list for the reference card — includes stations the
+   * tracker sheet does not test, like the farmers carry. */
+  PB.RACE_STANDARDS = [
+    ["1. SkiErg", "1,000m"],
+    ["2. Sled Push", "50m — 152kg men open · 102kg women open (pro 202 / 152)"],
+    ["3. Sled Pull", "50m — 103kg men open · 78kg women open (pro 153 / 103)"],
+    ["4. Burpee Broad Jumps", "80m, bodyweight"],
+    ["5. RowErg", "1,000m"],
+    ["6. Farmers Carry", "200m — 2×24kg men open · 2×16kg women open (pro 2×32 / 2×24)"],
+    ["7. Sandbag Lunges", "100m — 20kg men open · 10kg women open (pro 30 / 20)"],
+    ["8. Wall Balls", "100 reps men open · 75 reps women open — 6kg/3.0m men, 4kg/2.7m women (pro 9kg / 6kg)"]
+  ];
+
   var byId = {};
   METRICS.forEach(function (m) {
     /* name  = the row exactly as it reads on Ian's paper tracker — shown

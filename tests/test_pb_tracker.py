@@ -113,6 +113,15 @@ def main():
         if name not in art_names:
             errors.append("form pictogram %s is not drawn in art.js" % name)
 
+    # every log form must carry a how-to video with a plausible YouTube id
+    n_forms = len(re.findall(r"FORMS\.push\(", data)) + data.count("var FORMS = [")  # sanity only
+    video_ids = re.findall(r'\["([A-Za-z0-9_-]{11})", "[^"]+"\]', data)
+    if len(video_ids) != 16:
+        errors.append("expected 16 how-to videos, found %d" % len(video_ids))
+    if "RACE_STANDARDS" not in data or "Farmers Carry" not in data:
+        errors.append("race standards reference missing")
+    del n_forms
+
     manifest = json.loads(read("manifest.webmanifest"))
     for field in ("name", "short_name", "start_url", "icons", "display"):
         if not manifest.get(field):

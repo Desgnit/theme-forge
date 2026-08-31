@@ -54,9 +54,12 @@ def build(fragment=False):
         keep = re.findall(r"<title>.*?</title>|<style>.*?</style>", head, re.S)
         html = "\n".join(keep) + "\n" + body.strip() + "\n"
 
-    leftovers = re.findall(r'(?:src|href)="(?!#|https?:|data:|mailto:)([^"]+)"', html)
+    # Only real relative asset paths count as leftovers — attribute-shaped
+    # strings inside the inlined JS (built up with + concatenation) do not.
+    leftovers = [f for f in re.findall(r'(?:src|href)="(?!#|https?:|data:|mailto:)([^"]+)"', html)
+                 if re.match(r"^\.{0,2}/?(assets|dist|supabase)/", f) or f.endswith((".css", ".js", ".png", ".svg", ".webmanifest"))]
     if leftovers:
-        raise SystemExit("bundle would still reach for external files: %s" % sorted(set(leftovers)))
+        raise SystemExit("bundle would still reach for local files: %s" % sorted(set(leftovers)))
     return html
 
 

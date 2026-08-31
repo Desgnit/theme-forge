@@ -139,7 +139,23 @@
       });
       html.push("</div></section>");
     });
+
+    html.push('<section class="card standards"><h2 class="card-head">Hyrox race standards</h2>' +
+      '<p class="body">The eight stations as they run on race day — same loads at every event, Manchester included. Open division first, pro in brackets.</p><ul class="standards-list">');
+    PB.RACE_STANDARDS.forEach(function (row) {
+      html.push('<li><strong>' + esc(row[0]) + "</strong><span>" + esc(row[1]) + "</span></li>");
+    });
+    html.push('</ul><p class="fine">1km of running between every station. Wall ball reps: 100 men open, 75 women open.</p></section>');
     return html.join("");
+  }
+
+  /* A one-tap "watch how it's done" link. Opens in the YouTube app or a new
+   * tab — never inside the tracker, so a half-typed entry is not lost. */
+  function videoLink(f) {
+    if (!f || !f.video) return "";
+    return '<a class="video-link" href="' + esc(f.video.url) + '" target="_blank" rel="noopener">' +
+      '<span class="video-play">▶</span> How to do it — short video <span class="video-by">' +
+      esc(f.video.by) + "</span></a>";
   }
 
   /* ------------------------------------------------------------- Entry form */
@@ -151,7 +167,8 @@
 
     var html = ['<header class="screen-head form-head"><a class="back" href="#/log">Back</a>' +
       '<div class="head-with-art"><div><h1>' + esc(f.title) + '</h1><p class="sub">' + esc(f.blurb) + "</p></div>" +
-      PB.art(f.art, "art-form") + "</div></header>"];
+      PB.art(f.art, "art-form") + "</div>" + videoLink(f) + "</header>"];
+    if (f.race) html.push('<p class="race-line">' + esc(f.race) + "</p>");
 
     html.push('<form class="card form" id="entry-form" novalidate>');
     var grouped = f.sumTo ? f.sumTo.from : [];
@@ -431,10 +448,11 @@
     }
     html.push("</section>");
 
-    var formId = (PB.FORMS.filter(function (f) {
+    var parentForm = PB.FORMS.filter(function (f) {
       return f.fields.some(function (x) { return x.metric === metricId; });
-    })[0] || {}).id;
-    if (formId) html.push('<a class="btn btn-primary" href="#/log/' + formId + '">Log a new ' + esc(m.short) + "</a>");
+    })[0];
+    if (parentForm && parentForm.video) html.push(videoLink(parentForm));
+    if (parentForm) html.push('<a class="btn btn-primary" href="#/log/' + parentForm.id + '">Log a new ' + esc(m.short) + "</a>");
     if (ranked.length) html.push('<button class="btn" type="button" data-share="' + metricId + '">Share this PB</button>');
     return html.join("");
   }
