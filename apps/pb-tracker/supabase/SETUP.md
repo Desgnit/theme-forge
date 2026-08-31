@@ -1,4 +1,10 @@
-# Turning on sync (and coach access)
+# Sync setup
+
+> **Already done for this deployment.** The live app at
+> https://desgnit.github.io/theme-forge/pb-tracker/ ships wired to its own
+> Supabase project (see `assets/js/config.js`): open the cog → Sync & coach →
+> enter your email → tap the emailed link, and this device syncs. The steps
+> below are only needed to point a fresh deployment at a *different* project.
 
 One-time setup, about ten minutes. When it is done the app syncs your history
 across devices behind a sign-in, and Ian can be given read-only access with an
@@ -24,14 +30,11 @@ device can never overwrite a newer entry. Safe to re-run after edits.
 
 1. **Authentication → Sign In / Up → Email** — make sure the Email provider
    is enabled (it is by default).
-2. **Authentication → Emails → Magic Link template** — make sure the body
-   includes the one-time code, e.g. add a line:
-
-   ```
-   Your sign-in code is {{ .Token }}
-   ```
-
-   Keep the `{{ .ConfirmationURL }}` link too — either route signs you in.
+2. On the free tier with the built-in email provider the sign-in email
+   contains a **link** (template editing needs a paid plan or your own SMTP).
+   That is fine: tapping the link on the device you are signing in signs it
+   in. If you configure SMTP later, add `{{ .Token }}` to the Magic Link
+   template and the in-app code box works too.
 3. **Authentication → URL Configuration → Site URL** — set it to the address
    you use the app from (your GitHub Pages URL ending `/pb-tracker/`), so the
    emailed link lands back in the app.
@@ -45,8 +48,8 @@ couple of people signing in occasionally.
    **anon public** key. (The anon key is meant to be public — the security is
    the sign-in plus the row rules from step 2, not the key.)
 2. In the app: cog (top right) → **Sync & coach** → paste both → **Connect**.
-3. Enter your email → **Email me a sign-in code** → type the 6-digit code
-   from the email (or just tap the email's link on the same device).
+3. Enter your email → **Email me a sign-in link** → open the email on the
+   same device and tap the link.
 
 Done. The app syncs on start, shortly after anything changes, and on the
 **Sync now** button. Repeat step 4 on the laptop with the same email and the
@@ -65,7 +68,9 @@ history follows.
 
 - **"The server said no (401/403)"** — the sign-in expired; sign in again.
 - **No email arriving** — check spam; the sender is `noreply@mail.app.supabase.io`
-  unless you configured your own SMTP.
+  unless you configured your own SMTP. The built-in provider also allows only
+  a couple of sign-in emails per hour across all users — a 429 in the app
+  means wait an hour, or wire up your own SMTP for real headroom.
 - **Two devices edited the same entry** — the newer edit wins everywhere;
   nothing is ever half-merged.
 - Sync never deletes local data on its own, and the backup file on the Data

@@ -1,7 +1,7 @@
 /* Offline shell. The app is a handful of static files and all data lives in
  * localStorage, so caching the shell is enough to make the whole thing work
  * with no signal — which is the normal state of affairs in a gym. */
-var CACHE = "pb-tracker-v1";
+var CACHE = "pb-tracker-v2";
 var SHELL = [
   "./",
   "./index.html",
@@ -12,6 +12,7 @@ var SHELL = [
   "./assets/js/format.js",
   "./assets/js/store.js",
   "./assets/js/score.js",
+  "./assets/js/config.js",
   "./assets/js/sync.js",
   "./assets/js/chart.js",
   "./assets/js/app.js",

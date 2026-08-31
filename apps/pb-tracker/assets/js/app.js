@@ -707,7 +707,7 @@
 
     /* The claude.ai artifact viewer sandboxes network calls, so sync cannot
      * run there — say so instead of failing mysteriously. */
-    if (window.claude && !st.configured) {
+    if (window.claude && typeof window.claude.use === "function") {
       html.push('<p class="body">Sync is not available in this preview — the page cannot reach the internet from here. ' +
         "Use the app from its own web address (or installed on your home screen) and this section lights up.</p></section>");
       return html.join("");
@@ -725,16 +725,17 @@
         '<button class="btn" id="sync-connect">Connect</button>' +
         '<p class="fine">Setting the project up takes ten minutes once — the steps are in supabase/SETUP.md in the repo.</p>');
     } else if (!st.signedIn) {
-      html.push('<p class="body">Connected. Sign in and this device starts syncing.</p>' +
+      html.push('<p class="body">Sign in and your entries follow you between devices — only you, and a coach you invite, can see them.</p>' +
         '<label class="field"><span class="field-label">Email</span>' +
         '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
-        '<button class="btn" id="sync-request">Email me a sign-in code</button>' +
-        '<div id="sync-code-wrap" hidden><label class="field"><span class="field-label">The 6-digit code from the email</span>' +
-        '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></span></label>' +
-        '<button class="btn btn-primary" id="sync-verify">Sign in</button>' +
-        '<p class="fine">Opened the email on this device? Tapping its link signs you in too.</p></div>' +
+        '<button class="btn btn-primary" id="sync-request">Email me a sign-in link</button>' +
+        '<div id="sync-code-wrap" hidden><p class="body">Check your email on this device and tap the link — that signs you in here. ' +
+        "If the email shows a code instead, type it below.</p>" +
+        '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
+        '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></span></label>' +
+        '<button class="btn" id="sync-verify">Sign in with the code</button></div>' +
         '<p class="form-error" id="sync-error" hidden></p>' +
-        '<button class="btn btn-ghost" id="sync-disconnect">Disconnect this project</button>');
+        '<button class="btn btn-ghost" id="sync-disconnect">Turn sync off on this device</button>');
     } else {
       html.push('<p class="body">Signed in as <strong>' + esc(st.email) + "</strong>.</p>" +
         '<p class="fine" id="sync-status-line">' + esc(syncStatusLine(st)) + "</p>" +
@@ -900,8 +901,8 @@
           $("sync-code-wrap").hidden = false;
           $("sync-error").hidden = true;
           $("sync-request").disabled = false;
-          $("sync-request").textContent = "Email me another code";
-          toast("<div><strong>Email sent</strong><span>Enter the code from it below</span></div>");
+          $("sync-request").textContent = "Email me another link";
+          toast("<div><strong>Email sent</strong><span>Tap the link in it on this device</span></div>");
         }, function (err) { $("sync-request").disabled = false; fail("sync-error")(err); });
       };
     }

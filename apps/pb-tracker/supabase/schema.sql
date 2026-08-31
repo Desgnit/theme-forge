@@ -47,7 +47,9 @@ create table if not exists public.coach_invites (
   athlete_id uuid not null references auth.users (id) on delete cascade,
   created_at timestamptz not null default now(),
   expires_at timestamptz not null default now() + interval '7 days',
-  used_by uuid references auth.users (id)
+  -- set null, not cascade or restrict: a redeemed invite is history worth
+  -- keeping, and a stale one must never block deleting a user
+  used_by uuid references auth.users (id) on delete set null
 );
 
 -- ------------------------------------------------- last-write-wins trigger

@@ -38,12 +38,13 @@
     anonKey = String(anonKey || "").trim();
     if (!/^https:\/\/[\w.-]+$/.test(url)) throw new Error("That does not look like a project URL (https://xxxx.supabase.co).");
     if (anonKey.split(".").length !== 3) throw new Error("That does not look like an anon key.");
-    PB.store.setSyncState({ url: url, anonKey: anonKey, lastError: null });
+    PB.store.setSyncState({ url: url, anonKey: anonKey, optOut: false, lastError: null });
     emit();
   }
 
   function disconnect() {
     PB.store.setSyncState({
+      optOut: true,
       url: null, anonKey: null, access: null, refresh: null, exp: null,
       userId: null, email: null, lastPull: null, lastPush: null, lastSync: null, lastError: null
     });
@@ -321,6 +322,18 @@
       body: { id: st().userId, name: PB.store.athlete().name || "" }
     });
   }
+
+  /* The app ships wired to its own project (config.js), so a fresh device
+   * needs no pasting — just the sign-in. An explicit disconnect is
+   * remembered and never overridden. The claude.ai preview sandbox blocks
+   * outside requests entirely, so there sync stays unconfigured. */
+  (function adoptDefaults() {
+    if (!PB.SYNC_DEFAULTS) return;
+    if (window.claude && typeof window.claude.use === "function") return;
+    var s = st();
+    if (s.url || s.optOut) return;
+    try { setConfig(PB.SYNC_DEFAULTS.url, PB.SYNC_DEFAULTS.anonKey); } catch (e) { /* stays manual */ }
+  })();
 
   PB.sync = {
     config: config, setConfig: setConfig, disconnect: disconnect,
