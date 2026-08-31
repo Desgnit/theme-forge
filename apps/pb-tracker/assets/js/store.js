@@ -9,7 +9,28 @@
   var listeners = [];
 
   function blank() {
-    return { version: 1, athlete: { name: "" }, entries: [] };
+    return { version: 2, athlete: { name: "" }, entries: [], sync: {} };
+  }
+
+  function now() { return new Date().toISOString(); }
+
+  /* Entries carry an `updated` stamp and deletes are tombstones rather than
+   * removals, so two devices can be reconciled without either losing a
+   * deletion. Everything that reads entries goes through live(). */
+  function migrate(st) {
+    if (!st.entries) st.entries = [];
+    if (!st.athlete) st.athlete = { name: "" };
+    if (!st.sync) st.sync = {};
+    st.entries.forEach(function (e) {
+      if (!e.updated) e.updated = new Date(e.date + "T12:00:00").toISOString();
+      if (e.deleted === undefined) e.deleted = false;
+    });
+    st.version = 2;
+    return st;
+  }
+
+  function live() {
+    return load().entries.filter(function (e) { return !e.deleted; });
   }
 
   function load() {
@@ -20,8 +41,7 @@
     } catch (e) {
       state = blank();
     }
-    if (!state.entries) state.entries = blank().entries;
-    if (!state.athlete) state.athlete = { name: "" };
+    migrate(state);
     return state;
   }
 
@@ -51,7 +71,7 @@
   }
 
   function entriesFor(metricId) {
-    return load().entries
+    return live()
       .filter(function (e) { return e.metric === metricId; })
       .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
   }
@@ -88,7 +108,7 @@
       if (isBetter(metric, v, previous && previous.value)) prs.push(metricId);
       st.entries.push({
         id: uid(), session: session, metric: metricId,
-        value: v, date: date, note: note || ""
+        value: v, date: date, note: note || "", updated: now(), deleted: false
       });
     });
     save();
@@ -101,28 +121,31 @@
     e.value = value;
     e.date = date;
     e.note = note || "";
+    e.updated = now();
     save();
     return true;
   }
 
   function deleteEntry(id) {
-    var st = load();
-    st.entries = st.entries.filter(function (e) { return e.id !== id; });
+    load().entries.forEach(function (e) {
+      if (e.id === id) { e.deleted = true; e.updated = now(); }
+    });
     save();
   }
 
   /* Deletes every metric written by one trip to the log screen — a 5km run
    * and its splits go together. */
   function deleteSession(session) {
-    var st = load();
-    st.entries = st.entries.filter(function (e) { return e.session !== session; });
+    load().entries.forEach(function (e) {
+      if (e.session === session) { e.deleted = true; e.updated = now(); }
+    });
     save();
   }
 
   /* Newest sessions first, grouped, for the activity feed. */
   function recentSessions(limit) {
     var groups = {};
-    load().entries.forEach(function (e) {
+    live().forEach(function (e) {
       var g = groups[e.session] || (groups[e.session] = { session: e.session, date: e.date, note: e.note, entries: [] });
       g.entries.push(e);
       if (e.note && !g.note) g.note = e.note;
@@ -135,7 +158,7 @@
       .slice(0, limit || 50);
   }
 
-  function totalEntries() { return load().entries.length; }
+  function totalEntries() { return live().length; }
 
   function athlete() { return load().athlete; }
 
@@ -157,7 +180,8 @@
     }).map(function (e) {
       return {
         id: e.id || uid(), session: e.session || uid(), metric: e.metric,
-        value: e.value, date: e.date, note: e.note || ""
+        value: e.value, date: e.date, note: e.note || "",
+        updated: e.updated || now(), deleted: !!e.deleted
       };
     });
     var st = load();
@@ -168,7 +192,9 @@
       st.entries.forEach(function (e) { seen[e.metric + "|" + e.date + "|" + e.value] = true; });
       clean.forEach(function (e) {
         var k = e.metric + "|" + e.date + "|" + e.value;
-        if (!seen[k]) { seen[k] = true; st.entries.push(e); }
+        if (e.deleted || seen[k]) return;
+        seen[k] = true;
+        st.entries.push(e);
       });
     }
     if (data.athlete && data.athlete.name && !st.athlete.name) st.athlete.name = data.athlete.name;
@@ -198,6 +224,50 @@
     save();
   }
 
+  /* --- the hooks the sync layer needs ------------------------------------ */
+
+  /* Everything changed since a timestamp, tombstones included. */
+  function changedSince(iso) {
+    return load().entries.filter(function (e) { return !iso || e.updated > iso; });
+  }
+
+  /* Applies rows from elsewhere. Last write wins, compared on `updated`, so
+   * the same rows can be applied twice with no effect. Returns how many
+   * actually changed anything. */
+  function applyRemote(rows) {
+    var st = load();
+    var byId = {};
+    st.entries.forEach(function (e) { byId[e.id] = e; });
+    var changed = 0;
+    rows.forEach(function (r) {
+      if (!r || !r.id || !PB.metric(r.metric)) return;
+      var incoming = {
+        id: r.id, session: r.session || r.id, metric: r.metric,
+        value: Number(r.value), date: r.date, note: r.note || "",
+        updated: r.updated, deleted: !!r.deleted
+      };
+      if (isNaN(incoming.value) || !/^\d{4}-\d{2}-\d{2}$/.test(incoming.date)) return;
+      var mine = byId[r.id];
+      if (!mine) { st.entries.push(incoming); byId[r.id] = incoming; changed++; return; }
+      if (incoming.updated > mine.updated) {
+        Object.keys(incoming).forEach(function (k) { mine[k] = incoming[k]; });
+        changed++;
+      }
+    });
+    if (changed) save();
+    return changed;
+  }
+
+  function syncState() { return load().sync; }
+
+  function setSyncState(patch) {
+    var sync = load().sync;
+    Object.keys(patch).forEach(function (k) {
+      if (patch[k] === null) delete sync[k]; else sync[k] = patch[k];
+    });
+    save();
+  }
+
   PB.store = {
     load: load, save: save, onChange: onChange,
     entriesFor: entriesFor, ranked: ranked, best: best, medal: medal,
@@ -207,6 +277,8 @@
     athlete: athlete, setName: setName,
     exportJSON: exportJSON, importJSON: importJSON, clearAll: clearAll,
     requestPersistence: requestPersistence, storageReport: storageReport,
+    changedSince: changedSince, applyRemote: applyRemote,
+    syncState: syncState, setSyncState: setSyncState, live: live,
     isBetter: isBetter
   };
 })(window.PB = window.PB || {});

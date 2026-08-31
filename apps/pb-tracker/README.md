@@ -5,8 +5,13 @@ times, watts, lifts and one-minute tests — then seeing your personal bests,
 your progress graphs, medals for your top three efforts and a single fitness
 score out of 100.
 
-It is a static site: HTML, CSS and plain JavaScript, no build step, no
-framework, no server, no account. Open `index.html` and it works.
+It is a static site: HTML, CSS and plain JavaScript, no build step and no
+framework. Open `index.html` and it works, entirely on-device. Optionally,
+connect a free Supabase project and it becomes a synced, signed-in app whose
+history follows you between devices — with read-only access for a coach you
+invite. Each entry form carries a small pictogram of the movement, and every
+list uses the sheet's own wording, so the app and the printed tracker always
+agree line for line.
 
 ---
 
@@ -46,6 +51,24 @@ history with medals, and what you need to hit to reach the next band.
 Log a new best and the app tells you straight away.
 
 ---
+
+## Sync and coach access (optional)
+
+Out of the box nothing leaves the device. The **Sync & coach** card on the
+Data screen connects a [Supabase](https://supabase.com) project (free tier is
+fine): sign in by emailed code or magic link, and the app then syncs on
+start, shortly after every change, and on demand. Two devices reconcile by
+"newest write wins", deletes included, and a device with a wrong clock can
+lose a conflict but can never be skipped.
+
+Coach access is invitation-only: the athlete mints a one-use code, the coach
+redeems it, and gets a read-only **Your athletes** screen. The athlete can
+revoke it any time.
+
+Setup is a one-time ten minutes: see [`supabase/SETUP.md`](supabase/SETUP.md).
+The schema, security rules and conflict handling live in
+[`supabase/schema.sql`](supabase/schema.sql) — the anon key the browser holds
+is public by design, and row-level security is what keeps rows private.
 
 ## Where your data lives
 
@@ -130,14 +153,18 @@ hosts that supply their own document shell.
 
 ```
 index.html               app shell, header and tab bar
+supabase/schema.sql      tables, security rules, conflict handling
+supabase/SETUP.md        the one-time setup walkthrough
 manifest.webmanifest     home-screen install metadata
 sw.js                    service worker: caches the shell so it runs offline
 assets/css/app.css       the whole stylesheet
+assets/js/art.js         the exercise pictograms
 assets/js/data.js        the 23 tracker rows, their units and benchmarks
 assets/js/format.js      parsing and display of times and numbers
 assets/js/store.js       localStorage: entries, PBs, medals, backup/restore
 assets/js/score.js       the 0-100 scoring
-assets/js/chart.js       the SVG progress graph, no chart library
+assets/js/chart.js       the SVG progress graphs, no chart library
+assets/js/sync.js        optional Supabase sync + coach access
 assets/js/app.js         screens, routing, forms
 tools/make-icons.py      regenerates the app icons (no image library needed)
 ```

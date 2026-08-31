@@ -46,9 +46,11 @@ def main():
     errors = []
 
     for f in ("index.html", "manifest.webmanifest", "sw.js", "README.md",
+              "supabase/schema.sql", "supabase/SETUP.md", "tools/bundle.py",
               "assets/css/app.css", "assets/js/data.js", "assets/js/format.js",
               "assets/js/store.js", "assets/js/score.js", "assets/js/chart.js",
-              "assets/js/app.js", "assets/img/icon-192.png",
+              "assets/js/app.js", "assets/js/sync.js", "assets/js/art.js",
+              "assets/img/icon-192.png",
               "assets/img/icon-512.png", "assets/img/favicon.svg"):
         if not os.path.isfile(os.path.join(APP, *f.split("/"))):
             errors.append("missing file: %s" % f)
@@ -103,6 +105,13 @@ def main():
     for metric_id in re.findall(r'metric: "(\w+)"', data):
         if metric_id not in ids:
             errors.append("a log form points at unknown metric %s" % metric_id)
+
+    art = read("assets", "js", "art.js")
+    art_names = set(re.findall(r"^    (\w+): \[", art, re.M))
+    for name in set(re.findall(r'art: "(\w+)"', data)) | set(
+            re.findall(r'\w+: "(\w+)"', data.split("TEST_ART = {")[1].split("}")[0])):
+        if name not in art_names:
+            errors.append("form pictogram %s is not drawn in art.js" % name)
 
     manifest = json.loads(read("manifest.webmanifest"))
     for field in ("name", "short_name", "start_url", "icons", "display"):

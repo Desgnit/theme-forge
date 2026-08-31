@@ -25,33 +25,33 @@
   ];
 
   var METRICS = [
-    { id: "bike20_watts", section: "bike", name: "Average Watts - 20 Minutes Indoor Bike", list: "Average watts (20 min)", short: "20min Bike", unit: "watts", bench: [80, 330] },
+    { id: "bike20_watts", section: "bike", name: "Average Watts - 20 Minutes Indoor Bike", short: "20min Bike", unit: "watts", bench: [80, 330] },
 
-    { id: "row2k_total", section: "ergs", name: "2km Row (Total Time)", list: "2km Row (total)", short: "2km Row", unit: "time", bench: [600, 380] },
-    { id: "row2k_pace", section: "ergs", name: "2km Row (Pace per 500m)", list: "2km Row (500m pace)", unit: "pace", derived: "row2k_total" },
-    { id: "ski2k_total", section: "ergs", name: "2km Ski (Total Time)", list: "2km Ski (total)", short: "2km Ski", unit: "time", bench: [660, 430] },
-    { id: "ski2k_pace", section: "ergs", name: "2km Ski (Pace per 500m)", list: "2km Ski (500m pace)", unit: "pace", derived: "ski2k_total" },
+    { id: "row2k_total", section: "ergs", name: "2km Row (Total Time)", short: "2km Row", unit: "time", bench: [600, 380] },
+    { id: "row2k_pace", section: "ergs", name: "2km Row (Pace per 500m)", unit: "pace", derived: "row2k_total" },
+    { id: "ski2k_total", section: "ergs", name: "2km Ski (Total Time)", short: "2km Ski", unit: "time", bench: [660, 430] },
+    { id: "ski2k_pace", section: "ergs", name: "2km Ski (Pace per 500m)", unit: "pace", derived: "ski2k_total" },
 
-    { id: "run5k_total", section: "run", name: "5km Run (Total Time)", list: "5km Run (total)", short: "5km Run", unit: "time", bench: [2400, 1080] },
-    { id: "run5k_s1", section: "run", listShort: true, name: "5km Run (1km Split 1)", unit: "time", derived: "run5k_total" },
-    { id: "run5k_s2", section: "run", listShort: true, name: "5km Run (1km Split 2)", unit: "time", derived: "run5k_total" },
-    { id: "run5k_s3", section: "run", listShort: true, name: "5km Run (1km Split 3)", unit: "time", derived: "run5k_total" },
-    { id: "run5k_s4", section: "run", listShort: true, name: "5km Run (1km Split 4)", unit: "time", derived: "run5k_total" },
-    { id: "run5k_s5", section: "run", listShort: true, name: "5km Run (1km Split 5)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_total", section: "run", name: "5km Run (Total Time)", short: "5km Run", unit: "time", bench: [2400, 1080] },
+    { id: "run5k_s1", section: "run", name: "5km Run (1km Split 1)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s2", section: "run", name: "5km Run (1km Split 2)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s3", section: "run", name: "5km Run (1km Split 3)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s4", section: "run", name: "5km Run (1km Split 4)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s5", section: "run", name: "5km Run (1km Split 5)", unit: "time", derived: "run5k_total" },
 
     { id: "squat_3rm", section: "strength", name: "3RM Back Squat", unit: "kg", bench: [50, 180] },
     { id: "bench_3rm", section: "strength", name: "3RM Bench Press", unit: "kg", bench: [30, 130] },
     { id: "deadlift_3rm", section: "strength", name: "3RM Deadlift", unit: "kg", bench: [60, 220] },
     { id: "press_3rm", section: "strength", name: "3RM Strict Press", unit: "kg", bench: [20, 85] },
 
-    { id: "ski60_cals", section: "tests", name: "60s Max Ski (Calories)", list: "60s Ski", unit: "cals", bench: [12, 34] },
-    { id: "row60_cals", section: "tests", name: "60s Max Cals Row", list: "60s Row", unit: "cals", bench: [12, 36] },
-    { id: "wallball60", section: "tests", name: "60s Max Wall Balls", list: "60s Wall Balls", unit: "reps", bench: [12, 40] },
-    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", list: "60s Burpee Broad Jumps", unit: "m", bench: [12, 45] },
-    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", list: "60s Walking Lunges", unit: "m", bench: [15, 70] },
-    { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", list: "60s Sled Pull", unit: "m", bench: [15, 80] },
-    { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", list: "60s Sled Push", unit: "m", bench: [12, 60] },
-    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", list: "Dead Hang", unit: "time_up", bench: [20, 180] }
+    { id: "ski60_cals", section: "tests", name: "60s Max Ski (Calories)", unit: "cals", bench: [12, 34] },
+    { id: "row60_cals", section: "tests", name: "60s Max Cals Row", unit: "cals", bench: [12, 36] },
+    { id: "wallball60", section: "tests", name: "60s Max Wall Balls", unit: "reps", bench: [12, 40] },
+    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", unit: "m", bench: [12, 45] },
+    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [15, 70] },
+    { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", unit: "m", bench: [15, 80] },
+    { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", unit: "m", bench: [12, 60] },
+    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [20, 180] }
   ];
 
   /* Units: how a value is typed, drawn and compared. */
@@ -69,24 +69,24 @@
   /* The Log menu: one card per card-tap, in tracker order. */
   var FORMS = [
     {
-      id: "bike20", section: "bike", title: "20 Minute Indoor Bike",
-      blurb: "Average watts held for the full 20 minutes.",
+      id: "bike20", section: "bike", art: "bike", title: "Average Watts - 20 Minutes Indoor Bike",
+      blurb: "Ride 20 minutes, enter the average watts from the bike's screen.",
       fields: [{ metric: "bike20_watts", label: "Average watts", required: true }]
     },
     {
-      id: "row2k", section: "ergs", title: "2km Row",
+      id: "row2k", section: "ergs", art: "row", title: "2km Row",
       blurb: "Enter the total time — the 500m pace is worked out for you.",
       fields: [{ metric: "row2k_total", label: "Total time", required: true }],
       derive: { from: "row2k_total", metric: "row2k_pace", divide: 4 }
     },
     {
-      id: "ski2k", section: "ergs", title: "2km Ski",
+      id: "ski2k", section: "ergs", art: "ski", title: "2km Ski",
       blurb: "Enter the total time — the 500m pace is worked out for you.",
       fields: [{ metric: "ski2k_total", label: "Total time", required: true }],
       derive: { from: "ski2k_total", metric: "ski2k_pace", divide: 4 }
     },
     {
-      id: "run5k", section: "run", title: "5km Run",
+      id: "run5k", section: "run", art: "run", title: "5km Run",
       blurb: "Splits are optional. Fill all five and the total fills itself in.",
       fields: [
         { metric: "run5k_total", label: "Total time", required: true },
@@ -101,32 +101,34 @@
   ];
 
   /* Strength and the 60s tests are one field each — generate their forms. */
-  ["squat_3rm", "bench_3rm", "deadlift_3rm", "press_3rm"].forEach(function (id) {
+  var STRENGTH_ART = { squat_3rm: "squat", bench_3rm: "bench", deadlift_3rm: "deadlift", press_3rm: "press" };
+  Object.keys(STRENGTH_ART).forEach(function (id) {
     var m = METRICS.filter(function (x) { return x.id === id; })[0];
     FORMS.push({
-      id: id, section: "strength", title: m.name,
+      id: id, section: "strength", title: m.name, art: STRENGTH_ART[id],
       blurb: "Heaviest set of three, taken to a full lockout.",
       fields: [{ metric: id, label: "Weight", required: true }]
     });
   });
-  ["ski60_cals", "row60_cals", "wallball60", "burpee60_m", "lunge60_m",
-    "sledpull60_m", "sledpush60_m", "deadhang"].forEach(function (id) {
-      var m = METRICS.filter(function (x) { return x.id === id; })[0];
-      FORMS.push({
-        id: id, section: "tests", title: m.name,
-        blurb: id === "deadhang" ? "Hang from the bar until you drop off." : "One all-out minute.",
-        fields: [{ metric: id, label: "Result", required: true }]
-      });
+  var TEST_ART = {
+    ski60_cals: "ski", row60_cals: "row", wallball60: "wallball", burpee60_m: "burpee",
+    lunge60_m: "lunge", sledpull60_m: "sledpull", sledpush60_m: "sledpush", deadhang: "hang"
+  };
+  Object.keys(TEST_ART).forEach(function (id) {
+    var m = METRICS.filter(function (x) { return x.id === id; })[0];
+    FORMS.push({
+      id: id, section: "tests", title: m.name, art: TEST_ART[id],
+      blurb: id === "deadhang" ? "Hang from the bar until you drop off." : "One all-out minute.",
+      fields: [{ metric: id, label: "Result", required: true }]
     });
+  });
 
   var byId = {};
   METRICS.forEach(function (m) {
-    /* name  = the row exactly as it reads on the paper tracker
-       list  = a shorter label for phone-width rows, where the section heading
-               already supplies the context
-       short = what it is called inside a sentence */
-    if (m.listShort) { m.list = m.name.replace("5km Run (", "").replace(")", ""); delete m.listShort; }
-    m.list = m.list || m.name;
+    /* name  = the row exactly as it reads on Ian's paper tracker — shown
+               verbatim on every list so the app and the sheet always agree
+       short = what the row is called inside a sentence */
+    m.list = m.name;
     m.short = m.short || m.name;
     m.better = UNITS[m.unit].better;
     m.scored = !m.derived;
@@ -146,5 +148,12 @@
   };
   PB.form = function (id) {
     return FORMS.filter(function (f) { return f.id === id; })[0];
+  };
+  /* The pictogram for a metric is the one on the form that logs it. */
+  PB.artFor = function (metricId) {
+    var f = FORMS.filter(function (x) {
+      return x.fields.some(function (fl) { return fl.metric === metricId; });
+    })[0];
+    return f ? f.art : "";
   };
 })(window.PB = window.PB || {});

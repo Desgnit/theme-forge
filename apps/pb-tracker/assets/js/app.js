@@ -94,6 +94,7 @@
         var primary = f.fields[0].metric;
         var b = PB.store.best(primary);
         html.push('<a class="tile" href="#/log/' + f.id + '">' +
+          PB.art(f.art, "art-tile") +
           '<span class="tile-name">' + esc(f.title) + "</span>" +
           '<span class="tile-pb">' + (b ? "PB " + esc(PB.formatFull(PB.metric(primary).unit, b.value)) : "No entry yet") + "</span>" +
           '<span class="tile-go">+</span></a>');
@@ -110,8 +111,9 @@
     if (!f) return notFound();
     var s = PB.section(f.section);
 
-    var html = ['<header class="screen-head"><a class="back" href="#/log">Back</a>' +
-      "<h1>" + esc(f.title) + "</h1><p class=\"sub\">" + esc(f.blurb) + "</p></header>"];
+    var html = ['<header class="screen-head form-head"><a class="back" href="#/log">Back</a>' +
+      '<div class="head-with-art"><div><h1>' + esc(f.title) + '</h1><p class="sub">' + esc(f.blurb) + "</p></div>" +
+      PB.art(f.art, "art-form") + "</div></header>"];
 
     html.push('<form class="card form" id="entry-form" novalidate>');
     var grouped = f.sumTo ? f.sumTo.from : [];
@@ -315,9 +317,10 @@
     var ms = PB.score.metricScore(metricId);
     var imp = PB.score.improvement(metricId);
 
-    var html = ['<header class="screen-head"><a class="back" href="#/pbs">Back</a>' +
-      "<h1>" + esc(m.name) + '</h1><p class="sub">' + esc(s.name) +
-      (m.derived ? " · worked out from your " + esc(PB.metric(m.derived).name) : "") + "</p></header>"];
+    var html = ['<header class="screen-head form-head"><a class="back" href="#/pbs">Back</a>' +
+      '<div class="head-with-art"><div><h1>' + esc(m.name) + '</h1><p class="sub">' + esc(s.name) +
+      (m.derived ? " · worked out from your " + esc(PB.metric(m.derived).name) : "") + "</p></div>" +
+      PB.art(PB.artFor(m.derived || metricId), "art-form") + "</div></header>"];
 
     var b = ranked[0];
     html.push('<div class="card hero-stat">' +
@@ -633,10 +636,76 @@
 
   /* ------------------------------------------------------------------ Data */
 
+  function syncCard() {
+    var st = PB.sync.status();
+    var html = ['<section class="card"><h2 class="card-head">Sync &amp; coach</h2>'];
+
+    /* The claude.ai artifact viewer sandboxes network calls, so sync cannot
+     * run there — say so instead of failing mysteriously. */
+    if (window.claude && !st.configured) {
+      html.push('<p class="body">Sync is not available in this preview — the page cannot reach the internet from here. ' +
+        "Use the app from its own web address (or installed on your home screen) and this section lights up.</p></section>");
+      return html.join("");
+    }
+
+    if (!st.configured) {
+      html.push('<p class="body">Optional: connect a Supabase project and your entries follow you between ' +
+        "devices, behind a sign-in so only you (and a coach you invite) can see them. " +
+        "Without it the app keeps working on this device alone.</p>" +
+        '<label class="field"><span class="field-label">Project URL</span>' +
+        '<span class="field-input"><input type="url" id="sync-url" placeholder="https://xxxx.supabase.co" autocomplete="off"></span></label>' +
+        '<label class="field"><span class="field-label">Anon key</span>' +
+        '<span class="field-input"><input type="text" id="sync-key" placeholder="eyJ…" autocomplete="off"></span></label>' +
+        '<p class="form-error" id="sync-error" hidden></p>' +
+        '<button class="btn" id="sync-connect">Connect</button>' +
+        '<p class="fine">Setting the project up takes ten minutes once — the steps are in supabase/SETUP.md in the repo.</p>');
+    } else if (!st.signedIn) {
+      html.push('<p class="body">Connected. Sign in and this device starts syncing.</p>' +
+        '<label class="field"><span class="field-label">Email</span>' +
+        '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
+        '<button class="btn" id="sync-request">Email me a sign-in code</button>' +
+        '<div id="sync-code-wrap" hidden><label class="field"><span class="field-label">The 6-digit code from the email</span>' +
+        '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></span></label>' +
+        '<button class="btn btn-primary" id="sync-verify">Sign in</button>' +
+        '<p class="fine">Opened the email on this device? Tapping its link signs you in too.</p></div>' +
+        '<p class="form-error" id="sync-error" hidden></p>' +
+        '<button class="btn btn-ghost" id="sync-disconnect">Disconnect this project</button>');
+    } else {
+      html.push('<p class="body">Signed in as <strong>' + esc(st.email) + "</strong>.</p>" +
+        '<p class="fine" id="sync-status-line">' + esc(syncStatusLine(st)) + "</p>" +
+        (st.lastError ? '<p class="form-error">' + esc(st.lastError) + "</p>" : "") +
+        '<button class="btn" id="sync-now">Sync now</button>' +
+        '<div class="btn-row"><button class="btn btn-ghost" id="sync-signout">Sign out</button>' +
+        '<button class="btn btn-ghost" id="sync-disconnect">Disconnect</button></div>');
+      html.push('<h2 class="card-head" style="margin-top:16px">Coach access</h2>' +
+        '<p class="body">A coach sees your entries and scores, read-only. Make a code, send it to them, done.</p>' +
+        '<div id="coach-list" class="fine">Checking who can see your data…</div>' +
+        '<button class="btn" id="invite-create">Create an invite code for your coach</button>' +
+        '<p class="body" id="invite-out" hidden></p>' +
+        '<label class="field"><span class="field-label">Coaching someone? Enter their code</span>' +
+        '<span class="field-input"><input type="text" id="redeem-code" placeholder="ABCD-EFGH" autocomplete="off" style="text-transform:uppercase"></span></label>' +
+        '<button class="btn" id="invite-redeem">Link me to this athlete</button>' +
+        '<p class="form-error" id="coach-error" hidden></p>' +
+        '<div id="athlete-link"></div>');
+    }
+    html.push("</section>");
+    return html.join("");
+  }
+
+  function syncStatusLine(st) {
+    var when = st.busy ? "Syncing…"
+      : st.lastSync ? "Last synced " + PB.relativeDay(st.lastSync.slice(0, 10)).toLowerCase()
+        : "Not synced yet";
+    var queue = st.pending === 0 ? "nothing waiting to upload"
+      : st.pending + " change" + (st.pending === 1 ? "" : "s") + " waiting to upload";
+    return when + " · " + queue;
+  }
+
   function viewData() {
     var a = PB.store.athlete();
     return '<header class="screen-head"><a class="back" href="#/pbs">Back</a><h1>Data &amp; backup</h1>' +
-      '<p class="sub">Your entries live in this browser only. Nothing is uploaded anywhere.</p></header>' +
+      '<p class="sub">Entries live on this device; connect sync below and they follow you.</p></header>' +
+      syncCard() +
       '<section class="card"><h2 class="card-head">Your name</h2>' +
       '<label class="field"><span class="field-input"><input type="text" id="athlete-name" maxlength="40" ' +
       'placeholder="Shown at the top of the app" value="' + esc(a.name) + '"></span></label>' +
@@ -671,6 +740,7 @@
 
     $("save-name").onclick = function () {
       PB.store.setName($("athlete-name").value.trim());
+      PB.sync.pushProfile().then(null, function () { /* offline is fine */ });
       paintHeader();
       toast("<div><strong>Name saved</strong></div>");
     };
@@ -719,6 +789,181 @@
     };
   }
 
+  function wireSync() {
+    var $ = function (id) { return document.getElementById(id); };
+    var fail = function (box) {
+      return function (err) {
+        var el = $(box);
+        if (!el) return;
+        el.textContent = err.message || "That did not work — try again.";
+        el.hidden = false;
+      };
+    };
+
+    if ($("sync-connect")) {
+      $("sync-connect").onclick = function () {
+        try {
+          PB.sync.setConfig($("sync-url").value, $("sync-key").value);
+          render();
+        } catch (err) { fail("sync-error")(err); }
+      };
+    }
+    if ($("sync-request")) {
+      $("sync-request").onclick = function () {
+        var email = $("sync-email").value.trim();
+        if (!email) { fail("sync-error")(new Error("Enter your email first.")); return; }
+        $("sync-request").disabled = true;
+        PB.sync.requestCode(email).then(function () {
+          $("sync-code-wrap").hidden = false;
+          $("sync-error").hidden = true;
+          $("sync-request").disabled = false;
+          $("sync-request").textContent = "Email me another code";
+          toast("<div><strong>Email sent</strong><span>Enter the code from it below</span></div>");
+        }, function (err) { $("sync-request").disabled = false; fail("sync-error")(err); });
+      };
+    }
+    if ($("sync-verify")) {
+      $("sync-verify").onclick = function () {
+        PB.sync.verifyCode($("sync-email").value.trim(), $("sync-code").value).then(function () {
+          PB.sync.pushProfile();
+          render();
+          toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
+        }, fail("sync-error"));
+      };
+    }
+    if ($("sync-now")) {
+      $("sync-now").onclick = function () {
+        PB.sync.syncNow().then(function (r) {
+          render();
+          if (r) toast("<div><strong>Synced</strong><span>" + r.pulled + " in, " + r.pushed + " out</span></div>");
+        }, function () { render(); });
+      };
+    }
+    if ($("sync-signout")) $("sync-signout").onclick = function () { PB.sync.signOut(); render(); };
+    if ($("sync-disconnect")) {
+      $("sync-disconnect").onclick = function () {
+        if (!confirm("Disconnect? Entries stay on this device and on the server; this device just stops syncing.")) return;
+        PB.sync.disconnect();
+        render();
+      };
+    }
+
+    if ($("coach-list")) {
+      PB.sync.myCoaches().then(function (coaches) {
+        var el = $("coach-list");
+        if (!el) return;
+        el.innerHTML = coaches.length
+          ? "Can see your data: " + coaches.map(function (c) {
+              return esc(c.name) + ' <button class="linkish" data-drop-coach="' + c.id + '">remove</button>';
+            }).join(" · ")
+          : "Nobody else can see your data yet.";
+      }, function () { var el = $("coach-list"); if (el) el.textContent = "Could not check coach access just now."; });
+
+      PB.sync.myAthletes().then(function (athletes) {
+        var el = $("athlete-link");
+        if (el && athletes.length) {
+          el.innerHTML = '<a class="btn" href="#/coach">You coach ' + athletes.length +
+            (athletes.length === 1 ? " athlete" : " athletes") + " — see their PBs</a>";
+        }
+      }, function () {});
+
+      $("invite-create").onclick = function () {
+        PB.sync.createInvite().then(function (code) {
+          var out = $("invite-out");
+          out.hidden = false;
+          out.innerHTML = "Send your coach this code: <strong class=\"big\">" + esc(code) +
+            "</strong><br><span class=\"muted\">It works once and expires in a week.</span>";
+        }, fail("coach-error"));
+      };
+      $("invite-redeem").onclick = function () {
+        var code = $("redeem-code").value.trim();
+        if (!code) { fail("coach-error")(new Error("Enter the code the athlete sent you.")); return; }
+        PB.sync.redeemInvite(code).then(function () {
+          render();
+          toast("<div><strong>Linked</strong><span>Their PBs are on the coach screen</span></div>");
+        }, fail("coach-error"));
+      };
+      view.addEventListener("click", function once(e) {
+        var btn = e.target.closest("[data-drop-coach]");
+        if (!btn) return;
+        if (!confirm("Remove this coach's access to your data?")) return;
+        PB.sync.dropCoach(btn.getAttribute("data-drop-coach")).then(function () { render(); }, function () {});
+        view.removeEventListener("click", once);
+      });
+    }
+  }
+
+  /* ---------------------------------------------------------------- Coach */
+
+  function viewCoach() {
+    return '<header class="screen-head"><a class="back" href="#/data">Back</a><h1>Your athletes</h1>' +
+      '<p class="sub">Read-only: their entries, bests and scores as they stand.</p></header>' +
+      '<div id="coach-body" class="card"><p class="empty">Fetching your athletes…</p></div>';
+  }
+
+  function wireCoach() {
+    PB.sync.myAthletes().then(function (athletes) {
+      var el = document.getElementById("coach-body");
+      if (!el) return;
+      if (!athletes.length) {
+        el.innerHTML = '<p class="empty">No athletes yet. When one sends you an invite code, enter it on the Data screen.</p>';
+        return;
+      }
+      el.innerHTML = '<div class="rows">' + athletes.map(function (a) {
+        return '<a class="row" href="#/coach/' + a.id + '"><span class="row-main"><span class="row-name">' +
+          esc(a.name) + "</span></span><span class=\"row-arrow\">›</span></a>";
+      }).join("") + "</div>";
+    }, function (err) {
+      var el = document.getElementById("coach-body");
+      if (el) el.innerHTML = '<p class="empty">' + esc(err.message) + "</p>";
+    });
+  }
+
+  function viewAthlete() {
+    return '<header class="screen-head"><a class="back" href="#/coach">Back</a><h1 id="ath-name">Athlete</h1>' +
+      '<p class="sub">Their tracker, read-only.</p></header><div id="ath-body"><div class="card"><p class="empty">Fetching…</p></div></div>';
+  }
+
+  function wireAthlete(match) {
+    var athleteId = match[1];
+    PB.sync.myAthletes().then(function (athletes) {
+      var who = athletes.filter(function (a) { return a.id === athleteId; })[0];
+      var nameEl = document.getElementById("ath-name");
+      if (who && nameEl) nameEl.textContent = who.name;
+    }, function () {});
+    PB.sync.athleteEntries(athleteId).then(function (rows) {
+      var el = document.getElementById("ath-body");
+      if (!el) return;
+      rows = rows || [];
+      var bestOf = {};
+      rows.forEach(function (r) {
+        var m = PB.metric(r.metric);
+        if (!m) return;
+        var b = bestOf[r.metric];
+        if (!b || PB.store.isBetter(m, r.value, b.value)) bestOf[r.metric] = r;
+      });
+      var overall = PB.score.overallFor(rows);
+      var html = ['<div class="card hero-stat"><div><span class="label">Overall score</span>' +
+        '<strong class="big">' + (overall == null ? "—" : overall + "/100") + "</strong>" +
+        '<span class="muted">' + rows.length + " entries logged</span></div></div>"];
+      PB.SECTIONS.forEach(function (sec) {
+        html.push('<section class="block"><h2 class="block-head">' + icon(sec.icon) +
+          '<span class="num">' + sec.n + ".</span> " + esc(sec.name) + "</h2><div class=\"rows\">");
+        PB.metricsIn(sec.id).forEach(function (m) {
+          var b = bestOf[m.id];
+          html.push('<span class="row"><span class="row-main"><span class="row-name">' + esc(m.name) + "</span>" +
+            '<span class="row-meta">' + (b ? esc(PB.formatDate(b.date)) : "Not logged") + "</span></span>" +
+            '<span class="row-val">' + (b ? esc(PB.formatFull(m.unit, b.value)) : "—") + "</span></span>");
+        });
+        html.push("</div></section>");
+      });
+      el.innerHTML = html.join("");
+    }, function (err) {
+      var el = document.getElementById("ath-body");
+      if (el) el.innerHTML = '<div class="card"><p class="empty">' + esc(err.message) + "</p></div>";
+    });
+  }
+
   function notFound() {
     return '<header class="screen-head"><h1>Not found</h1></header>' +
       '<div class="card empty-card"><p>That screen does not exist.</p>' +
@@ -735,7 +980,9 @@
     { re: /^#\/score$/, render: viewScore, tab: "score" },
     { re: /^#\/history$/, render: viewHistory, tab: "history" },
     { re: /^#\/edit\/([\w-]+)$/, render: function (m) { return viewEdit(m[1]); }, wire: wireEdit, tab: "pbs" },
-    { re: /^#\/data$/, render: viewData, wire: wireData, tab: "" }
+    { re: /^#\/coach$/, render: viewCoach, wire: wireCoach, tab: "" },
+    { re: /^#\/coach\/([\w-]+)$/, render: viewAthlete, wire: wireAthlete, tab: "" },
+    { re: /^#\/data$/, render: viewData, wire: function (m) { wireData(m); wireSync(); }, tab: "" }
   ];
 
   function render() {
@@ -769,11 +1016,24 @@
   function start() {
     view = document.getElementById("view");
     toastEl = document.getElementById("toast");
+    PB.sync.handleRedirect();
     if (!location.hash) location.hash = "#/log";
     window.addEventListener("hashchange", render);
     wireDeletes();
     PB.store.onChange(paintHeader);
+    PB.store.onChange(function () {
+      // only schedule an upload when there is actually something to send —
+      // sync's own bookkeeping also lands here and must not re-trigger it
+      if (PB.sync.status().pending > 0) PB.sync.syncSoon();
+    });
+    PB.sync.onStatus(function (st) {
+      var line = document.getElementById("sync-status-line");
+      if (line) line.textContent = syncStatusLine(st);
+    });
     PB.store.requestPersistence();
+    if (PB.sync.signedIn()) {
+      PB.sync.syncNow().then(function () { render(); }, function () {});
+    }
     paintHeader();
     render();
 
