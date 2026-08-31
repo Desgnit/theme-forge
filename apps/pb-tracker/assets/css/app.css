@@ -28,6 +28,9 @@
 
 * { box-sizing: border-box; }
 
+/* An author display rule silently beats the UA's [hidden] — never let it. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   background: var(--bg);
@@ -178,6 +181,17 @@ button { font: inherit; }
 .standards-list li:last-child { border-bottom: 0; }
 .standards-list strong { font-size: 13px; }
 .standards-list span { font-size: 12px; color: var(--muted); }
+
+/* ------------------------------------------------------------------- timer */
+
+.timer-card { text-align: center; }
+.timer-kind { margin-left: auto; font-size: 10px; letter-spacing: .12em; color: var(--accent); }
+.timer-display {
+  font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: .01em;
+  font-variant-numeric: tabular-nums; margin: 4px 0 2px;
+}
+.timer-note { margin: 4px 0 12px; font-size: 13px; color: var(--muted); }
+.timer-card .btn-row { margin-top: 0; }
 
 /* ------------------------------------------------------------------ levels */
 

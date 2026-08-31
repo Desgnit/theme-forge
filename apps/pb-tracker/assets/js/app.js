@@ -149,6 +149,173 @@
     return html.join("");
   }
 
+  /* ------------------------------------------------------------------ Timer */
+
+  /* Elapsed time is always computed from wall-clock timestamps, never by
+   * counting ticks — a phone that throttles a background tab or dims the
+   * screen still produces the right time. A screen wake lock is requested
+   * while running, where the browser offers one. */
+  var timer = { state: "idle", raf: 0, wakeLock: null, audio: null };
+
+  function timerBeep(freq, dur) {
+    try {
+      timer.audio = timer.audio || new (window.AudioContext || window.webkitAudioContext)();
+      var osc = timer.audio.createOscillator();
+      var gain = timer.audio.createGain();
+      osc.frequency.value = freq;
+      gain.gain.value = 0.15;
+      osc.connect(gain);
+      gain.connect(timer.audio.destination);
+      osc.start();
+      osc.stop(timer.audio.currentTime + dur);
+    } catch (e) { /* no sound is fine */ }
+  }
+
+  function timerBuzz(ms) {
+    if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) { /* optional */ } }
+  }
+
+  function timerWake(on) {
+    if (on && navigator.wakeLock && navigator.wakeLock.request) {
+      navigator.wakeLock.request("screen").then(function (l) { timer.wakeLock = l; }, function () {});
+    } else if (!on && timer.wakeLock) {
+      timer.wakeLock.release().catch(function () {});
+      timer.wakeLock = null;
+    }
+  }
+
+  function timerStopTicking() {
+    cancelAnimationFrame(timer.raf);
+    timer.state = "idle";
+    timerWake(false);
+  }
+
+  function fillField(metricId, secs) {
+    var el = document.querySelector('[name="' + metricId + '"]');
+    if (!el) return;
+    el.value = PB.formatTime(Math.round(secs * 10) / 10);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  function timerCard(f) {
+    if (!f.timer) return "";
+    var cd = f.timer.mode === "countdown";
+    var label = cd ? (f.timer.seconds >= 120 ? Math.round(f.timer.seconds / 60) + " minute countdown" : f.timer.seconds + "s countdown") : "stopwatch";
+    return '<section class="card timer-card"><h2 class="card-head">Timer <span class="timer-kind">' + esc(label) + "</span></h2>" +
+      '<div class="timer-display" id="timer-display">' + (cd ? esc(PB.formatTime(f.timer.seconds)) : "0:00.0") + "</div>" +
+      '<p class="timer-note" id="timer-note">' +
+      esc(cd ? "Start it, go all out until the beeps, then type your result below."
+        : (f.timer.laps ? "Tap Lap as you pass each kilometre — the splits and total fill themselves in."
+          : "Stop it and the time drops straight into the box below.")) + "</p>" +
+      '<div class="btn-row"><button type="button" class="btn btn-primary" id="timer-main">Start</button>' +
+      '<button type="button" class="btn" id="timer-side" hidden>Lap</button></div></section>';
+  }
+
+  function wireTimer(f) {
+    if (!f.timer) return;
+    var cd = f.timer.mode === "countdown";
+    var display = document.getElementById("timer-display");
+    var note = document.getElementById("timer-note");
+    var main = document.getElementById("timer-main");
+    var side = document.getElementById("timer-side");
+    var startTs = 0, lastLapTs = 0, lapIndex = 0, lastWholeSecond = -1;
+
+    function show(secs, tenths) {
+      display.textContent = PB.formatTime(tenths ? Math.round(secs * 10) / 10 : Math.max(0, Math.ceil(secs)));
+    }
+
+    function tick() {
+      if (timer.state !== "running") return;
+      var elapsed = (Date.now() - startTs) / 1000;
+      if (cd) {
+        var left = f.timer.seconds - elapsed;
+        // one cue per second boundary: short beeps into the finish, long one at zero
+        var whole = Math.ceil(left);
+        if (whole !== lastWholeSecond && whole <= 3 && whole >= 1) { timerBeep(880, 0.12); timerBuzz(60); }
+        lastWholeSecond = whole;
+        if (left <= 0) {
+          timerStopTicking();
+          timerBeep(1318, 0.7);
+          timerBuzz([120, 80, 240]);
+          display.textContent = "0:00";
+          note.textContent = "Time! Type your result below.";
+          main.textContent = "Start again";
+          side.hidden = true;
+          var first = document.querySelector("#entry-form input");
+          if (first) first.focus();
+          return;
+        }
+        show(left, left < 10);
+      } else {
+        show(elapsed, true);
+      }
+      timer.raf = requestAnimationFrame(tick);
+    }
+
+    function begin() {
+      startTs = Date.now();
+      lastLapTs = startTs;
+      lapIndex = 0;
+      lastWholeSecond = -1;
+      timer.state = "running";
+      timerWake(true);
+      timerBeep(660, 0.15);
+      main.textContent = cd ? "Cancel" : "Stop" + (f.timer.fill ? " & fill in" : "");
+      if (f.timer.laps) {
+        side.hidden = false;
+        side.textContent = "Lap";
+        note.textContent = "Lap 1 of " + f.timer.laps.length + " — tap Lap as you pass 1km.";
+      }
+      tick();
+    }
+
+    function finishStopwatch() {
+      var elapsed = (Date.now() - startTs) / 1000;
+      timerStopTicking();
+      show(elapsed, true);
+      if (f.timer.laps && lapIndex > 0 && lapIndex < f.timer.laps.length) {
+        // stopped mid-run: the final stretch is the last split
+        fillField(f.timer.laps[lapIndex], (Date.now() - lastLapTs) / 1000);
+      }
+      if (f.timer.fill) fillField(f.timer.fill, elapsed);
+      note.textContent = "In the box. Check it, add the date, save.";
+      main.textContent = "Start again";
+      side.hidden = true;
+      timerBuzz(150);
+    }
+
+    main.onclick = function () {
+      if (timer.state === "running") {
+        if (cd) {
+          timerStopTicking();
+          show(f.timer.seconds);
+          note.textContent = "Cancelled — nothing recorded.";
+          main.textContent = "Start";
+        } else {
+          finishStopwatch();
+        }
+      } else {
+        if (cd) show(f.timer.seconds);
+        begin();
+      }
+    };
+
+    side.onclick = function () {
+      if (timer.state !== "running" || !f.timer.laps) return;
+      var now = Date.now();
+      fillField(f.timer.laps[lapIndex], (now - lastLapTs) / 1000);
+      lastLapTs = now;
+      lapIndex++;
+      timerBeep(880, 0.1);
+      timerBuzz(60);
+      if (lapIndex >= f.timer.laps.length) {
+        finishStopwatch();
+      } else {
+        note.textContent = "Lap " + (lapIndex + 1) + " of " + f.timer.laps.length + " — split " + lapIndex + " is in.";
+      }
+    };
+  }
+
   /* A one-tap "watch how it's done" link. Opens in the YouTube app or a new
    * tab — never inside the tracker, so a half-typed entry is not lost. */
   function videoLink(f) {
@@ -176,6 +343,7 @@
         return esc(row.name) + " " + esc(PB.formatFull(mainMetric.unit, row.value));
       }).join(" · ") + "</p>");
     }
+    html.push(timerCard(f));
 
     html.push('<form class="card form" id="entry-form" novalidate>');
     var grouped = f.sumTo ? f.sumTo.from : [];
@@ -228,6 +396,7 @@
     var f = PB.form(formId);
     var form = document.getElementById("entry-form");
     if (!f || !form) return;
+    wireTimer(f);
 
     function raw(metricId) {
       var el = form.querySelector('[name="' + metricId + '"]');
@@ -1147,6 +1316,7 @@
     }
     if (!route) { view.innerHTML = notFound(); return; }
 
+    timerStopTicking(); // navigating away abandons a running timer cleanly
     view.innerHTML = route.render(match);
     view.scrollTop = 0;
     window.scrollTo(0, 0);

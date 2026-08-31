@@ -161,10 +161,30 @@
     run5k: "In the race: 8 × 1km runs, one between each station."
   };
 
+  /* Built-in timing. Stopwatch forms fill their time fields when stopped —
+   * the 5km run's Lap button drops each 1km split into its box as you pass.
+   * Countdown forms run the test clock (beeps over the last three seconds)
+   * and then hand focus to the result box. */
+  var TIMERS = {
+    row2k: { mode: "stopwatch", fill: "row2k_total" },
+    ski2k: { mode: "stopwatch", fill: "ski2k_total" },
+    run5k: { mode: "stopwatch", fill: "run5k_total", laps: ["run5k_s1", "run5k_s2", "run5k_s3", "run5k_s4", "run5k_s5"] },
+    deadhang: { mode: "stopwatch", fill: "deadhang" },
+    bike20: { mode: "countdown", seconds: 1200 },
+    ski60_cals: { mode: "countdown", seconds: 60 },
+    row60_cals: { mode: "countdown", seconds: 60 },
+    wallball60: { mode: "countdown", seconds: 60 },
+    burpee60_m: { mode: "countdown", seconds: 60 },
+    lunge60_m: { mode: "countdown", seconds: 60 },
+    sledpull60_m: { mode: "countdown", seconds: 60 },
+    sledpush60_m: { mode: "countdown", seconds: 60 }
+  };
+
   FORMS.forEach(function (f) {
     var v = VIDEOS[f.id];
     if (v) f.video = { url: "https://www.youtube.com/watch?v=" + v[0], by: v[1] };
     if (RACE[f.id]) f.race = RACE[f.id];
+    if (TIMERS[f.id]) f.timer = TIMERS[f.id];
   });
 
   /* The full station list for the reference card — includes stations the
