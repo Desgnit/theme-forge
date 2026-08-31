@@ -136,6 +136,24 @@ button { font: inherit; }
 .empty-card { text-align: center; padding: 28px 16px; }
 .empty-card p { color: var(--muted); }
 
+/* ---------------------------------------------------------------- welcome */
+
+.welcome { display: grid; justify-items: center; text-align: center; padding-top: 18px; }
+.art-welcome { width: 96px; height: 96px; margin-bottom: 6px; }
+.welcome-title {
+  margin: 0; font-size: 30px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+}
+.welcome-sub { margin: 8px 0 20px; max-width: 30em; color: var(--muted); font-size: 14px; }
+.welcome-card { width: 100%; text-align: left; }
+.welcome .btn-ghost { margin-top: 4px; }
+.welcome .fine { max-width: 34em; }
+
+.head-signin {
+  display: grid; place-items: center; width: auto; padding: 0 13px;
+  font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: #100d00; background: var(--accent); border-color: var(--accent);
+}
+
 /* ------------------------------------------------------------ baseline card */
 
 .baseline-card { border-color: var(--accent-dim); }

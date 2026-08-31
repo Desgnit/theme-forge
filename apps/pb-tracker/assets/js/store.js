@@ -175,6 +175,14 @@
     save();
   }
 
+  /* True once the person has been through the first-run sign-in screen —
+   * by signing in or by choosing to carry on without an account. It is a
+   * "seen it" flag, so signing out later does not bring the screen back. */
+  function setWelcomeDone(done) {
+    load().athlete.welcomeDone = !!done;
+    save();
+  }
+
   function exportJSON() {
     return JSON.stringify(load(), null, 2);
   }
@@ -283,6 +291,7 @@
     deleteEntry: deleteEntry, deleteSession: deleteSession,
     recentSessions: recentSessions, totalEntries: totalEntries,
     athlete: athlete, setName: setName, setPlanStart: setPlanStart,
+    setWelcomeDone: setWelcomeDone,
     exportJSON: exportJSON, importJSON: importJSON, clearAll: clearAll,
     requestPersistence: requestPersistence, storageReport: storageReport,
     changedSince: changedSince, applyRemote: applyRemote,

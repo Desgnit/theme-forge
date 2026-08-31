@@ -873,13 +873,51 @@
     };
   }
 
+  /* ---------------------------------------------------------- First run */
+
+  /* The front door on a fresh device: sign in, or carry on without an
+   * account. Uses the same field ids as the Data screen's sync card, so
+   * wireSync drives both. */
+  function viewWelcome() {
+    return '<div class="welcome">' + PB.art("run", "art-welcome") +
+      '<h1 class="welcome-title">Hyrox Tracker</h1>' +
+      '<p class="welcome-sub">Log your times, watts and lifts. Medal your best three efforts. Score your fitness out of 100.</p>' +
+      '<section class="card welcome-card">' +
+      '<h2 class="card-head">Sign in</h2>' +
+      '<p class="body">Your entries back up and follow you to any device. First time? Signing in creates your account — no password to remember.</p>' +
+      '<label class="field"><span class="field-label">Email</span>' +
+      '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
+      '<button class="btn btn-primary" id="sync-request">Email me a sign-in link</button>' +
+      '<div id="sync-code-wrap" hidden><p class="body">Check your email on this device and tap the link — that signs you in here. ' +
+      "If the email shows a code instead, type it below.</p>" +
+      '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
+      '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></span></label>' +
+      '<button class="btn" id="sync-verify">Sign in with the code</button></div>' +
+      '<p class="form-error" id="sync-error" hidden></p></section>' +
+      '<button class="btn btn-ghost" id="welcome-skip">Use without an account for now</button>' +
+      '<p class="fine">Without an account everything still works — your entries just live on this device only. You can sign in any time from the top-right of the app.</p></div>';
+  }
+
+  function wireWelcome() {
+    wireSync();
+    var skip = document.getElementById("welcome-skip");
+    if (skip) skip.onclick = function () {
+      PB.store.setWelcomeDone(true);
+      go("#/log");
+    };
+  }
+
   function wireSync() {
     var $ = function (id) { return document.getElementById(id); };
     var fail = function (box) {
       return function (err) {
         var el = $(box);
         if (!el) return;
-        el.textContent = err.message || "That did not work — try again.";
+        var msg = err.message || "That did not work — try again.";
+        if (/rate limit/i.test(msg)) {
+          msg = "The email service has sent its few allowed emails this hour. Wait a little and press the button again — your entries keep saving on this device meanwhile.";
+        }
+        el.textContent = msg;
         el.hidden = false;
       };
     };
@@ -910,7 +948,8 @@
       $("sync-verify").onclick = function () {
         PB.sync.verifyCode($("sync-email").value.trim(), $("sync-code").value).then(function () {
           PB.sync.pushProfile();
-          render();
+          PB.store.setWelcomeDone(true);
+          go("#/log");
           toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
         }, fail("sync-error"));
       };
@@ -1059,6 +1098,7 @@
     { re: /^#\/edit\/([\w-]+)$/, render: function (m) { return viewEdit(m[1]); }, wire: wireEdit, tab: "pbs" },
     { re: /^#\/coach$/, render: viewCoach, wire: wireCoach, tab: "" },
     { re: /^#\/coach\/([\w-]+)$/, render: viewAthlete, wire: wireAthlete, tab: "" },
+    { re: /^#\/welcome$/, render: viewWelcome, wire: wireWelcome, tab: "" },
     { re: /^#\/data$/, render: viewData, wire: function (m) { wireData(m); wireSync(); }, tab: "" }
   ];
 
@@ -1088,6 +1128,25 @@
     var name = PB.store.athlete().name;
     document.getElementById("header-name").textContent = name ? name : "Hyrox Tracker";
     document.getElementById("header-score").textContent = o.score == null ? "—" : o.score;
+
+    /* Top-right button: says what it does. Signed out it is the way in;
+     * signed in it is the settings screen. */
+    var corner = document.getElementById("header-gear");
+    if (corner) {
+      var st = PB.sync.status();
+      if (st.configured && !st.signedIn) {
+        corner.className = "head-gear head-signin";
+        corner.setAttribute("href", "#/welcome");
+        corner.setAttribute("aria-label", "Sign in");
+        corner.textContent = "Sign in";
+      } else {
+        corner.className = "head-gear";
+        corner.setAttribute("href", "#/data");
+        corner.setAttribute("aria-label", "Settings, data and backup");
+        corner.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/>' +
+          '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+      }
+    }
   }
 
   function start() {
@@ -1095,6 +1154,14 @@
     toastEl = document.getElementById("toast");
     PB.sync.handleRedirect();
     if (!location.hash) location.hash = "#/log";
+    /* Fresh device, sync available, never been asked: the front door is the
+     * sign-in screen. Anyone who chose "use without an account" is not asked
+     * again, and a direct link to a specific screen is respected. */
+    var st0 = PB.sync.status();
+    if (st0.configured && !st0.signedIn && !PB.store.athlete().welcomeDone &&
+      (location.hash === "#/log" || location.hash === "#/")) {
+      location.hash = "#/welcome";
+    }
     window.addEventListener("hashchange", render);
     wireDeletes();
     PB.store.onChange(paintHeader);

@@ -148,7 +148,8 @@
     });
     if (!params.access_token || !config()) return false;
     keepSession({ access_token: params.access_token, refresh_token: params.refresh_token, expires_in: params.expires_in });
-    location.hash = "#/data";
+    PB.store.setWelcomeDone(true);
+    location.hash = "#/log";
     syncSoon();
     return true;
   }
