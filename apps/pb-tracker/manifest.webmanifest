@@ -1,6 +1,6 @@
 {
-  "name": "Client PB Tracker",
-  "short_name": "PB Tracker",
+  "name": "Hyrox Tracker",
+  "short_name": "Hyrox Tracker",
   "description": "Log your times, watts and lifts, see every personal best, medal your top three efforts and score your overall fitness.",
   "start_url": "./index.html#/log",
   "scope": "./",

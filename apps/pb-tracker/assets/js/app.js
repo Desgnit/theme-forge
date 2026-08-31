@@ -528,7 +528,7 @@
       if (ms && ms.logged) lines.push("Score " + ms.score + "/100 · " + ms.band.name);
     } else {
       var o = PB.score.overall();
-      lines.push((name ? name + " — " : "") + "Client PB Tracker");
+      lines.push((name ? name + " — " : "") + "Hyrox Tracker");
       if (o.score != null) lines.push("Fitness score " + o.score + "/100 · " + o.band.name);
       lines.push("");
       PB.SECTIONS.forEach(function (s) {
@@ -793,7 +793,7 @@
       '<section class="card danger"><h2 class="card-head">Start again</h2>' +
       '<p class="body">Deletes every entry on this device. There is no undo.</p>' +
       '<button class="btn btn-danger" id="clear-btn">Delete all my data</button></section>' +
-      '<p class="fine">Client PB Tracker · works offline · add it to your home screen from your browser menu.</p>';
+      '<p class="fine">Hyrox Tracker · works offline · add it to your home screen from your browser menu.</p>';
   }
 
   function wireData() {
@@ -1086,7 +1086,7 @@
   function paintHeader() {
     var o = PB.score.overall();
     var name = PB.store.athlete().name;
-    document.getElementById("header-name").textContent = name ? name : "Client PB Tracker";
+    document.getElementById("header-name").textContent = name ? name : "Hyrox Tracker";
     document.getElementById("header-score").textContent = o.score == null ? "—" : o.score;
   }
 

@@ -1,6 +1,6 @@
-# Client PB Tracker
+# Hyrox Tracker
 
-A phone-first web app for logging every line of the Client PB Tracker sheet —
+A phone-first web app for logging every line of the coach's Client PB Tracker sheet —
 times, watts, lifts and one-minute tests — then seeing your personal bests,
 your progress graphs, medals for your top three efforts and a single fitness
 score out of 100.
