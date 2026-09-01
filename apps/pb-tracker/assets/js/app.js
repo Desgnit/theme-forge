@@ -398,6 +398,7 @@
       '<div class="head-with-art"><div><h1>' + esc(f.title) + '</h1><p class="sub">' + esc(f.blurb) + "</p></div>" +
       PB.art(f.art, "art-form") + "</div>" + videoLink(f) + "</header>"];
     if (f.race) html.push('<p class="race-line">' + esc(f.race) + "</p>");
+    if (f.setup) html.push('<p class="setup-line">' + esc(f.setup) + "</p>");
     var formLevels = PB.score.levels(f.fields[0].metric);
     if (formLevels) {
       var mainMetric = PB.metric(f.fields[0].metric);

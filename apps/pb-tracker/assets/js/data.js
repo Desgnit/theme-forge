@@ -81,13 +81,13 @@
     },
     {
       id: "row2k", section: "ergs", art: "row", title: "2km Row",
-      blurb: "Damper on 4–6 (it changes the feel, not the score). Enter the total time — the 500m pace is worked out for you.",
+      blurb: "Enter the total time — the 500m pace is worked out for you.",
       fields: [{ metric: "row2k_total", label: "Total time", required: true }],
       derive: { from: "row2k_total", metric: "row2k_pace", divide: 4 }
     },
     {
       id: "ski2k", section: "ergs", art: "ski", title: "2km Ski",
-      blurb: "Damper on 4–6 (it changes the feel, not the score). Enter the total time — the 500m pace is worked out for you.",
+      blurb: "Enter the total time — the 500m pace is worked out for you.",
       fields: [{ metric: "ski2k_total", label: "Total time", required: true }],
       derive: { from: "ski2k_total", metric: "ski2k_pace", divide: 4 }
     },
@@ -196,11 +196,24 @@
     sledpush60_m: { mode: "countdown", seconds: 60 }
   };
 
+  /* Machine set-up, for every machine with dials. The recurring confusion is
+   * the erg damper: it is gearing, not difficulty — the monitor scores true
+   * output wherever it sits. */
+  var SETUP = {
+    row2k: "Machine: damper 4\u20136 (it changes the feel, not the score) \u00b7 set the monitor to 2,000m.",
+    ski2k: "Machine: damper 4\u20136 \u00b7 set the monitor to 2,000m.",
+    row60_cals: "Machine: damper 6\u20138 \u2014 a heavier gear pays on an all-out minute \u00b7 monitor showing calories.",
+    ski60_cals: "Machine: damper 5\u20137 \u00b7 monitor showing calories.",
+    bike20: "Machine: resistance is gearing, not difficulty \u2014 pick whatever lets you spin a smooth 80\u201390rpm (BikeErg damper 3\u20135) and ride to the watts.",
+    run5k: "Treadmill? Set 1% incline to match road effort. Outdoors, the timer's Lap button catches your splits."
+  };
+
   FORMS.forEach(function (f) {
     var v = VIDEOS[f.id];
     if (v) f.video = { url: "https://www.youtube.com/watch?v=" + v[0], by: v[1] };
     if (RACE[f.id]) f.race = RACE[f.id];
     if (TIMERS[f.id]) f.timer = TIMERS[f.id];
+    if (SETUP[f.id]) f.setup = SETUP[f.id];
     /* heavy triples need clock-watched rest, not guesswork */
     if (f.section === "strength") f.rest = [120, 180, 300];
   });
