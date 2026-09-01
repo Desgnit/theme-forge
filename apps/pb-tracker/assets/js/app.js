@@ -1353,7 +1353,8 @@
    * the server — nothing to redirect, nothing to break. */
   function pasteLinkBlock() {
     return '<details class="paste-link"><summary>Link opens a dead page? Paste it instead</summary>' +
-      '<p class="body">In the email, long-press <strong>Sign in</strong> → <strong>Copy link</strong>, come back here and paste it.</p>' +
+      '<p class="body">In the email, long-press <strong>Sign in</strong> → <strong>Copy link</strong>, come back here and paste it. ' +
+      "Already tapped it and got the dead page? Copy that page's web address instead — it works too.</p>" +
       '<label class="field"><span class="field-input"><input type="url" id="sync-link" autocomplete="off" placeholder="https://…supabase.co/auth/v1/verify?…"></span></label>' +
       '<button class="btn btn-primary" type="button" id="sync-linkgo">Sign in with the pasted link</button></details>';
   }

@@ -105,6 +105,7 @@
   function jwtPayload(token) {
     try {
       var body = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+      while (body.length % 4) body += "=";   // base64url drops padding; atob wants it back
       return JSON.parse(atob(body));
     } catch (e) { return {}; }
   }
@@ -123,7 +124,13 @@
   }
 
   function requestCode(email) {
-    return req("/auth/v1/otp", { method: "POST", auth: false, body: { email: email, create_user: true } });
+    /* The redirect target must be explicit. Left out, the server falls back
+     * to the requesting page's bare origin — which for an app served under a
+     * path (GitHub Pages) is a dead page. Found the hard way. */
+    var back = location.origin + location.pathname;
+    return req("/auth/v1/otp?redirect_to=" + encodeURIComponent(back), {
+      method: "POST", auth: false, body: { email: email, create_user: true }
+    });
   }
 
   function verifyCode(email, code) {
@@ -140,7 +147,24 @@
    * paste the emailed link itself and the app exchanges its one-time token
    * directly with the server — no redirect anywhere in the chain. */
   function verifyPastedLink(text) {
-    var m = String(text || "").match(/[?&#](?:token|token_hash)=([A-Za-z0-9_.-]+)/);
+    var s = String(text || "");
+
+    /* A dead page reached AFTER a successful verify still carries the whole
+     * session in its address — paste that URL and the session is adopted
+     * directly, no server round-trip needed. */
+    var at = s.match(/access_token=([A-Za-z0-9_.-]+)/);
+    var rt = s.match(/refresh_token=([A-Za-z0-9_.-]+)/);
+    if (at && rt) {
+      var exp = s.match(/expires_in=(\d+)/);
+      keepSession({ access_token: at[1], refresh_token: rt[1], expires_in: exp ? Number(exp[1]) : 3600 });
+      if (!signedIn()) {
+        return Promise.reject(new Error("Could not read a session from that address — email yourself a fresh link and paste that instead."));
+      }
+      // the session is in; a first sync hiccup must not undo the sign-in
+      return syncNow().then(null, function () { return null; });
+    }
+
+    var m = s.match(/[?&#](?:token|token_hash)=([A-Za-z0-9_.-]+)/);
     if (!m) {
       return Promise.reject(new Error("That does not look like the sign-in link — long-press \"Sign in\" in the email and choose Copy link."));
     }
