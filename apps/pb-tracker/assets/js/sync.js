@@ -143,6 +143,31 @@
     });
   }
 
+  /* Password sign-in: the everyday way in once a password exists. No email,
+   * no hourly cap, nothing to redirect. The emailed link remains only for
+   * the first-ever sign-in and for "forgot password". */
+  function signInPassword(email, password) {
+    return req("/auth/v1/token?grant_type=password", {
+      method: "POST", auth: false,
+      body: { email: String(email || "").trim(), password: password }
+    }).then(function (data) {
+      keepSession(data);
+      return syncNow().then(null, function () { return null; });
+    }, function (err) {
+      if (err && err.status === 400) {
+        err.message = "Email and password did not match. If you have not set a password yet, sign in with an emailed link first, then set one from the Data screen.";
+      }
+      throw err;
+    });
+  }
+
+  /* Set (or change) the password on the signed-in account. */
+  function setPassword(newPassword) {
+    return authed("/auth/v1/user", {
+      method: "PUT", body: { password: newPassword }
+    });
+  }
+
   /* The fallback for phones whose email app mangles the sign-in redirect:
    * paste the emailed link itself and the app exchanges its one-time token
    * directly with the server — no redirect anywhere in the chain. */
@@ -392,6 +417,7 @@
     config: config, setConfig: setConfig, disconnect: disconnect,
     signedIn: signedIn, requestCode: requestCode, verifyCode: verifyCode,
     verifyPastedLink: verifyPastedLink,
+    signInPassword: signInPassword, setPassword: setPassword,
     handleRedirect: handleRedirect, signOut: signOut,
     syncNow: syncNow, syncSoon: syncSoon, status: status,
     onStatus: function (fn) { listeners.push(fn); },

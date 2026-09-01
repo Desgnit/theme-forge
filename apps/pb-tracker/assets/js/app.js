@@ -1176,7 +1176,11 @@
       html.push('<p class="body">Sign in and your entries follow you between devices — only you, and a coach you invite, can see them.</p>' +
         '<label class="field"><span class="field-label">Email</span>' +
         '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
-        '<button class="btn btn-primary" id="sync-request">Email me a sign-in link</button>' +
+        '<label class="field"><span class="field-label">Password <em class="opt">once you have set one</em></span>' +
+        '<span class="field-input"><input type="password" id="sync-pass" autocomplete="current-password"></span></label>' +
+        '<button class="btn btn-primary" id="sync-passgo">Sign in</button>' +
+        '<p class="fine" style="text-align:center;margin:6px 0">First time, or no password yet?</p>' +
+        '<button class="btn" id="sync-request">Email me a sign-in link</button>' +
         '<div id="sync-code-wrap" hidden><p class="body">Check your email on this device and tap the link — that signs you in here. ' +
         "If the email shows a code instead, type it below.</p>" +
         '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
@@ -1192,6 +1196,11 @@
         '<button class="btn" id="sync-now">Sync now</button>' +
         '<div class="btn-row"><button class="btn btn-ghost" id="sync-signout">Sign out</button>' +
         '<button class="btn btn-ghost" id="sync-disconnect">Disconnect</button></div>');
+      html.push('<h2 class="card-head" style="margin-top:16px">Password</h2>' +
+        '<p class="body">Set one and any device signs in instantly with your email and password — no waiting for emails.</p>' +
+        '<label class="field"><span class="field-input"><input type="password" id="acct-pass" autocomplete="new-password" placeholder="At least 8 characters"></span></label>' +
+        '<button class="btn" id="acct-pass-save">Save password</button>' +
+        '<p class="form-error" id="acct-pass-error" hidden></p>');
       html.push('<h2 class="card-head" style="margin-top:16px">Coach access</h2>' +
         '<p class="body">A coach sees your entries and scores, read-only. Make a code, send it to them, done.</p>' +
         '<div id="coach-list" class="fine">Checking who can see your data…</div>' +
@@ -1336,7 +1345,11 @@
       '<p class="body">Your entries back up and follow you to any device. First time? Signing in creates your account — no password to remember.</p>' +
       '<label class="field"><span class="field-label">Email</span>' +
       '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
-      '<button class="btn btn-primary" id="sync-request">Email me a sign-in link</button>' +
+      '<label class="field"><span class="field-label">Password <em class="opt">once you have set one</em></span>' +
+      '<span class="field-input"><input type="password" id="sync-pass" autocomplete="current-password"></span></label>' +
+      '<button class="btn btn-primary" id="sync-passgo">Sign in</button>' +
+      '<p class="fine" style="text-align:center;margin:6px 0">First time, or no password yet?</p>' +
+      '<button class="btn" id="sync-request">Email me a sign-in link</button>' +
       '<div id="sync-code-wrap" hidden><p class="body">Check your email on this device and tap the link — that signs you in here. ' +
       "If the email shows a code instead, type it below.</p>" +
       '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
@@ -1405,6 +1418,24 @@
         }, function (err) { $("sync-request").disabled = false; fail("sync-error")(err); });
       };
     }
+    if ($("sync-passgo")) {
+      $("sync-passgo").onclick = function () {
+        var email = $("sync-email").value.trim();
+        var pass = $("sync-pass").value;
+        if (!email) { fail("sync-error")(new Error("Enter your email first.")); return; }
+        if (!pass) { fail("sync-error")(new Error("Enter your password — or use the emailed link below if you have not set one yet.")); return; }
+        $("sync-passgo").disabled = true;
+        PB.sync.signInPassword(email, pass).then(function () {
+          PB.sync.pushProfile();
+          PB.store.setWelcomeDone(true);
+          go("#/log");
+          toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
+        }, function (err) {
+          $("sync-passgo").disabled = false;
+          fail("sync-error")(err);
+        });
+      };
+    }
     if ($("sync-linkgo")) {
       $("sync-linkgo").onclick = function () {
         var text = $("sync-link").value.trim();
@@ -1429,6 +1460,22 @@
           go("#/log");
           toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
         }, fail("sync-error"));
+      };
+    }
+    if ($("acct-pass-save")) {
+      $("acct-pass-save").onclick = function () {
+        var pass = $("acct-pass").value;
+        if (pass.length < 8) { fail("acct-pass-error")(new Error("Use at least 8 characters.")); return; }
+        $("acct-pass-save").disabled = true;
+        PB.sync.setPassword(pass).then(function () {
+          $("acct-pass-save").disabled = false;
+          $("acct-pass").value = "";
+          $("acct-pass-error").hidden = true;
+          toast("<div><strong>Password set</strong><span>Any device can now sign in with it</span></div>");
+        }, function (err) {
+          $("acct-pass-save").disabled = false;
+          fail("acct-pass-error")(err);
+        });
       };
     }
     if ($("sync-now")) {
