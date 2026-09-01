@@ -1182,7 +1182,8 @@
         '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
         '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></span></label>' +
         '<button class="btn" id="sync-verify">Sign in with the code</button></div>' +
-        '<p class="form-error" id="sync-error" hidden></p>' +
+        pasteLinkBlock() +
+        '<p class="form-error" id="sync-error"' + (st.lastError ? ">" + esc(st.lastError) : " hidden>") + "</p>" +
         '<button class="btn btn-ghost" id="sync-disconnect">Turn sync off on this device</button>');
     } else {
       html.push('<p class="body">Signed in as <strong>' + esc(st.email) + "</strong>.</p>" +
@@ -1341,9 +1342,20 @@
       '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
       '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></span></label>' +
       '<button class="btn" id="sync-verify">Sign in with the code</button></div>' +
-      '<p class="form-error" id="sync-error" hidden></p></section>' +
+      pasteLinkBlock() +
+      '<p class="form-error" id="sync-error"' + (PB.sync.status().lastError ? ">" + esc(PB.sync.status().lastError) : " hidden>") + "</p></section>" +
       '<button class="btn btn-ghost" id="welcome-skip">Use without an account for now</button>' +
       '<p class="fine">Without an account everything still works — your entries just live on this device only. You can sign in any time from the top-right of the app.</p></div>';
+  }
+
+  /* Some phones' email apps break the tap-the-link redirect (it lands on a
+   * dead page). Pasting the link instead exchanges its token directly with
+   * the server — nothing to redirect, nothing to break. */
+  function pasteLinkBlock() {
+    return '<details class="paste-link"><summary>Link opens a dead page? Paste it instead</summary>' +
+      '<p class="body">In the email, long-press <strong>Sign in</strong> → <strong>Copy link</strong>, come back here and paste it.</p>' +
+      '<label class="field"><span class="field-input"><input type="url" id="sync-link" autocomplete="off" placeholder="https://…supabase.co/auth/v1/verify?…"></span></label>' +
+      '<button class="btn btn-primary" type="button" id="sync-linkgo">Sign in with the pasted link</button></details>';
   }
 
   function wireWelcome() {
@@ -1390,6 +1402,22 @@
           $("sync-request").textContent = "Email me another link";
           toast("<div><strong>Email sent</strong><span>Tap the link in it on this device</span></div>");
         }, function (err) { $("sync-request").disabled = false; fail("sync-error")(err); });
+      };
+    }
+    if ($("sync-linkgo")) {
+      $("sync-linkgo").onclick = function () {
+        var text = $("sync-link").value.trim();
+        if (!text) { fail("sync-error")(new Error("Paste the link from the email first.")); return; }
+        $("sync-linkgo").disabled = true;
+        PB.sync.verifyPastedLink(text).then(function () {
+          PB.sync.pushProfile();
+          PB.store.setWelcomeDone(true);
+          go("#/log");
+          toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
+        }, function (err) {
+          $("sync-linkgo").disabled = false;
+          fail("sync-error")(err);
+        });
       };
     }
     if ($("sync-verify")) {

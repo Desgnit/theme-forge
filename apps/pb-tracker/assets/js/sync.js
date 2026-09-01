@@ -136,10 +136,38 @@
     });
   }
 
+  /* The fallback for phones whose email app mangles the sign-in redirect:
+   * paste the emailed link itself and the app exchanges its one-time token
+   * directly with the server — no redirect anywhere in the chain. */
+  function verifyPastedLink(text) {
+    var m = String(text || "").match(/[?&#](?:token|token_hash)=([A-Za-z0-9_.-]+)/);
+    if (!m) {
+      return Promise.reject(new Error("That does not look like the sign-in link — long-press \"Sign in\" in the email and choose Copy link."));
+    }
+    return req("/auth/v1/verify", {
+      method: "POST", auth: false,
+      body: { type: "email", token_hash: m[1] }
+    }).then(function (data) {
+      keepSession(data);
+      return syncNow();
+    }, function (err) {
+      if (err && /invalid or has expired/i.test(err.message || "")) {
+        err.message = "That link has been used or has expired — email yourself a fresh one and paste that instead.";
+      }
+      throw err;
+    });
+  }
+
   /* A magic-link click lands back on the app with tokens in the URL hash.
    * Call before the router reads the hash. Returns true when it signed in. */
   function handleRedirect() {
     var h = location.hash || "";
+    if (h.indexOf("error=") >= 0 && h.indexOf("access_token=") < 0) {
+      // an expired link still lands here — explain instead of a blank stare
+      PB.store.setSyncState({ lastError: "The sign-in link had already been used or expired. Email yourself a fresh one." });
+      location.hash = config() && !signedIn() ? "#/welcome" : "#/log";
+      return false;
+    }
     if (h.indexOf("access_token=") < 0) return false;
     var params = {};
     h.replace(/^#\/?/, "").split("&").forEach(function (pair) {
@@ -339,6 +367,7 @@
   PB.sync = {
     config: config, setConfig: setConfig, disconnect: disconnect,
     signedIn: signedIn, requestCode: requestCode, verifyCode: verifyCode,
+    verifyPastedLink: verifyPastedLink,
     handleRedirect: handleRedirect, signOut: signOut,
     syncNow: syncNow, syncSoon: syncSoon, status: status,
     onStatus: function (fn) { listeners.push(fn); },
