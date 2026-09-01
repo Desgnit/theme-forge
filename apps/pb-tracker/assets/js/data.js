@@ -81,13 +81,13 @@
     },
     {
       id: "row2k", section: "ergs", art: "row", title: "2km Row",
-      blurb: "Enter the total time — the 500m pace is worked out for you.",
+      blurb: "Damper on 4–6 (it changes the feel, not the score). Enter the total time — the 500m pace is worked out for you.",
       fields: [{ metric: "row2k_total", label: "Total time", required: true }],
       derive: { from: "row2k_total", metric: "row2k_pace", divide: 4 }
     },
     {
       id: "ski2k", section: "ergs", art: "ski", title: "2km Ski",
-      blurb: "Enter the total time — the 500m pace is worked out for you.",
+      blurb: "Damper on 4–6 (it changes the feel, not the score). Enter the total time — the 500m pace is worked out for you.",
       fields: [{ metric: "ski2k_total", label: "Total time", required: true }],
       derive: { from: "ski2k_total", metric: "ski2k_pace", divide: 4 }
     },
