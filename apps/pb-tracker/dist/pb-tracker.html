@@ -1,0 +1,3972 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hyrox Tracker</title>
+<meta name="description" content="Log your times, watts and lifts, see every personal best, medal your top three efforts and score your overall fitness. Works offline on your phone.">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Hyrox Tracker">
+<style>
+/* Client PB Tracker — one stylesheet, no framework.
+   Built phone-first: single column, thumb-reachable tab bar, 44px+ targets.
+   Desktop is the same layout centred and given more air. */
+
+:root {
+  /* the app commits to one dark world, matching the printed tracker — telling
+     the browser so keeps date pickers, scrollbars and file inputs in step */
+  color-scheme: dark;
+
+  --bg: #000;
+  --panel: #0d0d0f;
+  --panel-2: #141417;
+  --line: #26262b;
+  --line-soft: #1b1b1f;
+  --text: #f4f4f5;
+  --muted: #8b8b93;
+  --accent: #f5c542;
+  --accent-dim: #7a6320;
+  --gold: #d9b032;
+  --silver: #b9bcc2;
+  --bronze: #b07a42;
+  --good: #6dd48a;
+  --bad: #ef6b6b;
+  --radius: 12px;
+  --tabbar: calc(58px + env(safe-area-inset-bottom));
+  --sans: "Helvetica Neue", Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* An author display rule silently beats the UA's [hidden] — never let it. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 60;
+  background: var(--accent); color: #000; padding: 10px 14px; border-radius: 0 0 8px 0;
+}
+.skip:focus { left: 0; }
+
+/* ------------------------------------------------------------------ header */
+
+.app-head {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(0, 0, 0, .92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top);
+}
+.head-inner {
+  display: flex; align-items: center; gap: 12px;
+  max-width: 780px; margin: 0 auto; padding: 10px 16px;
+}
+.head-titles { flex: 1; min-width: 0; }
+.head-kicker {
+  display: block; font-size: 9px; letter-spacing: .32em; text-transform: uppercase;
+  color: var(--muted);
+}
+.head-name {
+  display: block; font-size: 17px; font-weight: 800; letter-spacing: .04em;
+  text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.head-score {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 52px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--panel);
+}
+.head-score strong { font-size: 18px; line-height: 1; color: var(--accent); }
+.head-score span { font-size: 8px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.head-gear {
+  display: grid; place-items: center; width: 40px; height: 40px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+}
+.head-gear svg { width: 19px; height: 19px; fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; }
+
+/* ------------------------------------------------------------------- layout */
+
+.view {
+  max-width: 780px; margin: 0 auto;
+  padding: 16px 16px calc(var(--tabbar) + 28px);
+  outline: none;
+}
+
+.screen-head { margin: 4px 0 18px; }
+.screen-head h1 {
+  margin: 0; font-size: 26px; line-height: 1.1; font-weight: 800;
+  letter-spacing: .01em; text-transform: uppercase;
+}
+.screen-head .sub { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.back {
+  display: inline-block; margin-bottom: 10px; font-size: 12px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted);
+}
+.back::before { content: "‹ "; }
+
+.block { margin: 0 0 22px; }
+.block-head {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 10px; padding: 0 0 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+}
+.block-head .num { color: var(--muted); }
+.block-head em { color: var(--muted); font-style: normal; letter-spacing: .1em; }
+
+.icon { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.big-icon { width: 40px; height: 40px; }
+
+.card {
+  background: var(--panel); border: 1px solid var(--line-soft);
+  border-radius: var(--radius); padding: 14px; margin: 0 0 14px;
+}
+.card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 10px; font-size: 12px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+}
+.card-head .count, .card-head .sec-score { margin-left: auto; color: var(--text); }
+.card-head .sec-score { font-size: 18px; color: var(--accent); letter-spacing: 0; }
+
+.body { margin: 0 0 10px; font-size: 14px; color: #cfcfd4; }
+.fine { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+.muted { color: var(--muted); font-size: 12px; }
+.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.empty { color: var(--muted); font-size: 14px; margin: 0; }
+.empty-card { text-align: center; padding: 28px 16px; }
+.empty-card p { color: var(--muted); }
+
+/* ---------------------------------------------------------------- welcome */
+
+.welcome { display: grid; justify-items: center; text-align: center; padding-top: 18px; }
+.art-welcome { width: 96px; height: 96px; margin-bottom: 6px; }
+.welcome-title {
+  margin: 0; font-size: 30px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+}
+.welcome-sub { margin: 8px 0 20px; max-width: 30em; color: var(--muted); font-size: 14px; }
+.welcome-card { width: 100%; text-align: left; }
+.welcome .btn-ghost { margin-top: 4px; }
+.welcome .fine { max-width: 34em; }
+
+.head-signin {
+  display: grid; place-items: center; width: auto; padding: 0 13px;
+  font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: #100d00; background: var(--accent); border-color: var(--accent);
+}
+
+/* ---------------------------------------------------- video + race standards */
+
+.video-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 10px; padding: 8px 13px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+  font-size: 13px; font-weight: 600;
+}
+.video-link:active { background: var(--panel-2); }
+.video-play {
+  display: grid; place-items: center; width: 22px; height: 22px; flex: none;
+  background: var(--accent); color: #100d00; border-radius: 50%; font-size: 10px;
+  padding-left: 2px;
+}
+.video-by { color: var(--muted); font-weight: 400; font-size: 12px; }
+.setup-line {
+  margin: 10px 0 14px; padding: 9px 12px; font-size: 12.5px; color: var(--muted);
+  background: var(--panel); border-left: 3px solid var(--line); border-radius: 0 8px 8px 0;
+}
+.race-line + .setup-line, .race-line + .levels-line + .setup-line { margin-top: -6px; }
+
+.race-line {
+  margin: 10px 0 14px; padding: 9px 12px; font-size: 12.5px; color: #cfcfd4;
+  background: var(--panel); border-left: 3px solid var(--accent-dim); border-radius: 0 8px 8px 0;
+}
+.standards-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.standards-list li { display: grid; gap: 1px; padding: 7px 0; border-bottom: 1px solid var(--line-soft); }
+.standards-list li:last-child { border-bottom: 0; }
+.standards-list strong { font-size: 13px; }
+.standards-list span { font-size: 12px; color: var(--muted); }
+
+/* -------------------------------------------------------------- paste link */
+
+.paste-link { margin-top: 10px; border: 1px dashed var(--line); border-radius: 10px; padding: 4px 12px 0; }
+.paste-link[open] { padding-bottom: 12px; }
+.paste-link summary {
+  cursor: pointer; padding: 9px 0; font-size: 13px; color: var(--accent);
+  list-style-position: inside;
+}
+.paste-link .field { margin: 8px 0 10px; }
+
+/* -------------------------------------------------------------------- race */
+
+.race-hero { display: grid; gap: 2px; text-align: center; }
+.race-total { font-size: 44px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.race-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.race-rows li {
+  display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px;
+  padding: 9px 0; border-bottom: 1px solid var(--line-soft);
+}
+.race-rows li:last-child { border-bottom: 0; }
+.race-name { display: grid; font-size: 13px; font-weight: 600; min-width: 0; }
+.race-src { font-style: normal; font-size: 11px; color: var(--muted); }
+.race-src.own { color: var(--good); }
+.race-time { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.race-budget { color: var(--accent); }
+.rest-row { grid-template-columns: repeat(3, 1fr); }
+
+/* ------------------------------------------------------------------- timer */
+
+.timer-card { text-align: center; }
+.timer-kind { margin-left: auto; font-size: 10px; letter-spacing: .12em; color: var(--accent); }
+.timer-display {
+  font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: .01em;
+  font-variant-numeric: tabular-nums; margin: 4px 0 2px;
+}
+.timer-note { margin: 4px 0 12px; font-size: 13px; color: var(--muted); }
+.timer-card .btn-row { margin-top: 0; }
+
+/* ------------------------------------------------------------------ levels */
+
+.levels-line {
+  margin: 8px 0 14px; font-size: 12.5px; color: var(--muted);
+  letter-spacing: .01em;
+}
+.levels-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.levels-list li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 8px;
+}
+.levels-list li.here { background: rgba(245, 197, 66, .09); border: 1px solid var(--accent-dim); }
+.lvl-name { font-size: 13px; font-weight: 600; }
+.lvl-val { margin-left: auto; font-size: 15px; font-weight: 700; }
+.lvl-you {
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); border: 1px solid var(--accent-dim); border-radius: 999px; padding: 2px 8px;
+}
+
+/* ------------------------------------------------------------ baseline card */
+
+.baseline-card { border-color: var(--accent-dim); }
+.base-rows { display: grid; gap: 6px; }
+.base-row {
+  display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px;
+  padding: 9px 10px; background: var(--panel-2); border-radius: 10px;
+}
+.base-tick {
+  display: grid; place-items: center; width: 22px; height: 22px;
+  border: 1px solid var(--line); border-radius: 50%;
+  font-size: 13px; color: #0f0c02;
+}
+.base-row.done .base-tick { background: var(--good); border-color: var(--good); }
+.base-name { font-size: 14px; font-weight: 600; }
+.base-val { font-size: 13px; color: var(--accent); }
+.base-row.done .base-val { color: var(--muted); }
+
+/* --------------------------------------------------------------- log tiles */
+
+.art { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.art circle { fill: var(--accent); stroke: none; }
+.art-tile { width: 38px; height: 38px; }
+.art-form { width: 72px; height: 72px; flex: none; opacity: .95; }
+.head-with-art { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.head-with-art h1 { margin: 0; }
+
+.tiles { display: grid; gap: 8px; }
+.tile {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  gap: 2px 12px; padding: 11px 14px; min-height: 60px;
+  background: var(--panel); border: 1px solid var(--line-soft); border-radius: var(--radius);
+}
+.tile:active { background: var(--panel-2); }
+.tile .art-tile { grid-row: 1 / span 2; }
+.tile-name { font-weight: 600; font-size: 15px; }
+.tile-pb { grid-column: 2; font-size: 12px; color: var(--muted); }
+.tile-go {
+  grid-row: 1 / span 2; grid-column: 3;
+  display: grid; place-items: center; width: 34px; height: 34px;
+  border: 1px solid var(--accent-dim); border-radius: 50%;
+  color: var(--accent); font-size: 20px; line-height: 1;
+}
+
+/* ------------------------------------------------------------------- forms */
+
+.form { display: grid; gap: 14px; }
+.field { display: grid; gap: 6px; }
+.field-label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.field-label .opt { font-style: normal; text-transform: none; letter-spacing: 0; opacity: .7; }
+.field-input { position: relative; display: block; }
+.field-input input {
+  width: 100%; padding: 13px 14px; font-size: 17px;
+  color: var(--text); background: var(--panel-2);
+  border: 1px solid var(--line); border-radius: 10px;
+}
+.field-input input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.field-input .unit {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: var(--muted); pointer-events: none;
+}
+/* Minutes : seconds pair — two boxes with a printed colon, so a phone
+   keypad never has to produce punctuation. */
+.t-wrap { display: flex; align-items: center; gap: 8px; }
+.field-input .t-wrap input { width: 50%; min-width: 0; text-align: center; }
+.t-colon { font-size: 20px; font-weight: 700; color: var(--muted); }
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field-tight .field-input input { padding: 11px 12px; font-size: 16px; }
+.field-tight .hint { min-height: 0; }
+.hint { font-size: 12px; color: var(--muted); min-height: 16px; }
+.hint.good { color: var(--good); }
+.hint.bad { color: var(--bad); }
+.derived {
+  margin: -4px 0 0; padding: 10px 12px; font-size: 13px; color: var(--accent);
+  background: rgba(245, 197, 66, .07); border: 1px dashed var(--accent-dim); border-radius: 10px;
+}
+.form-error { margin: 0; padding: 10px 12px; font-size: 14px; color: #fff; background: #521f1f; border-radius: 10px; }
+
+.btn {
+  display: block; width: 100%; padding: 14px 16px; margin: 0;
+  font-size: 15px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  text-align: center; color: var(--text); background: var(--panel-2);
+  border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
+}
+.btn + .btn { margin-top: 8px; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #100d00; }
+.btn-ghost { background: transparent; }
+.btn-danger { background: #451919; border-color: #6d2a2a; color: #ffd9d9; }
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.btn-row .btn + .btn { margin-top: 0; }
+.icon-btn {
+  display: grid; place-items: center; width: 32px; height: 32px; flex: none;
+  color: var(--muted); background: transparent; border: 1px solid var(--line-soft);
+  border-radius: 8px; cursor: pointer; font-size: 13px;
+}
+.hist-row .icon-btn:first-of-type, .sess-head .icon-btn { margin-left: auto; }
+.hist-row .icon-btn + .icon-btn { margin-left: 6px; }
+.icon-btn:hover { color: var(--text); border-color: var(--line); }
+.icon-btn[data-delete]:hover, #edit-delete:hover { color: var(--bad); border-color: var(--bad); }
+input[type="file"] { width: 100%; font-size: 13px; color: var(--muted); }
+
+.note-card { display: grid; gap: 2px; }
+.label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.big { font-size: 30px; font-weight: 800; line-height: 1.1; letter-spacing: -.01em; }
+
+/* --------------------------------------------------------------- PB rows */
+
+.rows { display: grid; gap: 6px; }
+.row {
+  display: grid; grid-template-columns: 1fr auto auto 12px; align-items: center; gap: 10px;
+  padding: 12px 14px; min-height: 58px;
+  background: var(--panel); border: 1px solid var(--line-soft); border-radius: var(--radius);
+}
+.row:active { background: var(--panel-2); }
+.row-main { min-width: 0; }
+.row-name { display: block; font-size: 14px; font-weight: 600; }
+.row-name .tag {
+  font-style: normal; font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; vertical-align: 2px;
+}
+.row-meta { display: block; font-size: 12px; color: var(--muted); }
+.row-val { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.row-arrow { color: var(--muted); }
+.spark { width: 52px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: .75; }
+
+/* --------------------------------------------------------- activity detail */
+
+.hero-stat { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hero-stat > div:first-child { display: grid; gap: 2px; }
+.score-chip {
+  display: grid; place-items: center; gap: 2px; padding: 10px 12px; min-width: 88px;
+  border: 1px solid var(--line); border-radius: 10px; text-align: center;
+}
+.score-chip strong { font-size: 22px; line-height: 1; }
+.score-chip span { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.muted-chip strong { color: var(--muted); }
+
+.improve { margin: -6px 0 14px; font-size: 13px; }
+.improve.up { color: var(--good); }
+.improve.down { color: var(--bad); }
+
+.chart { width: 100%; height: auto; display: block; }
+.chart .grid { stroke: var(--line-soft); stroke-width: 1; }
+.chart .axis { fill: var(--muted); font-size: 8px; font-family: var(--sans); }
+.chart .line { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .dot { fill: #000; stroke: var(--accent); stroke-width: 2; }
+.chart .dot-best { fill: var(--gold); stroke: var(--gold); }
+.chart .best-label { fill: var(--gold); font-size: 9px; font-weight: 700; font-family: var(--sans); }
+.chart-caption { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+.chart-empty { margin: 6px 0; font-size: 14px; color: var(--muted); }
+
+.medal {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; flex: none;
+  border-radius: 50%; font-size: 11px; font-weight: 800; color: #14100a;
+  border: 1px solid transparent;
+}
+.medal.m1 { background: var(--gold); }
+.medal.m2 { background: var(--silver); }
+.medal.m3 { background: var(--bronze); color: #1a0f06; }
+.medal.blank { background: transparent; border-color: var(--line-soft); }
+
+.podium { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.podium-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; background: var(--panel-2); border-radius: 10px;
+}
+.podium-val { font-size: 16px; font-weight: 700; }
+.podium-date { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+.history { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.hist-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line-soft); }
+.hist-row:last-child { border-bottom: 0; }
+.hist-main { display: grid; min-width: 0; }
+.hist-main strong { font-size: 15px; }
+.hist-main .muted { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ------------------------------------------------------------------ score */
+
+.score-hero { display: flex; align-items: center; gap: 16px; }
+.ring { width: 104px; height: 104px; flex: none; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--line); stroke-width: 9; }
+.ring-fg { fill: none; stroke: var(--accent); stroke-width: 9; stroke-linecap: round; }
+.score-hero-body { display: grid; gap: 2px; min-width: 0; }
+.score-num { font-size: 42px; font-weight: 800; line-height: 1; }
+.score-of { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.band {
+  justify-self: start; margin: 4px 0 2px; padding: 3px 9px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #0c0c0c;
+}
+.band-elite, .sr-score.band-elite { background: var(--accent); }
+.band-advanced, .sr-score.band-advanced { background: #9fd8a8; }
+.band-strong, .sr-score.band-strong { background: #8fb6d8; }
+.band-developing, .sr-score.band-developing { background: #b7b7bd; }
+.band-foundation, .sr-score.band-foundation { background: #6e6e76; color: #fff; }
+.score-chip.band-elite, .score-chip.band-advanced, .score-chip.band-strong,
+.score-chip.band-developing, .score-chip.band-foundation { color: #0c0c0c; }
+.score-chip.band-elite span, .score-chip.band-advanced span, .score-chip.band-strong span,
+.score-chip.band-developing span, .score-chip.band-foundation span { color: rgba(0, 0, 0, .65); }
+
+.bar { height: 6px; background: var(--panel-2); border-radius: 999px; overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+
+.score-rows { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 1px; }
+.score-rows a {
+  display: grid; grid-template-columns: 1fr auto 34px; align-items: center; gap: 10px;
+  padding: 9px 0; border-top: 1px solid var(--line-soft);
+}
+.sr-name { font-size: 13px; min-width: 0; }
+.sr-val { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.sr-score {
+  display: grid; place-items: center; height: 24px; border-radius: 6px;
+  font-size: 12px; font-weight: 800; color: #0c0c0c;
+}
+.sr-score.band-none { background: var(--panel-2); color: var(--muted); }
+
+.nudges { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; color: #cfcfd4; }
+.nudge-tag {
+  display: inline-block; margin-right: 8px; padding: 2px 7px; border-radius: 5px;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--panel-2); color: var(--muted); border: 1px solid var(--line-soft);
+}
+
+/* ---------------------------------------------------------------- history */
+
+.sess-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sess-head strong { font-size: 14px; letter-spacing: .04em; text-transform: uppercase; }
+.sess-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sess-rows li { display: flex; align-items: center; gap: 10px; }
+.sess-name { flex: 1; min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sess-val { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.sess-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); font-style: italic; }
+
+.linkish {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--accent); text-decoration: underline; text-underline-offset: 2px; font-size: inherit;
+}
+.danger { border-color: #4a2222; }
+
+/* ------------------------------------------------------------------ toast */
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(var(--tabbar) + 12px); z-index: 50;
+  display: flex; align-items: center; gap: 10px;
+  width: min(92vw, 420px); padding: 12px 14px;
+  background: #17171b; border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .6);
+  transform: translate(-50%, 26px); opacity: 0; pointer-events: none;
+  transition: transform .22s ease, opacity .22s ease;
+}
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast.pb { border-color: var(--gold); background: #1d1706; }
+.toast strong { display: block; font-size: 14px; }
+.toast span { display: block; font-size: 12px; color: var(--muted); }
+.toast .icon { width: 24px; height: 24px; stroke: var(--gold); }
+
+/* --------------------------------------------------------------- tab bar */
+
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: rgba(6, 6, 8, .96); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab {
+  display: grid; place-items: center; gap: 3px; padding: 9px 0 8px;
+  color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+}
+.tab svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tab.on { color: var(--accent); }
+
+/* ---------------------------------------------------------------- desktop */
+
+@media (min-width: 720px) {
+  .view { padding: 26px 24px 60px; }
+  .split-grid { grid-template-columns: repeat(3, 1fr); }
+  .screen-head h1 { font-size: 32px; }
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .tabs {
+    position: sticky; top: 0; bottom: auto;
+    grid-template-columns: repeat(4, auto); justify-content: center; gap: 8px;
+    border-top: 0; border-bottom: 1px solid var(--line); order: -1;
+  }
+  .tab { grid-auto-flow: column; padding: 10px 22px; }
+  body { display: flex; flex-direction: column; min-height: 100vh; }
+  .app-head { order: -2; }
+  .view { order: 0; padding-bottom: 60px; }
+  .toast { bottom: 24px; }
+  :root { --tabbar: 0px; }
+}
+
+/* Wide screens get two columns rather than one very long scroll. */
+@media (min-width: 1000px) {
+  .view { max-width: 1020px; }
+  .rows, .tiles { grid-template-columns: 1fr 1fr; }
+  .sec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+  .sec-grid .card { margin: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { transition: none; }
+}
+
+</style>
+</head>
+<body>
+
+<a class="skip" href="#view">Skip to content</a>
+
+<header class="app-head">
+  <div class="head-inner">
+    <div class="head-titles">
+      <span class="head-kicker">Measure / Improve / Ascend</span>
+      <strong class="head-name" id="header-name">Hyrox Tracker</strong>
+    </div>
+    <a class="head-score" href="#/score" aria-label="Overall fitness score">
+      <strong id="header-score">—</strong><span>score</span>
+    </a>
+    <a class="head-gear" id="header-gear" href="#/data" aria-label="Settings, data and backup">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </a>
+  </div>
+</header>
+
+<main id="view" class="view" tabindex="-1"></main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<nav class="tabs" aria-label="Main">
+  <a class="tab" data-tab="log" href="#/log">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Log</span>
+  </a>
+  <a class="tab" data-tab="pbs" href="#/pbs">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M10 18h4M9 21h6"/></svg><span>PBs</span>
+  </a>
+  <a class="tab" data-tab="score" href="#/score">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Score</span>
+  </a>
+  <a class="tab" data-tab="history" href="#/history">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span>History</span>
+  </a>
+</nav>
+
+<script>
+/* Exercise pictograms — one small line drawing per movement, so you can see
+ * at a glance what a card is before reading it. Hand-set stick figures in
+ * the app's single stroke style: 64x64 grid, round caps, no fill. */
+(function (PB) {
+  "use strict";
+
+  /* Each entry: [head cx, head cy, ...path strings]. */
+  var ART = {
+    scale: [32, 10,
+      "M20 24l12-8 12 8", "M32 16v14",                                // figure standing tall
+      "M32 30l-8 16", "M32 30l8 16",                                  // legs to the platform
+      "M14 50h36", "M18 50v6h28v-6",                                  // scale platform + base
+      "M28 56h8"                                                      // dial
+    ],
+    bike: [44, 14,
+      "M14 48a8 8 0 1 0 .1 0", "M50 48a8 8 0 1 0 .1 0",              // wheels
+      "M14 48h14l8-14h10", "M36 34l6 14", "M46 30l4 4",              // frame + bars
+      "M42 18l-6 8 6 8-8 6", "M42 18l6 6"                            // rider torso/leg/arm
+    ],
+    row: [22, 22,
+      "M6 52h52", "M10 46h40",                                        // floor + rail
+      "M18 46l-4-6", "M24 28l-2 12 10 2 8 4", "M24 30l12 2 8 2",      // seat post, leg, arms to handle
+      "M44 34l2-14", "M46 20a6 10 0 1 0 .1 0"                         // chain + flywheel
+    ],
+    ski: [24, 12,
+      "M42 4v14", "M50 4v14",                                         // cables from above
+      "M26 18l8 10-4 12", "M28 22l14-4", "M28 22l22-4",               // torso + arms up to handles
+      "M30 40l-6 12", "M30 40l8 10", "M8 56h48"                       // legs + floor
+    ],
+    run: [42, 10,
+      "M40 16l-8 14", "M38 20l10 6", "M38 20l-12 2",                  // torso + arms
+      "M32 30l10 8-2 12", "M32 30l-8 10-8 2",                         // legs mid-stride
+      "M8 22h8", "M6 32h6"                                            // speed lines
+    ],
+    squat: [32, 12,
+      "M14 22h36", "M14 18v8", "M50 18v8",                            // bar across the shoulders
+      "M32 24v12", "M32 26l-9-3", "M32 26l9-3",                       // torso + hands on the bar
+      "M32 36l-11 8 3 10", "M32 36l11 8-3 10", "M10 56h44"            // knees out, below parallel
+    ],
+    bench: [15, 38,
+      "M10 44h34", "M14 44v9", "M38 44v9",                            // bench
+      "M21 39h20l9 8", "M29 39V20", "M19 18h20", "M22 14v8",          // body, feet down, arm to bar
+      "M36 14v8"
+    ],
+    deadlift: [16, 18,
+      "M40 48a6 6 0 1 0 .1 0", "M52 48h6",                            // plate + bar stub
+      "M19 24l8 11", "M27 35l6 8 1 11", "M27 35l-6 9-1 10",           // flat back hinge + legs
+      "M20 26L44 47", "M6 56h52"                                      // arm down to the bar
+    ],
+    press: [32, 10,
+      "M12 8h40", "M12 4v8", "M52 4v8",                               // bar overhead
+      "M32 16v14", "M32 20l-10-8", "M32 20l10-8",                     // torso + locked arms
+      "M32 30l-8 14 0 8", "M32 30l8 14 0 8", "M8 56h48"
+    ],
+    wallball: [22, 20,
+      "M52 6v44", "M46 12a5 5 0 1 0 .1 0",                            // wall + target ball
+      "M24 26l4 12-4 14", "M26 30l10-8", "M26 30l14-4",               // figure throwing up
+      "M24 38l-8 12", "M6 56h42"
+    ],
+    burpee: [17, 24,
+      "M19 28l11 7", "M28 33l12-5",                                   // leaping torso, arms forward
+      "M30 35l-11 4", "M30 35l-7 11",                                 // legs trailing the jump
+      "M24 12q17-8 30 8", "M54 12l1 9-9-1", "M6 56h52"                // flight arc + arrowhead
+    ],
+    lunge: [28, 11,
+      "M28 17v16", "M28 22l9 5", "M28 22l-8 6",                       // upright torso
+      "M28 33l12 7 0 14", "M28 33l-9 13-8 7",                        // front knee at 90, back knee low
+      "M8 56h48"
+    ],
+    sledpull: [45, 15,
+      "M6 42h14l3 8H8z", "M4 54h22",                                  // sled being dragged
+      "M44 20l-5 16", "M44 24L23 42",                                 // lean-back + taut rope to sled
+      "M39 36l8 8-1 10", "M39 36l13 5 1 13", "M30 56h28"              // feet braced away
+    ],
+    sledpush: [13, 17,
+      "M44 30h12v12H44z", "M50 42v10", "M38 54h24",                   // sled ahead
+      "M15 21l14 12", "M20 24l22 9", "M22 29l20 8",                   // low drive, both arms on it
+      "M29 33l-9 9 4 12", "M29 33l-15 9-4 10", "M4 56h30"             // one leg driving, one extended
+    ],
+    hang: [32, 22,
+      "M10 8h44", "M18 8v4", "M46 8v4",                               // pull-up bar
+      "M32 26v16", "M32 28l-8-18", "M32 28l8-18",                     // straight hang
+      "M32 42l-4 10", "M32 42l4 10"
+    ]
+  };
+
+  PB.art = function (name, cls) {
+    var a = ART[name];
+    if (!a) return "";
+    var out = ['<svg class="art ' + (cls || "") + '" viewBox="0 0 64 64" aria-hidden="true">'];
+    out.push('<circle cx="' + a[0] + '" cy="' + a[1] + '" r="4.2"/>');
+    for (var i = 2; i < a.length; i++) out.push('<path d="' + a[i] + '"/>');
+    out.push("</svg>");
+    return out.join("");
+  };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Client PB Tracker — activity catalogue, units and benchmarks.
+ *
+ * Every row on the paper tracker exists here as a "metric". Metrics that are
+ * arithmetic consequences of another entry (pace per 500m) or components of it
+ * (1km splits) are marked derived: they get PBs, medals and graphs like any
+ * other metric, but they are left out of the fitness score so a single effort
+ * cannot be counted twice.
+ *
+ * bench: [value worth 0 points, value worth 100 points]. Ordering encodes the
+ * direction, so one interpolation covers "faster is better" and "more is
+ * better" alike. Numbers are hybrid-fitness reference points for an adult of
+ * roughly 80kg: the 0 end is a fit-but-untrained adult completing the test,
+ * the 100 end is a strong competitive hybrid athlete. See README.md before
+ * treating them as gospel — they are one edit away from being yours.
+ */
+(function (PB) {
+  "use strict";
+
+  var SECTIONS = [
+    { id: "bike", n: 1, name: "Indoor Bike", icon: "bike" },
+    { id: "ergs", n: 2, name: "Ergs", icon: "erg" },
+    { id: "run", n: 3, name: "5km Run", icon: "run" },
+    { id: "strength", n: 4, name: "Strength", sub: "3RM", icon: "strength" },
+    { id: "tests", n: 5, name: "60 Second Tests & Static", icon: "pulse" },
+    { id: "body", n: 6, name: "Bodyweight", icon: "scale" }
+  ];
+
+  var METRICS = [
+    { id: "bike20_watts", section: "bike", name: "Average Watts - 20 Minutes Indoor Bike", short: "20min Bike", unit: "watts", bench: [80, 330] },
+
+    { id: "row2k_total", section: "ergs", name: "2km Row (Total Time)", short: "2km Row", unit: "time", bench: [600, 380] },
+    { id: "row2k_pace", section: "ergs", name: "2km Row (Pace per 500m)", unit: "pace", derived: "row2k_total" },
+    { id: "ski2k_total", section: "ergs", name: "2km Ski (Total Time)", short: "2km Ski", unit: "time", bench: [650, 415] },
+    { id: "ski2k_pace", section: "ergs", name: "2km Ski (Pace per 500m)", unit: "pace", derived: "ski2k_total" },
+
+    { id: "run5k_total", section: "run", name: "5km Run (Total Time)", short: "5km Run", unit: "time", bench: [2400, 1080] },
+    { id: "run5k_s1", section: "run", name: "5km Run (1km Split 1)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s2", section: "run", name: "5km Run (1km Split 2)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s3", section: "run", name: "5km Run (1km Split 3)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s4", section: "run", name: "5km Run (1km Split 4)", unit: "time", derived: "run5k_total" },
+    { id: "run5k_s5", section: "run", name: "5km Run (1km Split 5)", unit: "time", derived: "run5k_total" },
+
+    { id: "squat_3rm", section: "strength", name: "3RM Back Squat", unit: "kg", bench: [50, 180] },
+    { id: "bench_3rm", section: "strength", name: "3RM Bench Press", unit: "kg", bench: [30, 130] },
+    { id: "deadlift_3rm", section: "strength", name: "3RM Deadlift", unit: "kg", bench: [60, 220] },
+    { id: "press_3rm", section: "strength", name: "3RM Strict Press", unit: "kg", bench: [20, 85] },
+
+    { id: "ski60_cals", section: "tests", name: "60s Max Ski (Calories)", unit: "cals", bench: [12, 34] },
+    { id: "row60_cals", section: "tests", name: "60s Max Cals Row", unit: "cals", bench: [12, 36] },
+    { id: "wallball60", section: "tests", name: "60s Max Wall Balls", unit: "reps", bench: [12, 40] },
+    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", unit: "m", bench: [1, 35] },
+    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [7, 37] },
+    { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", unit: "m", bench: [3, 25] },
+    { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", unit: "m", bench: [5, 45] },
+    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [10, 130] },
+
+    /* Neutral: no direction is "better", so it gets a chart and a latest
+     * value but no PB, no medals and no score of its own. What it does do is
+     * scale the strength benchmarks, which are written for 80kg. */
+    { id: "bodyweight", section: "body", name: "Bodyweight", unit: "kg", neutral: true }
+  ];
+
+  /* Units: how a value is typed, drawn and compared. */
+  var UNITS = {
+    watts: { suffix: "W", better: "higher", input: "number", step: "1", hint: "Average watts over the 20 minutes" },
+    kg: { suffix: "kg", better: "higher", input: "number", step: "0.5", hint: "Heaviest 3-rep set, in kg" },
+    cals: { suffix: "cal", better: "higher", input: "number", step: "1", hint: "Calories on the monitor after 60 seconds" },
+    reps: { suffix: "reps", better: "higher", input: "number", step: "1", hint: "Good reps in 60 seconds" },
+    m: { suffix: "m", better: "higher", input: "number", step: "0.5", hint: "Distance covered, in metres" },
+    time: { better: "lower", input: "time", hint: "Minutes in the first box, seconds in the second" },
+    pace: { suffix: "/500m", better: "lower", input: "time", hint: "Pace per 500m \u2014 minutes, then seconds" },
+    time_up: { better: "higher", input: "time", hint: "Minutes in the first box, seconds in the second \u2014 under a minute, leave minutes empty" }
+  };
+
+  /* The Log menu: one card per card-tap, in tracker order. */
+  var FORMS = [
+    {
+      id: "bike20", section: "bike", art: "bike", title: "Average Watts - 20 Minutes Indoor Bike",
+      blurb: "Ride 20 minutes, enter the average watts from the bike's screen.",
+      fields: [{ metric: "bike20_watts", label: "Average watts", required: true }]
+    },
+    {
+      id: "row2k", section: "ergs", art: "row", title: "2km Row",
+      blurb: "Enter the total time — the 500m pace is worked out for you.",
+      fields: [{ metric: "row2k_total", label: "Total time", required: true }],
+      derive: { from: "row2k_total", metric: "row2k_pace", divide: 4 }
+    },
+    {
+      id: "ski2k", section: "ergs", art: "ski", title: "2km Ski",
+      blurb: "Enter the total time — the 500m pace is worked out for you.",
+      fields: [{ metric: "ski2k_total", label: "Total time", required: true }],
+      derive: { from: "ski2k_total", metric: "ski2k_pace", divide: 4 }
+    },
+    {
+      id: "run5k", section: "run", art: "run", title: "5km Run",
+      blurb: "Splits are optional. Fill all five and the total fills itself in.",
+      fields: [
+        { metric: "run5k_total", label: "Total time", required: true },
+        { metric: "run5k_s1", label: "1km split 1" },
+        { metric: "run5k_s2", label: "1km split 2" },
+        { metric: "run5k_s3", label: "1km split 3" },
+        { metric: "run5k_s4", label: "1km split 4" },
+        { metric: "run5k_s5", label: "1km split 5" }
+      ],
+      sumTo: { metric: "run5k_total", from: ["run5k_s1", "run5k_s2", "run5k_s3", "run5k_s4", "run5k_s5"] }
+    }
+  ];
+
+  /* Strength and the 60s tests are one field each — generate their forms. */
+  var STRENGTH_ART = { squat_3rm: "squat", bench_3rm: "bench", deadlift_3rm: "deadlift", press_3rm: "press" };
+  Object.keys(STRENGTH_ART).forEach(function (id) {
+    var m = METRICS.filter(function (x) { return x.id === id; })[0];
+    FORMS.push({
+      id: id, section: "strength", title: m.name, art: STRENGTH_ART[id],
+      blurb: "Heaviest set of three, taken to a full lockout.",
+      fields: [{ metric: id, label: "Weight", required: true }]
+    });
+  });
+  var TEST_ART = {
+    ski60_cals: "ski", row60_cals: "row", wallball60: "wallball", burpee60_m: "burpee",
+    lunge60_m: "lunge", sledpull60_m: "sledpull", sledpush60_m: "sledpush", deadhang: "hang"
+  };
+  Object.keys(TEST_ART).forEach(function (id) {
+    var m = METRICS.filter(function (x) { return x.id === id; })[0];
+    FORMS.push({
+      id: id, section: "tests", title: m.name, art: TEST_ART[id],
+      blurb: id === "deadhang" ? "Hang from the bar until you drop off."
+        : id === "sledpush60_m" ? "One all-out minute at race load — 152kg including the sled. Different weight? Say so in the note."
+        : id === "sledpull60_m" ? "One all-out minute at race load — 103kg including the sled. Different weight? Say so in the note."
+        : id === "lunge60_m" ? "One all-out minute, bodyweight — no sandbag."
+        : "One all-out minute.",
+      fields: [{ metric: id, label: "Result", required: true }]
+    });
+  });
+
+  FORMS.push({
+    id: "bodyweight", section: "body", title: "Bodyweight", art: "scale",
+    blurb: "Weigh in whenever you like — same scales, same time of day reads truest. Your strength scores adjust to it.",
+    fields: [{ metric: "bodyweight", label: "Weight", required: true }]
+  });
+
+  /* One short "how to do it" video per activity — the shortest solid
+   * technique clip we could find from a reputable coach, official Concept2
+   * clips for the ergs. Every id was checked live before shipping; watch
+   * URLs play Shorts and full videos alike. */
+  var VIDEOS = {
+    bike20: ["UZKbytEQJAU", "Street Parking"],
+    row2k: ["QPvYrfyGHi8", "Concept2"],
+    ski2k: ["B0lIgT5PHc8", "Concept2"],
+    run5k: ["sScNDZu2MWk", "James Dunne"],
+    squat_3rm: ["gcNh17Ckjgg", "Jeremy Ethier"],
+    bench_3rm: ["0cXAp6WhSj4", "Jeremy Ethier"],
+    deadlift_3rm: ["8np3vKDBJfc", "Jeremy Ethier"],
+    press_3rm: ["zoN5EH50Dro", "DeltaBolic"],
+    ski60_cals: ["B0lIgT5PHc8", "Concept2"],
+    row60_cals: ["QPvYrfyGHi8", "Concept2"],
+    wallball60: ["i3X-IG9sBJQ", "Core Blend Training"],
+    burpee60_m: ["eQFmJjdRSDI", "GoodLife Fitness"],
+    lunge60_m: ["XYspYu9VFHo", "Core Blend Training"],
+    sledpull60_m: ["1iDS8Xgx-nw", "Core Blend Training"],
+    sledpush60_m: ["IVv_WDafLO4", "Core Blend Training"],
+    deadhang: ["OT-wTpxP9uo", "Flow Motion Fitness"]
+  };
+
+  /* Official Hyrox race loads, 2025/26 season — identical at every event,
+   * Manchester included. Men open / women open first, pro in brackets. */
+  /* Shown on the entry forms. Men's open loads, since that is the division
+   * being trained for — every division is in the standards card. */
+  var RACE = {
+    wallball60: "In the race (men's open): 100 wall balls, 6kg ball to a 3.0m target.",
+    sledpush60_m: "In the race (men's open): 50m sled push at 152kg including the sled.",
+    sledpull60_m: "In the race (men's open): 50m sled pull at 103kg including the sled.",
+    lunge60_m: "In the race (men's open): 100m of walking lunges with a 20kg sandbag.",
+    burpee60_m: "In the race: 80m of burpee broad jumps, bodyweight.",
+    ski2k: "In the race: station 1 is 1,000m on the SkiErg.",
+    row2k: "In the race: station 5 is 1,000m on the RowErg.",
+    run5k: "In the race: 8 × 1km runs, one between each station."
+  };
+
+  /* Built-in timing. Stopwatch forms fill their time fields when stopped —
+   * the 5km run's Lap button drops each 1km split into its box as you pass.
+   * Countdown forms run the test clock (beeps over the last three seconds)
+   * and then hand focus to the result box. */
+  var TIMERS = {
+    row2k: { mode: "stopwatch", fill: "row2k_total" },
+    ski2k: { mode: "stopwatch", fill: "ski2k_total" },
+    run5k: { mode: "stopwatch", fill: "run5k_total", laps: ["run5k_s1", "run5k_s2", "run5k_s3", "run5k_s4", "run5k_s5"] },
+    deadhang: { mode: "stopwatch", fill: "deadhang" },
+    bike20: { mode: "countdown", seconds: 1200 },
+    ski60_cals: { mode: "countdown", seconds: 60 },
+    row60_cals: { mode: "countdown", seconds: 60 },
+    wallball60: { mode: "countdown", seconds: 60 },
+    burpee60_m: { mode: "countdown", seconds: 60 },
+    lunge60_m: { mode: "countdown", seconds: 60 },
+    sledpull60_m: { mode: "countdown", seconds: 60 },
+    sledpush60_m: { mode: "countdown", seconds: 60 }
+  };
+
+  /* Machine set-up, for every machine with dials. The recurring confusion is
+   * the erg damper: it is gearing, not difficulty — the monitor scores true
+   * output wherever it sits. */
+  var SETUP = {
+    row2k: "Machine: damper 4\u20136 (it changes the feel, not the score) \u00b7 set the monitor to 2,000m.",
+    ski2k: "Machine: damper 4\u20136 \u00b7 set the monitor to 2,000m.",
+    row60_cals: "Machine: damper 6\u20138 \u2014 a heavier gear pays on an all-out minute \u00b7 monitor showing calories.",
+    ski60_cals: "Machine: damper 5\u20137 \u00b7 monitor showing calories.",
+    bike20: "Machine: resistance is gearing, not difficulty \u2014 pick whatever lets you spin a smooth 80\u201390rpm (BikeErg damper 3\u20135) and ride to the watts.",
+    run5k: "Treadmill? Set 1% incline to match road effort. Outdoors, the timer's Lap button catches your splits."
+  };
+
+  FORMS.forEach(function (f) {
+    var v = VIDEOS[f.id];
+    if (v) f.video = { url: "https://www.youtube.com/watch?v=" + v[0], by: v[1] };
+    if (RACE[f.id]) f.race = RACE[f.id];
+    if (TIMERS[f.id]) f.timer = TIMERS[f.id];
+    if (SETUP[f.id]) f.setup = SETUP[f.id];
+    /* heavy triples need clock-watched rest, not guesswork */
+    if (f.section === "strength") f.rest = [120, 180, 300];
+  });
+
+  /* The full station list for the reference card — includes stations the
+   * tracker sheet does not test, like the farmers carry. */
+  PB.RACE_STANDARDS = [
+    ["1. SkiErg", "1,000m"],
+    ["2. Sled Push", "50m — 152kg men open · 102kg women open (pro 202 / 152)"],
+    ["3. Sled Pull", "50m — 103kg men open · 78kg women open (pro 153 / 103)"],
+    ["4. Burpee Broad Jumps", "80m, bodyweight"],
+    ["5. RowErg", "1,000m"],
+    ["6. Farmers Carry", "200m — 2×24kg men open · 2×16kg women open (pro 2×32 / 2×24)"],
+    ["7. Sandbag Lunges", "100m — 20kg men open · 10kg women open (pro 30 / 20)"],
+    ["8. Wall Balls", "100 reps men open · 75 reps women open — 6kg/3.0m men, 4kg/2.7m women (pro 9kg / 6kg)"]
+  ];
+
+  var byId = {};
+  METRICS.forEach(function (m) {
+    /* name  = the row exactly as it reads on Ian's paper tracker — shown
+               verbatim on every list so the app and the sheet always agree
+       short = what the row is called inside a sentence */
+    m.list = m.name;
+    m.short = m.short || m.name;
+    m.better = UNITS[m.unit].better;
+    m.scored = !m.derived && !m.neutral;
+    byId[m.id] = m;
+  });
+
+  /* The four tests the coach wants filled in before the plan starts —
+   * "Most important is the running 5k, ski 2k and row 2k. Also 20min bike." */
+  PB.BASELINE = ["run5k_total", "ski2k_total", "row2k_total", "bike20_watts"];
+
+  PB.SECTIONS = SECTIONS;
+  PB.METRICS = METRICS;
+  PB.UNITS = UNITS;
+  PB.FORMS = FORMS;
+  PB.metric = function (id) { return byId[id]; };
+  PB.section = function (id) {
+    return SECTIONS.filter(function (s) { return s.id === id; })[0];
+  };
+  PB.metricsIn = function (sectionId) {
+    return METRICS.filter(function (m) { return m.section === sectionId; });
+  };
+  PB.form = function (id) {
+    return FORMS.filter(function (f) { return f.id === id; })[0];
+  };
+  /* The pictogram for a metric is the one on the form that logs it. */
+  PB.artFor = function (metricId) {
+    var f = FORMS.filter(function (x) {
+      return x.fields.some(function (fl) { return fl.metric === metricId; });
+    })[0];
+    return f ? f.art : "";
+  };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Value parsing and display. Times are stored as seconds throughout, so a
+ * 2km row and a dead hang share one comparison path. */
+(function (PB) {
+  "use strict";
+
+  var isTime = function (unit) { return unit === "time" || unit === "pace" || unit === "time_up"; };
+
+  /* Accepts "8:42", "8:42.4", "1:02:33" or a plain number of seconds.
+   * Returns null when the text is not a usable value. */
+  function parseTime(text) {
+    var s = String(text).trim();
+    if (!s) return null;
+    /* Phone number-pads have no colon, so the dot stands in for it:
+     * "9.09" means 9:09. Two digits after the dot, reading as valid
+     * seconds — a genuine decimal like "45.5" still means seconds. */
+    var dotted = s.match(/^(\d{1,3})\.([0-5]\d)$/);
+    if (dotted) return Number(dotted[1]) * 60 + Number(dotted[2]);
+    if (!/^\d+(:[0-5]?\d){0,2}(\.\d+)?$/.test(s)) return null;
+    var parts = s.split(":").map(parseFloat);
+    if (parts.some(isNaN)) return null;
+    var secs = 0;
+    parts.forEach(function (p) { secs = secs * 60 + p; });
+    return secs > 0 ? Math.round(secs * 10) / 10 : null;
+  }
+
+  function parseValue(unit, text) {
+    if (isTime(unit)) return parseTime(text);
+    var s = String(text).trim().replace(",", ".");
+    if (!/^\d+(\.\d+)?$/.test(s)) return null;
+    var n = parseFloat(s);
+    return n > 0 ? n : null;
+  }
+
+  function formatTime(secs) {
+    if (secs == null || isNaN(secs)) return "—";
+    var t = Math.round(secs * 10) / 10;
+    var h = Math.floor(t / 3600);
+    var m = Math.floor((t % 3600) / 60);
+    var s = t % 60;
+    var frac = Math.round((s - Math.floor(s)) * 10);
+    var ss = String(Math.floor(s));
+    if (ss.length < 2) ss = "0" + ss;
+    var out = (h ? h + ":" + (m < 10 ? "0" + m : m) : String(m)) + ":" + ss;
+    if (frac) out += "." + frac;
+    return out;
+  }
+
+  /* Display value without its unit — for tables that carry the unit in a header. */
+  function formatValue(unit, v) {
+    if (v == null || isNaN(v)) return "—";
+    if (isTime(unit)) return formatTime(v);
+    return String(Math.round(v * 10) / 10);
+  }
+
+  /* Display value with its unit, e.g. "1:42/500m", "142.5kg". */
+  function formatFull(unit, v) {
+    if (v == null || isNaN(v)) return "—";
+    var suffix = (PB.UNITS[unit] || {}).suffix || "";
+    var body = formatValue(unit, v);
+    if (!suffix) return body;
+    return unit === "kg" || unit === "m" || unit === "watts" ? body + suffix : body + (unit === "pace" ? "" : " ") + suffix;
+  }
+
+  /* "3 days ago" style, kept short enough for a phone row. */
+  function relativeDay(iso) {
+    var d = PB.dayDiff(iso, PB.today());
+    if (d === 0) return "Today";
+    if (d === 1) return "Yesterday";
+    if (d < 7) return d + " days ago";
+    if (d < 14) return "Last week";
+    if (d < 60) return Math.round(d / 7) + " weeks ago";
+    return Math.round(d / 30) + " months ago";
+  }
+
+  function formatDate(iso) {
+    var p = String(iso).split("-");
+    if (p.length !== 3) return iso;
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return Number(p[2]) + " " + months[Number(p[1]) - 1] + " " + p[0];
+  }
+
+  function today() {
+    var d = new Date();
+    var pad = function (n) { return n < 10 ? "0" + n : String(n); };
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+
+  function dayDiff(a, b) {
+    return Math.round((Date.parse(b + "T00:00:00") - Date.parse(a + "T00:00:00")) / 86400000);
+  }
+
+  PB.isTime = isTime;
+  PB.parseTime = parseTime;
+  PB.parseValue = parseValue;
+  PB.formatTime = formatTime;
+  PB.formatValue = formatValue;
+  PB.formatFull = formatFull;
+  PB.formatDate = formatDate;
+  PB.relativeDay = relativeDay;
+  PB.today = today;
+  PB.dayDiff = dayDiff;
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Local data store. Everything lives in this browser's localStorage — no
+ * account, no server, works with the phone in aeroplane mode in a gym
+ * basement. Export from the Data screen is the backup. */
+(function (PB) {
+  "use strict";
+
+  var KEY = "pbtracker.v1";
+  var state = null;
+  var listeners = [];
+
+  function blank() {
+    return { version: 2, athlete: { name: "", planStart: "2026-09-07" }, entries: [], sync: {} };
+  }
+
+  function now() { return new Date().toISOString(); }
+
+  /* Entries carry an `updated` stamp and deletes are tombstones rather than
+   * removals, so two devices can be reconciled without either losing a
+   * deletion. Everything that reads entries goes through live(). */
+  function migrate(st) {
+    if (!st.entries) st.entries = [];
+    if (!st.athlete) st.athlete = { name: "" };
+    if (st.athlete.planStart === undefined) st.athlete.planStart = "2026-09-07";
+    if (!st.sync) st.sync = {};
+    st.entries.forEach(function (e) {
+      if (!e.updated) e.updated = new Date(e.date + "T12:00:00").toISOString();
+      if (e.deleted === undefined) e.deleted = false;
+    });
+    st.version = 2;
+    return st;
+  }
+
+  function live() {
+    return load().entries.filter(function (e) { return !e.deleted; });
+  }
+
+  function load() {
+    if (state) return state;
+    try {
+      var raw = localStorage.getItem(KEY);
+      state = raw ? JSON.parse(raw) : blank();
+    } catch (e) {
+      state = blank();
+    }
+    migrate(state);
+    return state;
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (e) {
+      alert("Could not save — this browser's storage is full or blocked.");
+    }
+    listeners.forEach(function (fn) { fn(); });
+  }
+
+  function onChange(fn) { listeners.push(fn); }
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  /* Best-first ordering: better value wins, and an equal value set earlier
+   * outranks the same value set later — you got there first. */
+  function rankSort(metric) {
+    var sign = metric.better === "lower" ? 1 : -1;
+    return function (a, b) {
+      if (a.value !== b.value) return sign * (a.value - b.value);
+      return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    };
+  }
+
+  function entriesFor(metricId) {
+    return live()
+      .filter(function (e) { return e.metric === metricId; })
+      .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+  }
+
+  /* Entries for a metric, best first. */
+  function ranked(metricId) {
+    return entriesFor(metricId).slice().sort(rankSort(PB.metric(metricId)));
+  }
+
+  /* For a neutral metric (bodyweight) "best" means most recent — there is
+   * no direction to rank by, and the newest reading is the true one. */
+  function best(metricId) {
+    if (PB.metric(metricId).neutral) {
+      var all = entriesFor(metricId);
+      return all[all.length - 1] || null;
+    }
+    return ranked(metricId)[0] || null;
+  }
+
+  /* 1, 2, 3 for the medal positions, 0 for everything else. */
+  function medal(entry) {
+    if (PB.metric(entry.metric).neutral) return 0;
+    var pos = ranked(entry.metric).findIndex(function (e) { return e.id === entry.id; });
+    return pos >= 0 && pos < 3 ? pos + 1 : 0;
+  }
+
+  function isBetter(metric, a, b) {
+    if (b == null) return true;
+    return metric.better === "lower" ? a < b : a > b;
+  }
+
+  /* Writes one logged session. values is {metricId: number}. Returns the list
+   * of metric ids that became a new personal best. */
+  function addSession(values, date, note) {
+    var st = load();
+    var session = uid();
+    var prs = [];
+    Object.keys(values).forEach(function (metricId) {
+      var v = values[metricId];
+      if (v == null || isNaN(v)) return;
+      var metric = PB.metric(metricId);
+      var previous = best(metricId);
+      if (!metric.neutral && isBetter(metric, v, previous && previous.value)) prs.push(metricId);
+      st.entries.push({
+        id: uid(), session: session, metric: metricId,
+        value: v, date: date, note: note || "", updated: now(), deleted: false
+      });
+    });
+    save();
+    return { session: session, prs: prs };
+  }
+
+  function updateEntry(id, value, date, note) {
+    var e = load().entries.filter(function (x) { return x.id === id; })[0];
+    if (!e) return false;
+    e.value = value;
+    e.date = date;
+    e.note = note || "";
+    e.updated = now();
+    save();
+    return true;
+  }
+
+  function deleteEntry(id) {
+    load().entries.forEach(function (e) {
+      if (e.id === id) { e.deleted = true; e.updated = now(); }
+    });
+    save();
+  }
+
+  /* Deletes every metric written by one trip to the log screen — a 5km run
+   * and its splits go together. */
+  function deleteSession(session) {
+    load().entries.forEach(function (e) {
+      if (e.session === session) { e.deleted = true; e.updated = now(); }
+    });
+    save();
+  }
+
+  /* Newest sessions first, grouped, for the activity feed. */
+  function recentSessions(limit) {
+    var groups = {};
+    live().forEach(function (e) {
+      var g = groups[e.session] || (groups[e.session] = { session: e.session, date: e.date, note: e.note, entries: [] });
+      g.entries.push(e);
+      if (e.note && !g.note) g.note = e.note;
+    });
+    return Object.keys(groups).map(function (k) { return groups[k]; })
+      .sort(function (a, b) {
+        if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+        return a.session < b.session ? 1 : -1;
+      })
+      .slice(0, limit || 50);
+  }
+
+  function totalEntries() { return live().length; }
+
+  function athlete() { return load().athlete; }
+
+  function setName(name) {
+    load().athlete.name = name;
+    save();
+  }
+
+  /* The date the training plan begins. Everything logged before it is the
+   * baseline; clear it and the plan features simply disappear. */
+  function setPlanStart(date) {
+    load().athlete.planStart = /^\d{4}-\d{2}-\d{2}$/.test(date || "") ? date : "";
+    save();
+  }
+
+  function setRaceTarget(text) {
+    load().athlete.raceTarget = String(text || "").trim();
+    save();
+  }
+
+  /* True once the person has been through the first-run sign-in screen —
+   * by signing in or by choosing to carry on without an account. It is a
+   * "seen it" flag, so signing out later does not bring the screen back. */
+  function setWelcomeDone(done) {
+    load().athlete.welcomeDone = !!done;
+    save();
+  }
+
+  function exportJSON() {
+    return JSON.stringify(load(), null, 2);
+  }
+
+  /* Merge keeps both sets and drops exact duplicates; replace overwrites. */
+  function importJSON(text, mode) {
+    var data = JSON.parse(text);
+    if (!data || !Array.isArray(data.entries)) throw new Error("Not a tracker backup file.");
+    var clean = data.entries.filter(function (e) {
+      return e && PB.metric(e.metric) && typeof e.value === "number" && /^\d{4}-\d{2}-\d{2}$/.test(e.date);
+    }).map(function (e) {
+      return {
+        id: e.id || uid(), session: e.session || uid(), metric: e.metric,
+        value: e.value, date: e.date, note: e.note || "",
+        updated: e.updated || now(), deleted: !!e.deleted
+      };
+    });
+    var st = load();
+    if (mode === "replace") {
+      st.entries = clean;
+    } else {
+      var seen = {};
+      st.entries.forEach(function (e) { seen[e.metric + "|" + e.date + "|" + e.value] = true; });
+      clean.forEach(function (e) {
+        var k = e.metric + "|" + e.date + "|" + e.value;
+        if (e.deleted || seen[k]) return;
+        seen[k] = true;
+        st.entries.push(e);
+      });
+    }
+    if (data.athlete && data.athlete.name && !st.athlete.name) st.athlete.name = data.athlete.name;
+    save();
+    return clean.length;
+  }
+
+  /* Ask the browser not to evict this data when storage runs low. Silent
+   * where unsupported — the entries still save either way. */
+  function requestPersistence() {
+    if (navigator.storage && navigator.storage.persist) {
+      navigator.storage.persisted().then(function (already) {
+        if (!already) navigator.storage.persist();
+      }).catch(function () {});
+    }
+  }
+
+  function storageReport(cb) {
+    var out = { persisted: null, usageKB: Math.round(JSON.stringify(load()).length / 1024 * 10) / 10 };
+    if (navigator.storage && navigator.storage.persisted) {
+      navigator.storage.persisted().then(function (p) { out.persisted = p; cb(out); }, function () { cb(out); });
+    } else cb(out);
+  }
+
+  function clearAll() {
+    state = blank();
+    save();
+  }
+
+  /* --- the hooks the sync layer needs ------------------------------------ */
+
+  /* Everything changed since a timestamp, tombstones included. */
+  function changedSince(iso) {
+    return load().entries.filter(function (e) { return !iso || e.updated > iso; });
+  }
+
+  /* Applies rows from elsewhere. Last write wins, compared on `updated`, so
+   * the same rows can be applied twice with no effect. Returns how many
+   * actually changed anything. */
+  function applyRemote(rows) {
+    var st = load();
+    var byId = {};
+    st.entries.forEach(function (e) { byId[e.id] = e; });
+    var changed = 0;
+    rows.forEach(function (r) {
+      if (!r || !r.id || !PB.metric(r.metric)) return;
+      var incoming = {
+        id: r.id, session: r.session || r.id, metric: r.metric,
+        value: Number(r.value), date: r.date, note: r.note || "",
+        updated: r.updated, deleted: !!r.deleted
+      };
+      if (isNaN(incoming.value) || !/^\d{4}-\d{2}-\d{2}$/.test(incoming.date)) return;
+      var mine = byId[r.id];
+      if (!mine) { st.entries.push(incoming); byId[r.id] = incoming; changed++; return; }
+      if (incoming.updated > mine.updated) {
+        Object.keys(incoming).forEach(function (k) { mine[k] = incoming[k]; });
+        changed++;
+      }
+    });
+    if (changed) save();
+    return changed;
+  }
+
+  function syncState() { return load().sync; }
+
+  function setSyncState(patch) {
+    var sync = load().sync;
+    Object.keys(patch).forEach(function (k) {
+      if (patch[k] === null) delete sync[k]; else sync[k] = patch[k];
+    });
+    save();
+  }
+
+  PB.store = {
+    load: load, save: save, onChange: onChange,
+    entriesFor: entriesFor, ranked: ranked, best: best, medal: medal,
+    addSession: addSession, updateEntry: updateEntry,
+    deleteEntry: deleteEntry, deleteSession: deleteSession,
+    recentSessions: recentSessions, totalEntries: totalEntries,
+    athlete: athlete, setName: setName, setPlanStart: setPlanStart,
+    setWelcomeDone: setWelcomeDone, setRaceTarget: setRaceTarget,
+    exportJSON: exportJSON, importJSON: importJSON, clearAll: clearAll,
+    requestPersistence: requestPersistence, storageReport: storageReport,
+    changedSince: changedSince, applyRemote: applyRemote,
+    syncState: syncState, setSyncState: setSyncState, live: live,
+    isBetter: isBetter
+  };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Fitness scoring.
+ *
+ * Each scored metric maps onto 0-100 by linear interpolation between its two
+ * benchmark values. A section scores the average of its logged metrics, and
+ * the overall score averages the sections that have any data — so the five
+ * pillars of the tracker weigh equally and eight one-minute tests cannot
+ * drown out a 5km run. Derived rows (pace, splits) are deliberately not
+ * scored: they are the same effort counted twice. */
+(function (PB) {
+  "use strict";
+
+  var BANDS = [
+    { min: 90, name: "Elite", cls: "band-elite" },
+    { min: 75, name: "Advanced", cls: "band-advanced" },
+    { min: 55, name: "Strong", cls: "band-strong" },
+    { min: 35, name: "Developing", cls: "band-developing" },
+    { min: 0, name: "Foundation", cls: "band-foundation" }
+  ];
+
+  function band(score) {
+    for (var i = 0; i < BANDS.length; i++) if (score >= BANDS[i].min) return BANDS[i];
+    return BANDS[BANDS.length - 1];
+  }
+
+  /* The strength benchmarks are written for an 80kg athlete. Once a
+   * bodyweight is logged, they scale to it — a 70kg athlete is not asked to
+   * move 80kg numbers to earn the same score. Clamped so a wild reading
+   * cannot distort the scale, and everything downstream (scores, levels,
+   * "next band at") follows automatically because it all comes through here. */
+  function effectiveBench(metric) {
+    if (!metric.bench) return null;
+    if (metric.section !== "strength") return metric.bench;
+    var bw = PB.store.best("bodyweight");
+    if (!bw) return metric.bench;
+    var scale = Math.max(0.75, Math.min(1.25, bw.value / 80));
+    return [metric.bench[0] * scale, metric.bench[1] * scale];
+  }
+
+  function scoreValue(metric, value) {
+    var bench = effectiveBench(metric);
+    if (!bench || value == null) return null;
+    var zero = bench[0], hundred = bench[1];
+    var pct = ((zero - value) / (zero - hundred)) * 100;
+    return Math.max(0, Math.min(100, Math.round(pct)));
+  }
+
+  /* What value would be needed to hit a target score — powers "next band at". */
+  function valueForScore(metric, target) {
+    var bench = effectiveBench(metric);
+    if (!bench) return null;
+    var zero = bench[0], hundred = bench[1];
+    return zero - (target / 100) * (zero - hundred);
+  }
+
+  /* Scores a set of entries directly, rather than whatever is in the store —
+   * this is what lets the score be replayed as it stood on any past day. */
+  function overallFor(entries) {
+    var bestOf = {};
+    entries.forEach(function (e) {
+      var metric = PB.metric(e.metric);
+      if (!metric || !metric.scored) return;
+      if (PB.store.isBetter(metric, e.value, bestOf[e.metric])) bestOf[e.metric] = e.value;
+    });
+    var sectionScores = [];
+    PB.SECTIONS.forEach(function (s) {
+      var got = PB.metricsIn(s.id).filter(function (m) { return m.scored && bestOf[m.id] != null; })
+        .map(function (m) { return scoreValue(m, bestOf[m.id]); });
+      if (got.length) {
+        sectionScores.push(got.reduce(function (a, v) { return a + v; }, 0) / got.length);
+      }
+    });
+    if (!sectionScores.length) return null;
+    return Math.round(sectionScores.reduce(function (a, v) { return a + v; }, 0) / sectionScores.length);
+  }
+
+  /* One point per day you logged on, each showing the score you held that day. */
+  function history() {
+    var all = PB.store.load().entries.slice()
+      .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    var days = [];
+    all.forEach(function (e) { if (days[days.length - 1] !== e.date) days.push(e.date); });
+    var out = [];
+    days.forEach(function (day) {
+      var upTo = all.filter(function (e) { return e.date <= day; });
+      var v = overallFor(upTo);
+      if (v != null) out.push({ date: day, value: v });
+    });
+    return out;
+  }
+
+  function metricScore(metricId) {
+    var metric = PB.metric(metricId);
+    if (!metric.scored) return null;
+    var b = PB.store.best(metricId);
+    if (!b) return { metric: metric, logged: false, score: null };
+    var s = scoreValue(metric, b.value);
+    return { metric: metric, logged: true, best: b, score: s, band: band(s) };
+  }
+
+  function sectionScore(sectionId) {
+    var rows = PB.metricsIn(sectionId)
+      .filter(function (m) { return m.scored; })
+      .map(function (m) { return metricScore(m.id); });
+    var done = rows.filter(function (r) { return r.logged; });
+    var score = done.length
+      ? Math.round(done.reduce(function (a, r) { return a + r.score; }, 0) / done.length)
+      : null;
+    return {
+      section: PB.section(sectionId), rows: rows, logged: done.length,
+      total: rows.length, score: score, band: score == null ? null : band(score)
+    };
+  }
+
+  function overall() {
+    var sections = PB.SECTIONS.map(function (s) { return sectionScore(s.id); });
+    var done = sections.filter(function (s) { return s.score != null; });
+    var score = done.length
+      ? Math.round(done.reduce(function (a, s) { return a + s.score; }, 0) / done.length)
+      : null;
+    var logged = sections.reduce(function (a, s) { return a + s.logged; }, 0);
+    var total = sections.reduce(function (a, s) { return a + s.total; }, 0);
+    return {
+      score: score, band: score == null ? null : band(score),
+      sections: sections, logged: logged, total: total,
+      complete: logged === total
+    };
+  }
+
+  /* Change between the first and the best effort, as a signed percentage. */
+  function improvement(metricId) {
+    var all = PB.store.entriesFor(metricId);
+    if (all.length < 2) return null;
+    var first = all[0].value;
+    var b = PB.store.best(metricId);
+    if (!first || !b) return null;
+    var metric = PB.metric(metricId);
+    var delta = metric.better === "lower" ? (first - b.value) / first : (b.value - first) / first;
+    return Math.round(delta * 1000) / 10;
+  }
+
+  /* The single biggest score gain available right now — used to nudge the
+   * next session towards whatever is holding the overall number down. */
+  function weakestLogged() {
+    var rows = PB.METRICS.filter(function (m) { return m.scored; })
+      .map(function (m) { return metricScore(m.id); })
+      .filter(function (r) { return r.logged; })
+      .sort(function (a, b) { return a.score - b.score; });
+    return rows[0] || null;
+  }
+
+  function nextUnlogged() {
+    var rows = PB.METRICS.filter(function (m) { return m.scored; })
+      .map(function (m) { return metricScore(m.id); })
+      .filter(function (r) { return !r.logged; });
+    return rows[0] || null;
+  }
+
+  /* Beginner / Average / Elite marks for one activity, read straight off the
+   * same 0-100 scale the score uses, so this card and the score can never
+   * disagree. Values are rounded to what someone would actually say out
+   * loud: times to 5 seconds, kilos to 2.5, watts to 5. */
+  var LEVELS = [["Beginner", 20], ["Average", 50], ["Elite", 90]];
+
+  function roundLevel(metric, v) {
+    if (PB.isTime(metric.unit)) return Math.round(v / 5) * 5;
+    if (metric.unit === "kg") return Math.round(v / 2.5) * 2.5;
+    if (metric.unit === "watts") return Math.round(v / 5) * 5;
+    return Math.round(v);
+  }
+
+  function levels(metricId) {
+    var metric = PB.metric(metricId);
+    if (!metric.scored) return null;
+    var ms = metricScore(metricId);
+    var rows = LEVELS.map(function (lv) {
+      return { name: lv[0], at: lv[1], value: roundLevel(metric, valueForScore(metric, lv[1])) };
+    });
+    if (ms && ms.logged) {
+      var nearest = rows.reduce(function (a, r) {
+        return Math.abs(r.at - ms.score) < Math.abs(a.at - ms.score) ? r : a;
+      }, rows[0]);
+      nearest.here = true;
+    }
+    return rows;
+  }
+
+  PB.score = {
+    BANDS: BANDS, band: band, scoreValue: scoreValue, valueForScore: valueForScore,
+    levels: levels,
+    metricScore: metricScore, sectionScore: sectionScore, overall: overall,
+    overallFor: overallFor, history: history,
+    improvement: improvement, weakestLogged: weakestLogged, nextUnlogged: nextUnlogged
+  };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Project wiring — which Supabase project this copy of the app syncs with.
+ *
+ * The anon key is PUBLIC by design: it only lets a browser talk to the
+ * project, and row-level security (supabase/schema.sql) decides what any
+ * signed-in person can actually see. Point another deployment at another
+ * project by editing these two lines, or leave SYNC_DEFAULTS undefined to
+ * make sync a manual paste-in on the Data screen. */
+(function (PB) {
+  "use strict";
+  PB.SYNC_DEFAULTS = {
+    url: "https://tzicbkijfvvzuorfgfxh.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6aWNia2lqZnZ2enVvcmZnZnhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNjU0MDYsImV4cCI6MjEwMzc0MTQwNn0.VClzE8GWTQ9l99C9PxfdftSXVRaeiE4LYaQcyOVFhfA"
+  };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Cloud sync against a Supabase project.
+ *
+ * Plain fetch against Supabase's REST and auth endpoints — no SDK, so the
+ * app stays a handful of small files with nothing to build. The app remains
+ * local-first: every screen reads localStorage, and this file reconciles
+ * that store with the `entries` table when it can. Offline it simply stays
+ * quiet and catches up next time.
+ *
+ * Reconciliation: rows carry the writing device's `updated` stamp and the
+ * newest write wins, on the server (a trigger discards stale updates) and
+ * locally (applyRemote does the same), so sync order cannot resurrect a
+ * deleted entry or undo a newer edit. Pulls are watermarked on the server's
+ * own clock (server_updated), so a device with a wrong clock can lose a
+ * conflict but can never be skipped over.
+ *
+ * Security lives in the database, not here: the anon key in this file's
+ * config is public by design, and row-level security ties every row to the
+ * signed-in user, with read-only access for a linked coach. See
+ * supabase/schema.sql. */
+(function (PB) {
+  "use strict";
+
+  var listeners = [];
+  var timer = null;
+  var busy = false;
+
+  function st() { return PB.store.syncState(); }
+
+  function emit() { listeners.forEach(function (fn) { fn(status()); }); }
+
+  function config() {
+    var s = st();
+    return s.url && s.anonKey ? { url: s.url, anonKey: s.anonKey } : null;
+  }
+
+  function setConfig(url, anonKey) {
+    url = String(url || "").trim().replace(/\/+$/, "");
+    anonKey = String(anonKey || "").trim();
+    if (!/^https:\/\/[\w.-]+$/.test(url)) throw new Error("That does not look like a project URL (https://xxxx.supabase.co).");
+    if (anonKey.split(".").length !== 3) throw new Error("That does not look like an anon key.");
+    PB.store.setSyncState({ url: url, anonKey: anonKey, optOut: false, lastError: null });
+    emit();
+  }
+
+  function disconnect() {
+    PB.store.setSyncState({
+      optOut: true,
+      url: null, anonKey: null, access: null, refresh: null, exp: null,
+      userId: null, email: null, lastPull: null, lastPush: null, lastSync: null, lastError: null
+    });
+    emit();
+  }
+
+  function signedIn() {
+    var s = st();
+    return s.userId ? { userId: s.userId, email: s.email } : null;
+  }
+
+  /* --------------------------------------------------------------- fetch */
+
+  function req(path, opts) {
+    var c = config();
+    if (!c) return Promise.reject(new Error("Sync is not set up yet."));
+    opts = opts || {};
+    var headers = { apikey: c.anonKey, "Content-Type": "application/json" };
+    if (opts.auth !== false && st().access) headers.Authorization = "Bearer " + st().access;
+    Object.keys(opts.headers || {}).forEach(function (k) { headers[k] = opts.headers[k]; });
+    return fetch(c.url + path, {
+      method: opts.method || "GET",
+      headers: headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (res) {
+      if (res.status === 204) return null;
+      return res.text().then(function (text) {
+        var data = null;
+        try { data = text ? JSON.parse(text) : null; } catch (e) { /* non-JSON error body */ }
+        if (!res.ok) {
+          var msg = (data && (data.msg || data.message || data.error_description || data.hint)) ||
+            ("The server said no (" + res.status + ").");
+          var err = new Error(msg);
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  /* Runs a request with a fresh token, refreshing once if it is stale. */
+  function authed(path, opts) {
+    var s = st();
+    if (!s.userId) return Promise.reject(new Error("Sign in first."));
+    var stale = !s.exp || Date.now() / 1000 > s.exp - 60;
+    var ready = stale ? refreshToken() : Promise.resolve();
+    return ready.then(function () { return req(path, opts); }).then(null, function (err) {
+      if (err && err.status === 401) {
+        return refreshToken().then(function () { return req(path, opts); });
+      }
+      throw err;
+    });
+  }
+
+  /* ---------------------------------------------------------------- auth */
+
+  function jwtPayload(token) {
+    try {
+      var body = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+      while (body.length % 4) body += "=";   // base64url drops padding; atob wants it back
+      return JSON.parse(atob(body));
+    } catch (e) { return {}; }
+  }
+
+  function keepSession(data) {
+    var payload = jwtPayload(data.access_token);
+    PB.store.setSyncState({
+      access: data.access_token,
+      refresh: data.refresh_token,
+      exp: payload.exp || (Date.now() / 1000 + (data.expires_in || 3600)),
+      userId: (data.user && data.user.id) || payload.sub,
+      email: (data.user && data.user.email) || payload.email || "",
+      lastError: null
+    });
+    emit();
+  }
+
+  function requestCode(email) {
+    /* The redirect target must be explicit. Left out, the server falls back
+     * to the requesting page's bare origin — which for an app served under a
+     * path (GitHub Pages) is a dead page. Found the hard way. */
+    var back = location.origin + location.pathname;
+    return req("/auth/v1/otp?redirect_to=" + encodeURIComponent(back), {
+      method: "POST", auth: false, body: { email: email, create_user: true }
+    });
+  }
+
+  function verifyCode(email, code) {
+    return req("/auth/v1/verify", {
+      method: "POST", auth: false,
+      body: { type: "email", email: email, token: String(code).trim() }
+    }).then(function (data) {
+      keepSession(data);
+      return syncNow();
+    });
+  }
+
+  /* Password sign-in: the everyday way in once a password exists. No email,
+   * no hourly cap, nothing to redirect. The emailed link remains only for
+   * the first-ever sign-in and for "forgot password". */
+  function signInPassword(email, password) {
+    return req("/auth/v1/token?grant_type=password", {
+      method: "POST", auth: false,
+      body: { email: String(email || "").trim(), password: password }
+    }).then(function (data) {
+      keepSession(data);
+      return syncNow().then(null, function () { return null; });
+    }, function (err) {
+      if (err && err.status === 400) {
+        err.message = "Email and password did not match. If you have not set a password yet, sign in with an emailed link first, then set one from the Data screen.";
+      }
+      throw err;
+    });
+  }
+
+  /* Set (or change) the password on the signed-in account. */
+  function setPassword(newPassword) {
+    return authed("/auth/v1/user", {
+      method: "PUT", body: { password: newPassword }
+    });
+  }
+
+  /* The fallback for phones whose email app mangles the sign-in redirect:
+   * paste the emailed link itself and the app exchanges its one-time token
+   * directly with the server — no redirect anywhere in the chain. */
+  function verifyPastedLink(text) {
+    var s = String(text || "");
+
+    /* A dead page reached AFTER a successful verify still carries the whole
+     * session in its address — paste that URL and the session is adopted
+     * directly, no server round-trip needed. */
+    var at = s.match(/access_token=([A-Za-z0-9_.-]+)/);
+    var rt = s.match(/refresh_token=([A-Za-z0-9_.-]+)/);
+    if (at && rt) {
+      var exp = s.match(/expires_in=(\d+)/);
+      keepSession({ access_token: at[1], refresh_token: rt[1], expires_in: exp ? Number(exp[1]) : 3600 });
+      if (!signedIn()) {
+        return Promise.reject(new Error("Could not read a session from that address — email yourself a fresh link and paste that instead."));
+      }
+      // the session is in; a first sync hiccup must not undo the sign-in
+      return syncNow().then(null, function () { return null; });
+    }
+
+    var m = s.match(/[?&#](?:token|token_hash)=([A-Za-z0-9_.-]+)/);
+    if (!m) {
+      return Promise.reject(new Error("That does not look like the sign-in link — long-press \"Sign in\" in the email and choose Copy link."));
+    }
+    return req("/auth/v1/verify", {
+      method: "POST", auth: false,
+      body: { type: "email", token_hash: m[1] }
+    }).then(function (data) {
+      keepSession(data);
+      return syncNow();
+    }, function (err) {
+      if (err && /invalid or has expired/i.test(err.message || "")) {
+        err.message = "That link has been used or has expired — email yourself a fresh one and paste that instead.";
+      }
+      throw err;
+    });
+  }
+
+  /* A magic-link click lands back on the app with tokens in the URL hash.
+   * Call before the router reads the hash. Returns true when it signed in. */
+  function handleRedirect() {
+    var h = location.hash || "";
+    if (h.indexOf("error=") >= 0 && h.indexOf("access_token=") < 0) {
+      // an expired link still lands here — explain instead of a blank stare
+      PB.store.setSyncState({ lastError: "The sign-in link had already been used or expired. Email yourself a fresh one." });
+      location.hash = config() && !signedIn() ? "#/welcome" : "#/log";
+      return false;
+    }
+    if (h.indexOf("access_token=") < 0) return false;
+    var params = {};
+    h.replace(/^#\/?/, "").split("&").forEach(function (pair) {
+      var kv = pair.split("=");
+      params[kv[0]] = decodeURIComponent(kv[1] || "");
+    });
+    if (!params.access_token || !config()) return false;
+    keepSession({ access_token: params.access_token, refresh_token: params.refresh_token, expires_in: params.expires_in });
+    PB.store.setWelcomeDone(true);
+    location.hash = "#/log";
+    syncSoon();
+    return true;
+  }
+
+  function refreshToken() {
+    var s = st();
+    if (!s.refresh) return Promise.reject(new Error("Signed out."));
+    return req("/auth/v1/token?grant_type=refresh_token", {
+      method: "POST", auth: false, body: { refresh_token: s.refresh }
+    }).then(keepSession, function (err) {
+      if (err && (err.status === 400 || err.status === 401 || err.status === 403)) {
+        PB.store.setSyncState({ access: null, refresh: null, exp: null, userId: null, email: null });
+        emit();
+        throw new Error("Your sign-in expired — sign in again.");
+      }
+      throw err;
+    });
+  }
+
+  function signOut() {
+    PB.store.setSyncState({
+      access: null, refresh: null, exp: null, userId: null, email: null,
+      lastPull: null, lastPush: null, lastSync: null, lastError: null
+    });
+    emit();
+  }
+
+  /* ---------------------------------------------------------------- sync */
+
+  function pull() {
+    var s = st();
+    var q = "/rest/v1/entries?select=id,session,metric,value,date,note,updated,deleted,server_updated" +
+      "&user_id=eq." + s.userId + "&order=server_updated.asc&limit=1000";
+    if (s.lastPull) q += "&server_updated=gt." + encodeURIComponent(s.lastPull);
+    return authed(q).then(function (rows) {
+      rows = rows || [];
+      var applied = PB.store.applyRemote(rows);
+      if (rows.length) {
+        PB.store.setSyncState({ lastPull: rows[rows.length - 1].server_updated });
+      }
+      // a full page means there is more where that came from
+      return rows.length === 1000 ? pull().then(function (n) { return applied + n; }) : applied;
+    });
+  }
+
+  function push() {
+    var s = st();
+    var rows = PB.store.changedSince(s.lastPush).map(function (e) {
+      return {
+        id: e.id, user_id: s.userId, session: e.session, metric: e.metric,
+        value: e.value, date: e.date, note: e.note, updated: e.updated, deleted: e.deleted
+      };
+    });
+    if (!rows.length) return Promise.resolve(0);
+    var mark = new Date().toISOString();
+    return authed("/rest/v1/entries", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: rows
+    }).then(function () {
+      PB.store.setSyncState({ lastPush: mark });
+      return rows.length;
+    });
+  }
+
+  function syncNow() {
+    if (!config() || !signedIn()) return Promise.resolve(null);
+    if (busy) return Promise.resolve(null);
+    busy = true;
+    emit();
+    return pull().then(function (pulled) {
+      return push().then(function (pushed) {
+        PB.store.setSyncState({ lastSync: new Date().toISOString(), lastError: null });
+        busy = false;
+        emit();
+        return { pulled: pulled, pushed: pushed };
+      });
+    }).then(null, function (err) {
+      busy = false;
+      PB.store.setSyncState({ lastError: err.message || "Sync failed." });
+      emit();
+      throw err;
+    });
+  }
+
+  /* Batches the burst of saves a logging session makes into one sync. */
+  function syncSoon() {
+    if (!config() || !signedIn()) return;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      syncNow().then(null, function () { /* status already carries the error */ });
+    }, 2500);
+  }
+
+  function status() {
+    var s = st();
+    return {
+      configured: !!config(),
+      signedIn: !!s.userId,
+      email: s.email || "",
+      busy: busy,
+      lastSync: s.lastSync || null,
+      pending: config() && s.userId ? PB.store.changedSince(s.lastPush).length : 0,
+      lastError: s.lastError || null
+    };
+  }
+
+  /* --------------------------------------------------------------- coach */
+
+  function inviteCode() {
+    var abc = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    var out = "";
+    for (var i = 0; i < 8; i++) out += abc[Math.floor(Math.random() * abc.length)];
+    return out.slice(0, 4) + "-" + out.slice(4);
+  }
+
+  /* The athlete mints a code; whoever redeems it becomes a read-only coach. */
+  function createInvite() {
+    var code = inviteCode();
+    return authed("/rest/v1/coach_invites", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: { code: code, athlete_id: st().userId }
+    }).then(function () { return code; });
+  }
+
+  function redeemInvite(code) {
+    return authed("/rest/v1/rpc/redeem_coach_invite", {
+      method: "POST",
+      body: { invite_code: String(code).trim().toUpperCase() }
+    });
+  }
+
+  function myCoaches() {
+    return authed("/rest/v1/coach_links?select=coach_id&athlete_id=eq." + st().userId)
+      .then(function (links) { return withNames(links || [], "coach_id"); });
+  }
+
+  function myAthletes() {
+    return authed("/rest/v1/coach_links?select=athlete_id&coach_id=eq." + st().userId)
+      .then(function (links) { return withNames(links || [], "athlete_id"); });
+  }
+
+  function withNames(links, key) {
+    if (!links.length) return Promise.resolve([]);
+    var ids = links.map(function (l) { return l[key]; });
+    return authed("/rest/v1/profiles?select=id,name&id=in.(" + ids.join(",") + ")")
+      .then(function (profiles) {
+        var names = {};
+        (profiles || []).forEach(function (p) { names[p.id] = p.name; });
+        return ids.map(function (id) { return { id: id, name: names[id] || "Unnamed athlete" }; });
+      });
+  }
+
+  function dropCoach(coachId) {
+    return authed("/rest/v1/coach_links?coach_id=eq." + coachId + "&athlete_id=eq." + st().userId,
+      { method: "DELETE", headers: { Prefer: "return=minimal" } });
+  }
+
+  function athleteEntries(athleteId) {
+    return authed("/rest/v1/entries?select=metric,value,date,note,updated,deleted" +
+      "&user_id=eq." + athleteId + "&deleted=eq.false&order=date.asc&limit=5000");
+  }
+
+  /* The signed-in user's display name, mirrored for coaches to see. */
+  function pushProfile() {
+    if (!config() || !signedIn()) return Promise.resolve();
+    return authed("/rest/v1/profiles", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: { id: st().userId, name: PB.store.athlete().name || "" }
+    });
+  }
+
+  /* The app ships wired to its own project (config.js), so a fresh device
+   * needs no pasting — just the sign-in. An explicit disconnect is
+   * remembered and never overridden. The claude.ai preview sandbox blocks
+   * outside requests entirely, so there sync stays unconfigured. */
+  (function adoptDefaults() {
+    if (!PB.SYNC_DEFAULTS) return;
+    if (window.claude && typeof window.claude.use === "function") return;
+    var s = st();
+    if (s.url || s.optOut) return;
+    try { setConfig(PB.SYNC_DEFAULTS.url, PB.SYNC_DEFAULTS.anonKey); } catch (e) { /* stays manual */ }
+  })();
+
+  PB.sync = {
+    config: config, setConfig: setConfig, disconnect: disconnect,
+    signedIn: signedIn, requestCode: requestCode, verifyCode: verifyCode,
+    verifyPastedLink: verifyPastedLink,
+    signInPassword: signInPassword, setPassword: setPassword,
+    handleRedirect: handleRedirect, signOut: signOut,
+    syncNow: syncNow, syncSoon: syncSoon, status: status,
+    onStatus: function (fn) { listeners.push(fn); },
+    createInvite: createInvite, redeemInvite: redeemInvite,
+    myCoaches: myCoaches, myAthletes: myAthletes, dropCoach: dropCoach,
+    athleteEntries: athleteEntries, pushProfile: pushProfile
+  };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Dependency-free SVG progress chart.
+ *
+ * The y axis is flipped for time-based metrics, so on every graph in the app
+ * "up and to the right" means you got better — no reading the axis twice. */
+(function (PB) {
+  "use strict";
+
+  var W = 340, H = 170, PAD_L = 44, PAD_R = 10, PAD_T = 14, PAD_B = 26;
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function niceTicks(min, max, count) {
+    if (min === max) return [min];
+    var step = (max - min) / (count - 1), out = [];
+    for (var i = 0; i < count; i++) out.push(min + step * i);
+    return out;
+  }
+
+  /* points: [{date, value}] oldest first. opts: {unit, betterUp, id, caption} */
+  function draw(entries, opts) {
+    var unit = opts.unit;
+    var betterUp = opts.betterUp;
+    var values = entries.map(function (e) { return e.value; });
+    var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+    var span = max - min || Math.max(max * 0.1, 1);
+    var lo = min - span * 0.18, hi = max + span * 0.18;
+
+    var x = function (i) { return PAD_L + (i / (entries.length - 1)) * (W - PAD_L - PAD_R); };
+    var y = function (v) {
+      var t = (v - lo) / (hi - lo);            // 0 at lo, 1 at hi
+      if (!betterUp) t = 1 - t;                 // flip so better is always higher
+      return H - PAD_B - t * (H - PAD_T - PAD_B);
+    };
+
+    var pts = entries.map(function (e, i) { return [x(i), y(e.value)]; });
+    var line = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    var area = line + " L" + pts[pts.length - 1][0].toFixed(1) + " " + (H - PAD_B) +
+      " L" + pts[0][0].toFixed(1) + " " + (H - PAD_B) + " Z";
+
+    var bestValue = betterUp ? max : min;
+    var bestIndex = values.indexOf(bestValue);
+    var svg = ['<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' +
+      esc(opts.label || "Progress chart") + '">'];
+
+    svg.push('<defs><linearGradient id="cg-' + opts.id + '" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="var(--accent)" stop-opacity="0.30"/>' +
+      '<stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>');
+
+    var timeAxis = PB.isTime(unit);
+    var seen = {};
+    niceTicks(lo, hi, 4).forEach(function (v) {
+      var at = timeAxis && span > 20 ? Math.round(v) : v;   // whole seconds once the range is wide
+      var label = PB.formatValue(unit, at);
+      if (seen[label]) return;
+      seen[label] = true;
+      var yy = y(v).toFixed(1);
+      svg.push('<line class="grid" x1="' + PAD_L + '" y1="' + yy + '" x2="' + (W - PAD_R) + '" y2="' + yy + '"/>');
+      svg.push('<text class="axis" x="' + (PAD_L - 6) + '" y="' + (Number(yy) + 3.5) +
+        '" text-anchor="end">' + esc(label) + "</text>");
+    });
+
+    svg.push('<path class="area" d="' + area + '" fill="url(#cg-' + opts.id + ')"/>');
+    svg.push('<path class="line" d="' + line + '"/>');
+
+    entries.forEach(function (e, i) {
+      var isBest = i === bestIndex;
+      svg.push('<circle class="dot' + (isBest ? " dot-best" : "") + '" cx="' + pts[i][0].toFixed(1) +
+        '" cy="' + pts[i][1].toFixed(1) + '" r="' + (isBest ? 5 : 3.2) + '"><title>' +
+        esc(PB.formatFull(unit, e.value) + " — " + PB.formatDate(e.date)) + "</title></circle>");
+    });
+
+    if (bestIndex >= 0) {
+      var lx = Math.min(Math.max(pts[bestIndex][0], PAD_L + 18), W - PAD_R - 18);
+      svg.push('<text class="best-label" x="' + lx.toFixed(1) + '" y="' +
+        Math.max(pts[bestIndex][1] - 9, 10).toFixed(1) + '" text-anchor="middle">' +
+        esc(PB.formatFull(unit, bestValue)) + "</text>");
+    }
+
+    svg.push('<text class="axis" x="' + PAD_L + '" y="' + (H - 8) + '">' + esc(PB.formatDate(entries[0].date)) + "</text>");
+    svg.push('<text class="axis" x="' + (W - PAD_R) + '" y="' + (H - 8) + '" text-anchor="end">' +
+      esc(PB.formatDate(entries[entries.length - 1].date)) + "</text>");
+    svg.push("</svg>");
+
+    var caption = opts.caption || (betterUp
+      ? "Higher is better — the line rising means you are improving."
+      : "Faster is better — the axis is flipped, so a rising line means quicker times.");
+    return svg.join("") + '<p class="chart-caption">' + caption + "</p>";
+  }
+
+  function render(metricId) {
+    var metric = PB.metric(metricId);
+    var entries = PB.store.entriesFor(metricId);
+    if (!entries.length) {
+      return '<p class="chart-empty">No entries yet. Log this activity and your progress line starts here.</p>';
+    }
+    if (entries.length === 1) {
+      return '<p class="chart-empty">One entry so far — <strong>' +
+        esc(PB.formatFull(metric.unit, entries[0].value)) +
+        "</strong>. Log it again to draw a progress line.</p>";
+    }
+    return draw(entries, {
+      unit: metric.unit, betterUp: metric.better === "higher",
+      id: metricId, label: "Progress chart for " + metric.name
+    });
+  }
+
+  /* Tiny inline trend line for list rows. */
+  function spark(metricId) {
+    var entries = PB.store.entriesFor(metricId);
+    if (entries.length < 2) return "";
+    var metric = PB.metric(metricId);
+    var vals = entries.map(function (e) { return e.value; });
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+    var range = max - min || 1;
+    var betterUp = metric.better === "higher";
+    var d = entries.map(function (e, i) {
+      var t = (e.value - min) / range;
+      if (!betterUp) t = 1 - t;
+      var px = (i / (entries.length - 1)) * 52;
+      var py = 16 - t * 13 - 1.5;
+      return (i ? "L" : "M") + px.toFixed(1) + " " + py.toFixed(1);
+    }).join(" ");
+    return '<svg class="spark" viewBox="0 0 52 18" aria-hidden="true"><path d="' + d + '"/></svg>';
+  }
+
+  /* The overall fitness score plotted as it stood on each day you logged. */
+  function scoreTrend() {
+    var points = PB.score.history();
+    if (points.length < 2) {
+      return '<p class="chart-empty">Your score line starts once you have logged on two different days.</p>';
+    }
+    return draw(points, {
+      unit: "score", betterUp: true, id: "score-trend",
+      label: "Overall fitness score over time",
+      caption: "Your overall score as it stood on each day you logged something."
+    });
+  }
+
+  PB.chart = { render: render, spark: spark, scoreTrend: scoreTrend };
+})(window.PB = window.PB || {});
+
+</script>
+<script>
+/* Screens, routing and interaction. Hash routes keep the whole thing a single
+ * static file set — no build step, no server, back button works. */
+(function (PB) {
+  "use strict";
+
+  var view, toastEl;
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var ICONS = {
+    bike: '<circle cx="6" cy="17" r="4"/><circle cx="18" cy="17" r="4"/><path d="M6 17 10 8h5l3 9M9 8h6"/>',
+    erg: '<path d="M3 18h7l4-6 3 2 4-6"/><circle cx="9" cy="7" r="2.4"/><path d="M6 12l4-3"/>',
+    run: '<circle cx="15" cy="4.5" r="2.2"/><path d="M13 21l2-6-3-3 1-5 4 3 3 1M9 21l3-5M6 11l3-2"/>',
+    strength: '<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/>',
+    pulse: '<path d="M2 12h4l3-7 4 14 3-7h6"/>',
+    scale: '<path d="M5 20h14M7 20v-3h10v3M12 4v13M8 7l4-3 4 3"/>',
+    trophy: '<path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M10 18h4M9 21h6"/>'
+  };
+
+  function icon(name, cls) {
+    return '<svg class="icon ' + (cls || "") + '" viewBox="0 0 24 24" aria-hidden="true">' +
+      (ICONS[name] || "") + "</svg>";
+  }
+
+  function medalBadge(pos) {
+    if (!pos) return "";
+    var label = ["", "1st", "2nd", "3rd"][pos];
+    return '<span class="medal m' + pos + '" title="' + label + ' best">' + pos + "</span>";
+  }
+
+  function go(hash) { location.hash = hash; }
+
+  /* Handing the viewer a file.
+   *
+   * Served as an ordinary page — GitHub Pages, a local server, the single-file
+   * build — a blob link downloads it. Inside the claude.ai artifact viewer
+   * that link is inert by design, and the host mediates saves instead, so ask
+   * it and fall back only when it is not there. Either way the clipboard
+   * button on the same screen is a second route out. */
+  var downloadsReady = (window.claude && typeof window.claude.use === "function")
+    ? window.claude.use("downloads").catch(function () { return null; })
+    : Promise.resolve(null);
+
+  function blobDownload(filename, text) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  function saveFile(filename, text) {
+    downloadsReady.then(function (downloads) {
+      if (!downloads) { blobDownload(filename, text); return; }
+      downloads.save({ filename: filename, data: text }).then(function () {
+        toast("<div><strong>Backup saved</strong><span>" + esc(filename) + "</span></div>");
+      }, function (err) {
+        var code = err && err.code;
+        if (code === "declined") return;
+        if (code === "rate_limited") {
+          toast("<div><strong>Try that again in a moment</strong><span>A save is already waiting</span></div>");
+          return;
+        }
+        toast('<div><strong>Could not save the file here</strong>' +
+          "<span>Use Copy to clipboard instead</span></div>");
+      });
+    });
+  }
+
+  function toast(html, kind) {
+    toastEl.className = "toast show " + (kind || "");
+    toastEl.innerHTML = html;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { toastEl.className = "toast"; }, 4200);
+  }
+
+  /* ---------------------------------------------------------------- Log menu */
+
+  /* Days from today to the plan start; negative once it has begun. */
+  function daysToPlan() {
+    var start = PB.store.athlete().planStart;
+    if (!start) return null;
+    return PB.dayDiff(PB.today(), start);
+  }
+
+  /* The card the coach's message asks for: get the key baselines logged
+   * before the plan begins. Shown through test week and the first week. */
+  function baselineCard() {
+    var d = daysToPlan();
+    if (d === null || d < -6) return "";
+    var rows = PB.BASELINE.map(function (id) {
+      var m = PB.metric(id);
+      var b = PB.store.best(id);
+      var formId = (PB.FORMS.filter(function (f) {
+        return f.fields.some(function (x) { return x.metric === id; });
+      })[0] || {}).id;
+      return '<a class="base-row' + (b ? " done" : "") + '" href="#/log/' + formId + '">' +
+        '<span class="base-tick">' + (b ? "✓" : "") + "</span>" +
+        '<span class="base-name">' + esc(m.short) + "</span>" +
+        '<span class="base-val">' + (b ? esc(PB.formatFull(m.unit, b.value)) : "log it") + "</span></a>";
+    });
+    var left = PB.BASELINE.filter(function (id) { return !PB.store.best(id); }).length;
+    var when = d > 1 ? "Plan starts in " + d + " days"
+      : d === 1 ? "Plan starts tomorrow"
+        : d === 0 ? "The plan starts today"
+          : "The plan has started";
+    var line = left === 0 ? "All four baselines are in — ready to go."
+      : when + " — " + (left === PB.BASELINE.length ? "get these baselines logged first." :
+        left + " baseline" + (left === 1 ? "" : "s") + " still to log.");
+    return '<section class="card baseline-card"><h2 class="card-head">' + icon("pulse") +
+      'Baseline test week</h2><p class="body">' + esc(line) + "</p>" +
+      '<div class="base-rows">' + rows.join("") + "</div>" +
+      '<p class="fine">These four are what the coach wants before day one. Change the start date from the cog.</p></section>';
+  }
+
+  function viewLogMenu() {
+    var html = ['<header class="screen-head"><h1>Log an activity</h1>' +
+      '<p class="sub">Pick what you did. Two taps and you are done.</p></header>'];
+    html.push(baselineCard());
+
+    PB.SECTIONS.forEach(function (s) {
+      var forms = PB.FORMS.filter(function (f) { return f.section === s.id; });
+      html.push('<section class="block"><h2 class="block-head">' + icon(s.icon) +
+        '<span class="num">' + s.n + ".</span> " + esc(s.name) +
+        (s.sub ? ' <em>(' + esc(s.sub) + ")</em>" : "") + "</h2><div class=\"tiles\">");
+      forms.forEach(function (f) {
+        var primary = f.fields[0].metric;
+        var b = PB.store.best(primary);
+        html.push('<a class="tile" href="#/log/' + f.id + '">' +
+          PB.art(f.art, "art-tile") +
+          '<span class="tile-name">' + esc(f.title) + "</span>" +
+          '<span class="tile-pb">' + (b ? (PB.metric(primary).neutral ? "Latest " : "PB ") + esc(PB.formatFull(PB.metric(primary).unit, b.value)) : "No entry yet") + "</span>" +
+          '<span class="tile-go">+</span></a>');
+      });
+      html.push("</div></section>");
+    });
+
+    html.push('<section class="card standards"><h2 class="card-head">Hyrox race standards</h2>' +
+      '<p class="body">The eight stations as they run on race day — same loads at every event, Manchester included. Open division first, pro in brackets.</p><ul class="standards-list">');
+    PB.RACE_STANDARDS.forEach(function (row) {
+      html.push('<li><strong>' + esc(row[0]) + "</strong><span>" + esc(row[1]) + "</span></li>");
+    });
+    html.push('</ul><p class="fine">1km of running between every station. Wall ball reps: 100 men open, 75 women open.</p></section>');
+    return html.join("");
+  }
+
+  /* ------------------------------------------------------------------ Timer */
+
+  /* Elapsed time is always computed from wall-clock timestamps, never by
+   * counting ticks — a phone that throttles a background tab or dims the
+   * screen still produces the right time. A screen wake lock is requested
+   * while running, where the browser offers one. */
+  var timer = { state: "idle", raf: 0, wakeLock: null, audio: null };
+
+  function timerBeep(freq, dur) {
+    try {
+      timer.audio = timer.audio || new (window.AudioContext || window.webkitAudioContext)();
+      var osc = timer.audio.createOscillator();
+      var gain = timer.audio.createGain();
+      osc.frequency.value = freq;
+      gain.gain.value = 0.15;
+      osc.connect(gain);
+      gain.connect(timer.audio.destination);
+      osc.start();
+      osc.stop(timer.audio.currentTime + dur);
+    } catch (e) { /* no sound is fine */ }
+  }
+
+  function timerBuzz(ms) {
+    if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) { /* optional */ } }
+  }
+
+  function timerWake(on) {
+    if (on && navigator.wakeLock && navigator.wakeLock.request) {
+      navigator.wakeLock.request("screen").then(function (l) { timer.wakeLock = l; }, function () {});
+    } else if (!on && timer.wakeLock) {
+      timer.wakeLock.release().catch(function () {});
+      timer.wakeLock = null;
+    }
+  }
+
+  function timerStopTicking() {
+    cancelAnimationFrame(timer.raf);
+    timer.state = "idle";
+    timerWake(false);
+  }
+
+  function fillField(metricId, secs) {
+    writeField(document, metricId, secs);
+  }
+
+  function timerCard(f) {
+    if (!f.timer) return "";
+    var cd = f.timer.mode === "countdown";
+    var label = cd ? (f.timer.seconds >= 120 ? Math.round(f.timer.seconds / 60) + " minute countdown" : f.timer.seconds + "s countdown") : "stopwatch";
+    return '<section class="card timer-card"><h2 class="card-head">Timer <span class="timer-kind">' + esc(label) + "</span></h2>" +
+      '<div class="timer-display" id="timer-display">' + (cd ? esc(PB.formatTime(f.timer.seconds)) : "0:00.0") + "</div>" +
+      '<p class="timer-note" id="timer-note">' +
+      esc(cd ? "Start it, go all out until the beeps, then type your result below."
+        : (f.timer.laps ? "Tap Lap as you pass each kilometre — the splits and total fill themselves in."
+          : "Stop it and the time drops straight into the box below.")) + "</p>" +
+      '<div class="btn-row"><button type="button" class="btn btn-primary" id="timer-main">Start</button>' +
+      '<button type="button" class="btn" id="timer-side" hidden>Lap</button></div></section>';
+  }
+
+  function wireTimer(f) {
+    if (!f.timer) return;
+    var cd = f.timer.mode === "countdown";
+    var display = document.getElementById("timer-display");
+    var note = document.getElementById("timer-note");
+    var main = document.getElementById("timer-main");
+    var side = document.getElementById("timer-side");
+    var startTs = 0, lastLapTs = 0, lapIndex = 0, lastWholeSecond = -1;
+
+    function show(secs, tenths) {
+      display.textContent = PB.formatTime(tenths ? Math.round(secs * 10) / 10 : Math.max(0, Math.ceil(secs)));
+    }
+
+    function tick() {
+      if (timer.state !== "running") return;
+      var elapsed = (Date.now() - startTs) / 1000;
+      if (cd) {
+        var left = f.timer.seconds - elapsed;
+        // one cue per second boundary: short beeps into the finish, long one at zero
+        var whole = Math.ceil(left);
+        if (whole !== lastWholeSecond && whole <= 3 && whole >= 1) { timerBeep(880, 0.12); timerBuzz(60); }
+        lastWholeSecond = whole;
+        if (left <= 0) {
+          timerStopTicking();
+          timerBeep(1318, 0.7);
+          timerBuzz([120, 80, 240]);
+          display.textContent = "0:00";
+          note.textContent = "Time! Type your result below.";
+          main.textContent = "Start again";
+          side.hidden = true;
+          var first = document.querySelector("#entry-form input");
+          if (first) first.focus();
+          return;
+        }
+        show(left, left < 10);
+      } else {
+        show(elapsed, true);
+      }
+      timer.raf = requestAnimationFrame(tick);
+    }
+
+    function begin() {
+      startTs = Date.now();
+      lastLapTs = startTs;
+      lapIndex = 0;
+      lastWholeSecond = -1;
+      timer.state = "running";
+      timerWake(true);
+      timerBeep(660, 0.15);
+      main.textContent = cd ? "Cancel" : "Stop" + (f.timer.fill ? " & fill in" : "");
+      if (f.timer.laps) {
+        side.hidden = false;
+        side.textContent = "Lap";
+        note.textContent = "Lap 1 of " + f.timer.laps.length + " — tap Lap as you pass 1km.";
+      }
+      tick();
+    }
+
+    function finishStopwatch() {
+      var elapsed = (Date.now() - startTs) / 1000;
+      timerStopTicking();
+      show(elapsed, true);
+      if (f.timer.laps && lapIndex > 0 && lapIndex < f.timer.laps.length) {
+        // stopped mid-run: the final stretch is the last split
+        fillField(f.timer.laps[lapIndex], (Date.now() - lastLapTs) / 1000);
+      }
+      if (f.timer.fill) fillField(f.timer.fill, elapsed);
+      note.textContent = "In the box. Check it, add the date, save.";
+      main.textContent = "Start again";
+      side.hidden = true;
+      timerBuzz(150);
+    }
+
+    main.onclick = function () {
+      if (timer.state === "running") {
+        if (cd) {
+          timerStopTicking();
+          show(f.timer.seconds);
+          note.textContent = "Cancelled — nothing recorded.";
+          main.textContent = "Start";
+        } else {
+          finishStopwatch();
+        }
+      } else {
+        if (cd) show(f.timer.seconds);
+        begin();
+      }
+    };
+
+    side.onclick = function () {
+      if (timer.state !== "running" || !f.timer.laps) return;
+      var now = Date.now();
+      fillField(f.timer.laps[lapIndex], (now - lastLapTs) / 1000);
+      lastLapTs = now;
+      lapIndex++;
+      timerBeep(880, 0.1);
+      timerBuzz(60);
+      if (lapIndex >= f.timer.laps.length) {
+        finishStopwatch();
+      } else {
+        note.textContent = "Lap " + (lapIndex + 1) + " of " + f.timer.laps.length + " — split " + lapIndex + " is in.";
+      }
+    };
+  }
+
+  /* Rest timer for the strength forms: tap a preset after a set, lift again
+   * when it beeps. Deliberately separate from the main timer so a running
+   * rest clock and the entry form never fight over state. */
+  var rest = { deadline: 0, raf: 0, secs: 0 };
+
+  function restCard(f) {
+    if (!f.rest) return "";
+    return '<section class="card timer-card"><h2 class="card-head">Rest timer <span class="timer-kind">between sets</span></h2>' +
+      '<div class="timer-display" id="rest-display">–</div>' +
+      '<p class="timer-note" id="rest-note">After a set, tap how long to rest — it beeps when it is time to lift again.</p>' +
+      '<div class="btn-row rest-row">' + f.rest.map(function (s) {
+        return '<button type="button" class="btn" data-rest="' + s + '">' + PB.formatTime(s) + "</button>";
+      }).join("") + "</div></section>";
+  }
+
+  function wireRest(f) {
+    if (!f.rest) return;
+    var display = document.getElementById("rest-display");
+    var note = document.getElementById("rest-note");
+
+    function stop() {
+      cancelAnimationFrame(rest.raf);
+      rest.deadline = 0;
+      [].forEach.call(document.querySelectorAll("[data-rest]"), function (b) { b.classList.remove("btn-primary"); });
+    }
+
+    function tick() {
+      if (!rest.deadline) return;
+      var left = (rest.deadline - Date.now()) / 1000;
+      if (left <= 0) {
+        stop();
+        display.textContent = "0:00";
+        note.textContent = "Rest over — next set.";
+        timerBeep(1318, 0.6);
+        timerBuzz([120, 80, 240]);
+        return;
+      }
+      display.textContent = PB.formatTime(Math.ceil(left));
+      rest.raf = requestAnimationFrame(tick);
+    }
+
+    [].forEach.call(document.querySelectorAll("[data-rest]"), function (btn) {
+      btn.onclick = function () {
+        var secs = Number(btn.getAttribute("data-rest"));
+        if (rest.deadline && rest.secs === secs) {   // tapping the running preset cancels it
+          stop();
+          display.textContent = "–";
+          note.textContent = "Cancelled.";
+          return;
+        }
+        stop();
+        rest.secs = secs;
+        rest.deadline = Date.now() + secs * 1000;
+        btn.classList.add("btn-primary");
+        note.textContent = "Resting — lift again at the beep.";
+        timerBeep(660, 0.12);
+        tick();
+      };
+    });
+  }
+
+  /* A one-tap "watch how it's done" link. Opens in the YouTube app or a new
+   * tab — never inside the tracker, so a half-typed entry is not lost. */
+  function videoLink(f) {
+    if (!f || !f.video) return "";
+    return '<a class="video-link" href="' + esc(f.video.url) + '" target="_blank" rel="noopener">' +
+      '<span class="video-play">▶</span> How to do it — short video <span class="video-by">' +
+      esc(f.video.by) + "</span></a>";
+  }
+
+  /* Times are typed like a stopwatch reads: a minutes box and a seconds box,
+   * both plain digits — nothing to punctuate, nothing to misread. The pair
+   * is joined back into "m:ss" wherever a value is read. */
+  function timePairInputs(idAttr, nameAttr) {
+    return '<span class="t-wrap">' +
+      '<input id="' + idAttr + '" name="' + nameAttr + '" class="t-mm" type="text" ' +
+      'inputmode="numeric" autocomplete="off" maxlength="2" placeholder="min">' +
+      '<span class="t-colon">:</span>' +
+      '<input id="' + idAttr + '__ss" name="' + nameAttr + '__ss" class="t-ss" type="text" ' +
+      'inputmode="decimal" autocomplete="off" maxlength="4" placeholder="sec"></span>';
+  }
+
+  /* Combined "m:ss" text for a field, whether it is a time pair or a plain
+   * input. Empty when both boxes are empty; single-digit seconds pad to two
+   * so "9" means 9 seconds, not 90. */
+  function readField(root, name) {
+    var el = root.querySelector('[name="' + name + '"]');
+    if (!el) return "";
+    if (!el.classList.contains("t-mm")) return el.value.trim();
+    var ss = root.querySelector('[name="' + name + '__ss"]');
+    var mv = el.value.trim(), sv = ss ? ss.value.trim() : "";
+    if (!mv && !sv) return "";
+    /* seconds alone stay plain seconds — "75" in the seconds box is 1:15,
+       not an error */
+    if (!mv) return sv;
+    if (/^\d$/.test(sv)) sv = "0" + sv;
+    return mv + ":" + (sv || "00");
+  }
+
+  function writeField(root, name, secs, silent) {
+    var el = root.querySelector('[name="' + name + '"]');
+    if (!el) return;
+    var t = PB.formatTime(Math.round(secs * 10) / 10);
+    if (el.classList.contains("t-mm")) {
+      var parts = t.split(":");
+      el.value = parts.length === 3 ? String(Number(parts[0]) * 60 + Number(parts[1])) : parts[0];
+      var ss = root.querySelector('[name="' + name + '__ss"]');
+      if (ss) ss.value = parts[parts.length - 1];
+    } else {
+      el.value = t;
+    }
+    /* silent writes come from inside an input handler — dispatching there
+       would re-enter it forever */
+    if (!silent) el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  /* ------------------------------------------------------------- Entry form */
+
+  function viewForm(formId) {
+    var f = PB.form(formId);
+    if (!f) return notFound();
+    var s = PB.section(f.section);
+
+    var html = ['<header class="screen-head form-head"><a class="back" href="#/log">Back</a>' +
+      '<div class="head-with-art"><div><h1>' + esc(f.title) + '</h1><p class="sub">' + esc(f.blurb) + "</p></div>" +
+      PB.art(f.art, "art-form") + "</div>" + videoLink(f) + "</header>"];
+    if (f.race) html.push('<p class="race-line">' + esc(f.race) + "</p>");
+    if (f.setup) html.push('<p class="setup-line">' + esc(f.setup) + "</p>");
+    var formLevels = PB.score.levels(f.fields[0].metric);
+    if (formLevels) {
+      var mainMetric = PB.metric(f.fields[0].metric);
+      html.push('<p class="levels-line"><strong>This test:</strong> ' + formLevels.map(function (row) {
+        return esc(row.name) + " " + esc(PB.formatFull(mainMetric.unit, row.value));
+      }).join(" · ") + "</p>");
+    }
+    html.push(timerCard(f));
+    html.push(restCard(f));
+
+    html.push('<form class="card form" id="entry-form" novalidate>');
+    var grouped = f.sumTo ? f.sumTo.from : [];
+    var openedGrid = false;
+    f.fields.forEach(function (fld) {
+      var m = PB.metric(fld.metric);
+      var u = PB.UNITS[m.unit];
+      var inGrid = grouped.indexOf(fld.metric) >= 0;
+      if (inGrid && !openedGrid) { html.push('<div class="split-grid">'); openedGrid = true; }
+      html.push('<label class="field' + (inGrid ? " field-tight" : "") + '" for="fi-' + fld.metric + '">' +
+        '<span class="field-label">' + esc(fld.label) +
+        (fld.required ? "" : ' <em class="opt">optional</em>') + "</span>" +
+        '<span class="field-input">' +
+        (u.input === "time" ? timePairInputs("fi-" + fld.metric, fld.metric)
+          : '<input id="fi-' + fld.metric + '" name="' + fld.metric + '" type="text" ' +
+            'inputmode="decimal" autocomplete="off" placeholder="0">') +
+        (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
+        "</span>" +
+        '<span class="hint" data-hint="' + fld.metric + '">' + esc(inGrid ? "" : u.hint) + "</span></label>");
+    });
+    if (openedGrid) html.push("</div>");
+
+    if (f.derive) {
+      html.push('<p class="derived" id="derived-out">Pace per 500m fills in automatically.</p>');
+    }
+
+    html.push('<label class="field"><span class="field-label">Date</span>' +
+      '<span class="field-input"><input type="date" name="date" value="' + PB.today() + '" max="' + PB.today() + '"></span></label>');
+    html.push('<label class="field"><span class="field-label">Note <em class="opt">optional</em></span>' +
+      '<span class="field-input"><input type="text" name="note" maxlength="120" placeholder="How it felt, conditions, kit"></span></label>');
+
+    html.push('<p class="form-error" id="form-error" hidden></p>');
+    html.push('<button class="btn btn-primary" type="submit">Save entry</button>');
+    html.push("</form>");
+
+    var primary = f.fields[0].metric;
+    var b = PB.store.best(primary);
+    if (b) {
+      html.push('<div class="card note-card"><span class="label">Current PB</span>' +
+        '<strong class="big">' + esc(PB.formatFull(PB.metric(primary).unit, b.value)) + "</strong>" +
+        '<span class="muted">' + esc(PB.formatDate(b.date)) + " · " + esc(PB.relativeDay(b.date)) + "</span>" +
+        '<a class="link" href="#/activity/' + primary + '">See progress</a></div>');
+    }
+    html.push('<p class="fine">' + esc(s.name) + " · " + (s.sub ? esc(s.sub) + " · " : "") +
+      "Times go in as two boxes — minutes, then seconds.</p>");
+    return html.join("");
+  }
+
+  function wireForm(formId) {
+    var f = PB.form(formId);
+    var form = document.getElementById("entry-form");
+    if (!f || !form) return;
+    wireTimer(f);
+    wireRest(f);
+
+    function raw(metricId) {
+      return readField(form, metricId);
+    }
+
+    function echo() {
+      f.fields.forEach(function (fld) {
+        var m = PB.metric(fld.metric);
+        fld.hintless = f.sumTo && f.sumTo.from.indexOf(fld.metric) >= 0;
+        var hint = form.querySelector('[data-hint="' + fld.metric + '"]');
+        var text = raw(fld.metric);
+        if (!hint) return;
+        var base = fld.hintless ? "" : PB.UNITS[m.unit].hint;
+        if (!text) { hint.textContent = base; hint.className = "hint"; return; }
+        var v = PB.parseValue(m.unit, text);
+        if (v == null) {
+          hint.textContent = "Not a valid entry — " + PB.UNITS[m.unit].hint;
+          hint.className = "hint bad";
+        } else {
+          /* Only speak up when the app read something other than what was
+             typed — "8:42" needs no commentary, "522" does. */
+          var shown = PB.formatValue(m.unit, v);
+          hint.textContent = shown === text ? base : "Reads as " + PB.formatFull(m.unit, v);
+          hint.className = shown === text ? "hint" : "hint good";
+        }
+      });
+
+      if (f.derive) {
+        var out = document.getElementById("derived-out");
+        var total = PB.parseValue(PB.metric(f.derive.from).unit, raw(f.derive.from));
+        out.textContent = total == null
+          ? "Pace per 500m fills in automatically."
+          : "Pace per 500m: " + PB.formatFull("pace", total / f.derive.divide);
+      }
+
+      if (f.sumTo) {
+        var parts = f.sumTo.from.map(function (id) { return PB.parseValue("time", raw(id)); });
+        var totalEl = form.querySelector('[name="' + f.sumTo.metric + '"]');
+        if (parts.every(function (p) { return p != null; }) && totalEl && !totalEl.dataset.touched) {
+          writeField(form, f.sumTo.metric, parts.reduce(function (a, b) { return a + b; }, 0), true);
+          echoOne(f.sumTo.metric);
+        }
+      }
+    }
+
+    function echoOne(metricId) {
+      var m = PB.metric(metricId);
+      var hint = form.querySelector('[data-hint="' + metricId + '"]');
+      var v = PB.parseValue(m.unit, raw(metricId));
+      if (hint && v != null) {
+        var shown = PB.formatValue(m.unit, v);
+        var same = shown === raw(metricId);
+        hint.textContent = same ? "" : "Reads as " + PB.formatFull(m.unit, v);
+        hint.className = same ? "hint" : "hint good";
+      }
+    }
+
+    form.addEventListener("input", function (e) {
+      var baseName = String(e.target.name || "").replace(/__ss$/, "");
+      if (f.sumTo && baseName === f.sumTo.metric && e.isTrusted) {
+        var totalEl = form.querySelector('[name="' + f.sumTo.metric + '"]');
+        if (totalEl) totalEl.dataset.touched = "1";
+      }
+      /* two digits of minutes hops the cursor to the seconds box */
+      if (e.isTrusted && e.target.classList.contains("t-mm") && e.target.value.length >= 2) {
+        var ssEl = form.querySelector('[name="' + e.target.name + '__ss"]');
+        if (ssEl && !ssEl.value) ssEl.focus();
+      }
+      echo();
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var err = document.getElementById("form-error");
+      var values = {}, problem = null;
+
+      f.fields.forEach(function (fld) {
+        var m = PB.metric(fld.metric);
+        var text = raw(fld.metric);
+        if (!text) {
+          if (fld.required) problem = problem || (fld.label + " is needed to save this entry.");
+          return;
+        }
+        var v = PB.parseValue(m.unit, text);
+        if (v == null) { problem = problem || (fld.label + " is not a value we can read. " + PB.UNITS[m.unit].hint + "."); return; }
+        values[fld.metric] = v;
+      });
+
+      var date = form.querySelector('[name="date"]').value || PB.today();
+      if (date > PB.today()) problem = problem || "That date is in the future.";
+
+      if (problem) {
+        err.textContent = problem;
+        err.hidden = false;
+        return;
+      }
+      err.hidden = true;
+
+      if (f.derive && values[f.derive.from] != null) {
+        values[f.derive.metric] = Math.round((values[f.derive.from] / f.derive.divide) * 10) / 10;
+      }
+
+      var note = form.querySelector('[name="note"]').value.trim();
+      var res = PB.store.addSession(values, date, note);
+
+      var scoredPrs = res.prs.filter(function (id) { return PB.metric(id).scored; });
+      var msg = res.prs.length
+        ? icon("trophy") + "<div><strong>New personal best</strong><span>" +
+          esc(res.prs.map(function (id) { return PB.metric(id).short; }).join(" · ")) + "</span></div>"
+        : "<div><strong>Entry saved</strong><span>" + esc(f.title) + " · " + esc(PB.formatDate(date)) + "</span></div>";
+      toast(msg, res.prs.length ? "pb" : "");
+      go("#/activity/" + f.fields[0].metric);
+      void scoredPrs;
+    });
+
+    echo();
+  }
+
+  /* ------------------------------------------------------------------- PBs */
+
+  function viewPBs() {
+    var html = ['<header class="screen-head"><h1>Personal bests</h1>' +
+      '<p class="sub">Every line of the tracker. Tap one for its graph and history.</p></header>'];
+
+    PB.SECTIONS.forEach(function (s) {
+      html.push('<section class="block"><h2 class="block-head">' + icon(s.icon) +
+        '<span class="num">' + s.n + ".</span> " + esc(s.name) +
+        (s.sub ? ' <em>(' + esc(s.sub) + ")</em>" : "") + "</h2>");
+      html.push('<div class="rows">');
+      PB.metricsIn(s.id).forEach(function (m) {
+        var b = PB.store.best(m.id);
+        var count = PB.store.entriesFor(m.id).length;
+        html.push('<a class="row" href="#/activity/' + m.id + '">' +
+          '<span class="row-main"><span class="row-name">' + esc(m.list) +
+          (m.derived ? ' <em class="tag">auto</em>' : "") + "</span>" +
+          '<span class="row-meta">' + (b ? esc(PB.formatDate(b.date)) + " · " + count + (count === 1 ? " entry" : " entries") : "Not logged yet") + "</span></span>" +
+          PB.chart.spark(m.id) +
+          '<span class="row-val">' + (b ? esc(PB.formatFull(m.unit, b.value)) : "—") + "</span>" +
+          '<span class="row-arrow">›</span></a>');
+      });
+      html.push("</div></section>");
+    });
+    if (PB.store.totalEntries()) {
+      html.push('<button class="btn" type="button" data-share="all">Share my personal bests</button>');
+    }
+    return html.join("");
+  }
+
+  /* -------------------------------------------------------- Activity detail */
+
+  function viewActivity(metricId) {
+    var m = PB.metric(metricId);
+    if (!m) return notFound();
+    var s = PB.section(m.section);
+    var entries = PB.store.entriesFor(metricId).slice().reverse();
+    var ranked = PB.store.ranked(metricId);
+    var ms = PB.score.metricScore(metricId);
+    var imp = PB.score.improvement(metricId);
+
+    var html = ['<header class="screen-head form-head"><a class="back" href="#/pbs">Back</a>' +
+      '<div class="head-with-art"><div><h1>' + esc(m.name) + '</h1><p class="sub">' + esc(s.name) +
+      (m.derived ? " · worked out from your " + esc(PB.metric(m.derived).name) : "") + "</p></div>" +
+      PB.art(PB.artFor(m.derived || metricId), "art-form") + "</div></header>"];
+
+    var b = m.neutral ? PB.store.best(metricId) : ranked[0];
+    html.push('<div class="card hero-stat">' +
+      '<div><span class="label">' + (m.neutral ? "Latest" : "Personal best") + '</span><strong class="big">' +
+      (b ? esc(PB.formatFull(m.unit, b.value)) : "—") + "</strong>" +
+      '<span class="muted">' + (b ? esc(PB.formatDate(b.date)) + " · " + esc(PB.relativeDay(b.date)) : "Nothing logged yet") + "</span></div>" +
+      (ms && ms.logged
+        ? '<div class="score-chip ' + ms.band.cls + '"><strong>' + ms.score + "</strong><span>/100 · " + esc(ms.band.name) + "</span></div>"
+        : (m.derived ? '<div class="score-chip muted-chip"><strong>—</strong><span>not scored</span></div>' : "")) +
+      "</div>");
+
+    if (m.neutral) imp = null;   // heavier or lighter is not "better" or "off"
+    if (imp != null) {
+      html.push('<p class="improve ' + (imp >= 0 ? "up" : "down") + '">' +
+        (imp >= 0 ? "▲ " + imp + "% better" : "▼ " + Math.abs(imp) + "% off") +
+        " than your first logged effort.</p>");
+    }
+
+    var planStart = m.neutral ? "" : PB.store.athlete().planStart;
+    if (planStart) {
+      var pre = PB.store.entriesFor(metricId).filter(function (e) { return e.date < planStart; });
+      var post = PB.store.entriesFor(metricId).filter(function (e) { return e.date >= planStart; });
+      if (pre.length && post.length) {
+        var sign = m.better === "lower" ? 1 : -1;
+        var preBest = pre.slice().sort(function (a, x) { return sign * (a.value - x.value); })[0].value;
+        var postBest = post.slice().sort(function (a, x) { return sign * (a.value - x.value); })[0].value;
+        var delta = m.better === "lower" ? (preBest - postBest) / preBest : (postBest - preBest) / preBest;
+        delta = Math.round(delta * 1000) / 10;
+        html.push('<p class="improve ' + (delta >= 0 ? "up" : "down") + '">' +
+          (delta >= 0 ? "▲ " + delta + "% on" : "▼ " + Math.abs(delta) + "% off") +
+          " your pre-plan baseline of " + esc(PB.formatFull(m.unit, preBest)) + ".</p>");
+      }
+    }
+
+    html.push('<section class="card"><h2 class="card-head">Progress</h2>' + PB.chart.render(metricId) + "</section>");
+
+    if (ranked.length && !m.neutral) {
+      html.push('<section class="card"><h2 class="card-head">Top efforts</h2><ol class="podium">');
+      ranked.slice(0, 3).forEach(function (e, i) {
+        html.push('<li class="podium-row">' + medalBadge(i + 1) +
+          '<span class="podium-val">' + esc(PB.formatFull(m.unit, e.value)) + "</span>" +
+          '<span class="podium-date">' + esc(PB.formatDate(e.date)) + "</span></li>");
+      });
+      html.push("</ol>");
+      if (ms && ms.logged && ms.score < 100) {
+        var nextBand = PB.score.BANDS.filter(function (x) { return x.min > ms.score; }).sort(function (a, c) { return a.min - c.min; })[0];
+        if (nextBand) {
+          var need = PB.score.valueForScore(m, nextBand.min);
+          html.push('<p class="fine">Hit ' + esc(PB.formatFull(m.unit, need)) +
+            " to move up to <strong>" + esc(nextBand.name) + "</strong>.</p>");
+        }
+      }
+      html.push("</section>");
+    }
+
+    html.push('<section class="card"><h2 class="card-head">History <span class="count">' + entries.length + "</span></h2>");
+    if (!entries.length) {
+      html.push('<p class="empty">Nothing logged yet. <a class="link" href="#/log">Log this activity</a>.</p>');
+    } else {
+      html.push('<ul class="history">');
+      entries.forEach(function (e) {
+        html.push('<li class="hist-row" data-entry="' + e.id + '">' +
+          '<span class="hist-medal">' + (medalBadge(PB.store.medal(e)) || '<span class="medal blank"></span>') + "</span>" +
+          '<span class="hist-main"><strong>' + esc(PB.formatFull(m.unit, e.value)) + "</strong>" +
+          '<span class="muted">' + esc(PB.formatDate(e.date)) +
+          (e.note ? " · " + esc(e.note) : "") + "</span></span>" +
+          '<a class="icon-btn" href="#/edit/' + e.id + '" aria-label="Edit this entry">✎</a>' +
+          '<button class="icon-btn" data-delete="' + e.id + '" aria-label="Delete this entry">✕</button></li>');
+      });
+      html.push("</ul>");
+    }
+    html.push("</section>");
+
+    var lv = PB.score.levels(metricId);
+    if (lv) {
+      html.push('<section class="card"><h2 class="card-head">Where you stand</h2><ul class="levels-list">');
+      lv.forEach(function (row) {
+        html.push('<li class="' + (row.here ? "here" : "") + '"><span class="lvl-name">' + esc(row.name) + "</span>" +
+          '<span class="lvl-val">' + esc(PB.formatFull(m.unit, row.value)) + "</span>" +
+          (row.here ? '<span class="lvl-you">you are here</span>' : "") + "</li>");
+      });
+      html.push('</ul><p class="fine">Reference marks for a male open-division athlete — the same scale the score uses. Log an entry and your nearest mark lights up.</p></section>');
+    }
+
+    var parentForm = PB.FORMS.filter(function (f) {
+      return f.fields.some(function (x) { return x.metric === metricId; });
+    })[0];
+    if (parentForm && parentForm.video) html.push(videoLink(parentForm));
+    if (parentForm) html.push('<a class="btn btn-primary" href="#/log/' + parentForm.id + '">Log a new ' + esc(m.short) + "</a>");
+    if (ranked.length) html.push('<button class="btn" type="button" data-share="' + metricId + '">Share this PB</button>');
+    return html.join("");
+  }
+
+  /* ------------------------------------------------------------ Edit entry */
+
+  function viewEdit(entryId) {
+    var entry = PB.store.load().entries.filter(function (e) { return e.id === entryId; })[0];
+    if (!entry) return notFound();
+    var m = PB.metric(entry.metric);
+    var u = PB.UNITS[m.unit];
+
+    return '<header class="screen-head"><a class="back" href="#/activity/' + entry.metric + '">Back</a>' +
+      "<h1>Edit entry</h1><p class=\"sub\">" + esc(m.name) + "</p></header>" +
+      '<form class="card form" id="edit-form" novalidate>' +
+      '<label class="field" for="edit-value"><span class="field-label">Result</span>' +
+      '<span class="field-input">' +
+      (u.input === "time" ? timePairInputs("edit-value", "edit-value")
+        : '<input id="edit-value" name="edit-value" type="text" ' +
+          'inputmode="decimal" autocomplete="off" value="' +
+          esc(PB.formatValue(m.unit, entry.value)) + '">') +
+      (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
+      '</span><span class="hint" id="edit-hint">' + esc(u.hint) + "</span></label>" +
+      '<label class="field"><span class="field-label">Date</span>' +
+      '<span class="field-input"><input type="date" id="edit-date" value="' + esc(entry.date) +
+      '" max="' + PB.today() + '"></span></label>' +
+      '<label class="field"><span class="field-label">Note <em class="opt">optional</em></span>' +
+      '<span class="field-input"><input type="text" id="edit-note" maxlength="120" value="' + esc(entry.note) + '"></span></label>' +
+      '<p class="form-error" id="edit-error" hidden></p>' +
+      '<button class="btn btn-primary" type="submit">Save changes</button>' +
+      '<button class="btn btn-danger" type="button" id="edit-delete">Delete this entry</button></form>' +
+      (m.derived ? '<p class="fine">This row was worked out from your ' + esc(PB.metric(m.derived).name) +
+        ". Editing it here changes this row only.</p>" : "");
+  }
+
+  function wireEdit(match) {
+    var entryId = match[1];
+    var entry = PB.store.load().entries.filter(function (e) { return e.id === entryId; })[0];
+    if (!entry) return;
+    var m = PB.metric(entry.metric);
+    var form = document.getElementById("edit-form");
+    var hint = document.getElementById("edit-hint");
+    if (PB.UNITS[m.unit].input === "time") writeField(form, "edit-value", entry.value, true);
+
+    function current() { return readField(form, "edit-value"); }
+
+    form.addEventListener("input", function (e) {
+      if (String(e.target.name || "").replace(/__ss$/, "") !== "edit-value") return;
+      if (e.isTrusted && e.target.classList.contains("t-mm") && e.target.value.length >= 2) {
+        var ssEl = form.querySelector('[name="edit-value__ss"]');
+        if (ssEl && !ssEl.value) ssEl.focus();
+      }
+      var text = current();
+      if (!text) { hint.textContent = PB.UNITS[m.unit].hint; hint.className = "hint"; return; }
+      var v = PB.parseValue(m.unit, text);
+      if (v == null) { hint.textContent = "Not a valid entry — " + PB.UNITS[m.unit].hint; hint.className = "hint bad"; return; }
+      var shown = PB.formatValue(m.unit, v);
+      hint.textContent = shown === text ? PB.UNITS[m.unit].hint : "Reads as " + PB.formatFull(m.unit, v);
+      hint.className = shown === text ? "hint" : "hint good";
+    });
+
+    document.getElementById("edit-delete").onclick = function () {
+      if (!confirm("Delete this entry? It cannot be undone.")) return;
+      PB.store.deleteEntry(entryId);
+      go("#/activity/" + entry.metric);
+      toast("<div><strong>Entry deleted</strong></div>");
+    };
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var err = document.getElementById("edit-error");
+      var v = PB.parseValue(m.unit, current());
+      var date = document.getElementById("edit-date").value || entry.date;
+      if (v == null) {
+        err.textContent = "That result is not a value we can read. " + PB.UNITS[m.unit].hint + ".";
+        err.hidden = false;
+        return;
+      }
+      if (date > PB.today()) { err.textContent = "That date is in the future."; err.hidden = false; return; }
+      PB.store.updateEntry(entryId, v, date, document.getElementById("edit-note").value.trim());
+      go("#/activity/" + entry.metric);
+      toast("<div><strong>Entry updated</strong><span>" + esc(PB.formatFull(m.unit, v)) + "</span></div>");
+    });
+  }
+
+  /* ----------------------------------------------------------------- Share */
+
+  /* A plain-text card: the phone share sheet takes it, and anything without
+   * one falls back to the clipboard. */
+  /* The week, written the way you would text it to a coach: what was done,
+   * which of it was a PB, and how the score moved. */
+  function weekReportText() {
+    var name = PB.store.athlete().name;
+    var today = PB.today();
+    var recent = PB.store.live().filter(function (e) {
+      return PB.dayDiff(e.date, today) < 7 && !PB.metric(e.metric).derived;
+    }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+
+    var lines = [(name ? name + " — " : "") + "week to " + PB.formatDate(today)];
+    var hist = PB.score.history();
+    var now = hist.length ? hist[hist.length - 1].value : null;
+    var weekAgo = null;
+    hist.forEach(function (h) { if (PB.dayDiff(h.date, today) >= 7) weekAgo = h.value; });
+    if (now != null) {
+      lines.push("Fitness score " + now + "/100" +
+        (weekAgo != null && weekAgo !== now
+          ? " (" + (now > weekAgo ? "up " + (now - weekAgo) : "down " + (weekAgo - now)) + " this week)"
+          : ""));
+    }
+    lines.push("");
+
+    if (!recent.length) {
+      lines.push("Nothing logged in the last 7 days.");
+    } else {
+      var byDate = {};
+      recent.forEach(function (e) { (byDate[e.date] = byDate[e.date] || []).push(e); });
+      Object.keys(byDate).sort().forEach(function (d) {
+        lines.push(PB.formatDate(d).toUpperCase());
+        byDate[d].forEach(function (e) {
+          var m = PB.metric(e.metric);
+          var isPB = !m.neutral && m.scored !== false && (function () {
+            var b = PB.store.best(e.metric);
+            return b && b.id === e.id;
+          })();
+          lines.push("  " + m.short + ": " + PB.formatFull(m.unit, e.value) + (isPB ? "  ** PB **" : ""));
+        });
+        lines.push("");
+      });
+    }
+
+    var d = PB.store.athlete().planStart ? PB.dayDiff(today, PB.store.athlete().planStart) : null;
+    if (d !== null && d >= 0) {
+      var left = PB.BASELINE.filter(function (id) { return !PB.store.best(id); });
+      lines.push(left.length
+        ? "Baselines still to log: " + left.map(function (id) { return PB.metric(id).short; }).join(", ")
+        : "All four baselines are in.");
+    }
+    return lines.join("\n").trim();
+  }
+
+  function shareText(metricId) {
+    var name = PB.store.athlete().name;
+    var lines = [];
+    if (metricId) {
+      var m = PB.metric(metricId);
+      var ranked = PB.store.ranked(metricId).slice(0, 3);
+      lines.push((name ? name + " — " : "") + m.name);
+      ranked.forEach(function (e, i) {
+        lines.push(["1st", "2nd", "3rd"][i] + "  " + PB.formatFull(m.unit, e.value) + "  (" + PB.formatDate(e.date) + ")");
+      });
+      var ms = PB.score.metricScore(metricId);
+      if (ms && ms.logged) lines.push("Score " + ms.score + "/100 · " + ms.band.name);
+    } else {
+      var o = PB.score.overall();
+      lines.push((name ? name + " — " : "") + "Hyrox Tracker");
+      if (o.score != null) lines.push("Fitness score " + o.score + "/100 · " + o.band.name);
+      lines.push("");
+      PB.SECTIONS.forEach(function (s) {
+        var rows = PB.metricsIn(s.id).filter(function (mm) { return PB.store.best(mm.id); });
+        if (!rows.length) return;
+        lines.push(s.name.toUpperCase());
+        rows.forEach(function (mm) {
+          var b = PB.store.best(mm.id);
+          lines.push("  " + mm.list + ": " + PB.formatFull(mm.unit, b.value) + " (" + PB.formatDate(b.date) + ")");
+        });
+        lines.push("");
+      });
+    }
+    return lines.join("\n").trim();
+  }
+
+  function share(metricId) {
+    var week = metricId === "week";
+    var text = week ? weekReportText() : shareText(metricId);
+    var title = week ? "This week's training" : metricId ? PB.metric(metricId).name : "My personal bests";
+    if (navigator.share) {
+      navigator.share({ title: title, text: text }).catch(function () { /* dismissed */ });
+      return;
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () {
+        toast("<div><strong>Copied</strong><span>Paste it into a message</span></div>");
+      }, function () { prompt("Copy your bests:", text); });
+      return;
+    }
+    prompt("Copy your bests:", text);
+  }
+
+  /* ------------------------------------------------------------ Race predictor */
+
+  /* Projected men's-open race, segment by segment. Where the tracker holds a
+   * real number (5km run, 2km ski, 2km row) the projection is built on it;
+   * everywhere else it uses typical men's-open times for the athlete's
+   * current level, interpolated between beginner (score 20), average (50)
+   * and elite (90). Estimates, plainly labelled as such. */
+  var RACE_SEGMENTS = [
+    { name: "Runs 1–8 (8 × 1km)", key: "runs" },
+    { name: "1. SkiErg 1,000m", key: "ski" },
+    { name: "2. Sled Push 50m", key: "sledpush" },
+    { name: "3. Sled Pull 50m", key: "sledpull" },
+    { name: "4. Burpee Broad Jumps 80m", key: "bbj" },
+    { name: "5. RowErg 1,000m", key: "row" },
+    { name: "6. Farmers Carry 200m", key: "farmers" },
+    { name: "7. Sandbag Lunges 100m", key: "lunges" },
+    { name: "8. Wall Balls ×100", key: "wallballs" },
+    { name: "Roxzone + transitions", key: "rox" }
+  ];
+  /* typical men's-open minutes at score 20 / 50 / 90 */
+  var RACE_TYPICAL = {
+    runs: [48, 40, 30], ski: [4.6, 3.9, 3.3], sledpush: [4.5, 3.0, 2.0],
+    sledpull: [6.0, 4.5, 3.0], bbj: [6.5, 5.0, 3.5], row: [4.5, 3.8, 3.2],
+    farmers: [2.6, 2.0, 1.5], lunges: [5.5, 4.5, 3.5], wallballs: [7.0, 5.0, 3.5],
+    rox: [8.0, 6.5, 4.5]
+  };
+
+  function racePredict() {
+    var score = PB.score.overall().score;
+    var s = Math.max(20, Math.min(90, score == null ? 50 : score));
+    function typical(key) {
+      var t = RACE_TYPICAL[key];
+      var mins = s <= 50 ? t[0] + (t[1] - t[0]) * (s - 20) / 30 : t[1] + (t[2] - t[1]) * (s - 50) / 40;
+      return mins * 60;
+    }
+    function own(id) { var b = PB.store.best(id); return b && b.value; }
+
+    return RACE_SEGMENTS.map(function (seg) {
+      var secs = null, from = "typical for your level", isOwn = false;
+      if (seg.key === "runs" && own("run5k_total")) {
+        secs = (own("run5k_total") / 5) * 8 * 1.06;   // your 5km pace over 8km with race fatigue
+        from = "from your 5km run";
+        isOwn = true;
+      } else if (seg.key === "ski" && own("ski2k_total")) {
+        secs = own("ski2k_total") / 2 * 1.02;
+        from = "from your 2km ski";
+        isOwn = true;
+      } else if (seg.key === "row" && own("row2k_total")) {
+        secs = own("row2k_total") / 2 * 1.02;
+        from = "from your 2km row";
+        isOwn = true;
+      }
+      if (secs == null) secs = typical(seg.key);
+      return { name: seg.name, secs: Math.round(secs), own: isOwn, from: from };
+    });
+  }
+
+  function viewRace() {
+    var rows = racePredict();
+    var total = rows.reduce(function (a, r) { return a + r.secs; }, 0);
+    var target = PB.parseTime(PB.store.athlete().raceTarget || "");
+    var scale = target ? target / total : null;
+    var o = PB.score.overall();
+
+    var html = ['<header class="screen-head"><a class="back" href="#/score">Back</a><h1>Race predictor</h1>' +
+      '<p class="sub">Your projected Hyrox, men’s open. Built from your logged tests where they exist, and typical times for your level everywhere else.</p></header>'];
+
+    html.push('<section class="card race-hero"><span class="label">Projected finish</span>' +
+      '<strong class="race-total">' + esc(PB.formatTime(total)) + "</strong>" +
+      '<span class="muted">at your current score of ' + (o.score == null ? "50 (nothing scored yet)" : o.score) + "/100</span></section>");
+
+    html.push('<section class="card"><h2 class="card-head">Target</h2>' +
+      '<p class="body">Set a target finish and every segment shows its share of that budget next to the projection.</p>' +
+      '<label class="field"><span class="field-input"><input type="text" id="race-target" inputmode="numeric" placeholder="e.g. 1:29:00" value="' +
+      esc(PB.store.athlete().raceTarget || "") + '"></span>' +
+      '<span class="hint" id="race-target-hint">h:mm:ss or mm:ss</span></label></section>');
+
+    html.push('<section class="card"><h2 class="card-head">Segments' +
+      (scale ? '<span class="count">projection · target</span>' : "") + "</h2><ul class=\"race-rows\">");
+    rows.forEach(function (r) {
+      html.push('<li><span class="race-name">' + esc(r.name) +
+        '<em class="race-src' + (r.own ? " own" : "") + '">' + esc(r.from) + "</em></span>" +
+        '<span class="race-time">' + esc(PB.formatTime(r.secs)) + "</span>" +
+        (scale ? '<span class="race-time race-budget">' + esc(PB.formatTime(Math.round(r.secs * scale))) + "</span>" : "") +
+        "</li>");
+    });
+    html.push("</ul>");
+    if (scale) {
+      var diff = total - target;
+      html.push('<p class="fine">' + (diff > 0
+        ? "The target is " + PB.formatTime(Math.abs(Math.round(diff))) + " quicker than today's projection — the biggest typical-time segments are where it hides."
+        : "Your projection already beats that target by " + PB.formatTime(Math.abs(Math.round(diff))) + ".") + "</p>");
+    }
+    html.push('<p class="fine">Log the 5km run, 2km ski and 2km row and the projection uses your real numbers. The rest are honest estimates — race day, kit and queues all move them.</p></section>');
+    return html.join("");
+  }
+
+  function wireRace() {
+    var input = document.getElementById("race-target");
+    if (!input) return;
+    var t = null;
+    input.addEventListener("input", function () {
+      clearTimeout(t);
+      var hint = document.getElementById("race-target-hint");
+      var v = PB.parseTime(input.value.trim());
+      if (input.value.trim() && v == null) { hint.textContent = "Not a time we can read — h:mm:ss or mm:ss"; hint.className = "hint bad"; return; }
+      hint.textContent = "h:mm:ss or mm:ss";
+      hint.className = "hint";
+      t = setTimeout(function () {
+        PB.store.setRaceTarget(input.value.trim());
+        render();
+        var again = document.getElementById("race-target");
+        if (again) {
+          again.focus();
+          again.setSelectionRange(again.value.length, again.value.length);
+        }
+      }, 700);
+    });
+  }
+
+  /* ----------------------------------------------------------------- Score */
+
+  function ring(score) {
+    var r = 52, c = 2 * Math.PI * r;
+    var arc = '<circle class="ring-bg" cx="60" cy="60" r="' + r + '"/>';
+    if (score) {                       /* a rounded cap on a zero-length arc draws a stray dot */
+      arc += '<circle class="ring-fg" cx="60" cy="60" r="' + r + '" stroke-dasharray="' +
+        (c * (score / 100)).toFixed(1) + " " + c.toFixed(1) + '"/>';
+    }
+    return '<svg class="ring" viewBox="0 0 120 120" aria-hidden="true">' + arc + "</svg>";
+  }
+
+  function viewScore() {
+    var o = PB.score.overall();
+    var html = ['<header class="screen-head"><h1>Fitness score</h1>' +
+      '<p class="sub">One number out of 100, built from the five sections of the tracker.</p></header>'];
+
+    html.push('<section class="card score-hero">' + ring(o.score) +
+      '<div class="score-hero-body"><strong class="score-num">' + (o.score == null ? "—" : o.score) + "</strong>" +
+      '<span class="score-of">out of 100</span>' +
+      (o.band ? '<span class="band ' + o.band.cls + '">' + esc(o.band.name) + "</span>" : "") +
+      '<span class="muted">' + o.logged + " of " + o.total + " scored activities logged" +
+      (o.complete ? " — full picture" : " — the rest are not counted yet") + "</span></div></section>");
+
+    if (PB.score.history().length > 1) {
+      html.push('<section class="card"><h2 class="card-head">Score over time</h2>' +
+        PB.chart.scoreTrend() + "</section>");
+    }
+
+    var weak = PB.score.weakestLogged();
+    var next = PB.score.nextUnlogged();
+    if (next || weak) {
+      html.push('<section class="card next-up"><h2 class="card-head">What moves the number</h2><ul class="nudges">');
+      if (next) html.push('<li><span class="nudge-tag">Untested</span><a class="link" href="#/log">' +
+        esc(next.metric.list) + "</a> — no score until you log it.</li>");
+      if (weak) html.push('<li><span class="nudge-tag">Weakest</span><a class="link" href="#/activity/' +
+        weak.metric.id + '">' + esc(weak.metric.list) + "</a> — scoring " + weak.score + "/100.</li>");
+      html.push("</ul></section>");
+    }
+
+    html.push('<a class="btn" href="#/race" style="margin-bottom:14px">Race predictor — your projected Hyrox finish</a>');
+
+    html.push('<div class="sec-grid">');
+    o.sections.forEach(function (sec) {
+      if (!sec.rows.length) return;   // bodyweight has no scored rows — nothing to show here
+      html.push('<section class="card sec-card"><h2 class="card-head">' + icon(sec.section.icon) +
+        esc(sec.section.name) + '<span class="sec-score">' +
+        (sec.score == null ? "—" : sec.score) + "</span></h2>");
+      html.push('<div class="bar"><span style="width:' + (sec.score || 0) + '%"></span></div>');
+      html.push('<p class="fine">' + sec.logged + " of " + sec.total + " logged" +
+        (sec.band ? " · " + esc(sec.band.name) : "") + "</p>");
+      html.push('<ul class="score-rows">');
+      sec.rows.forEach(function (r) {
+        html.push('<li><a href="#/activity/' + r.metric.id + '"><span class="sr-name">' + esc(r.metric.list) + "</span>" +
+          '<span class="sr-val">' + (r.logged ? esc(PB.formatFull(r.metric.unit, r.best.value)) : "—") + "</span>" +
+          '<span class="sr-score ' + (r.logged ? r.band.cls : "band-none") + '">' +
+          (r.logged ? r.score : "·") + "</span></a></li>");
+      });
+      html.push("</ul></section>");
+    });
+    html.push("</div>");
+
+    html.push('<section class="card"><h2 class="card-head">How this is worked out</h2>' +
+      '<p class="body">Every scored activity sits on a 0–100 scale between a starting benchmark and a strong one. ' +
+      "A section is the average of the activities you have logged in it, and the overall score is the average of the sections that have any data — so the five sections carry equal weight and the eight one-minute tests cannot drown out the 5km run.</p>" +
+      '<p class="body">Pace per 500m and the 1km splits are shown, graphed and medalled, but not scored: they are the same effort as their parent activity, so counting them would double up.</p>' +
+      '<p class="fine">Benchmarks are general hybrid-fitness reference points, not a clinical measure. They are listed in the README if you want to tune them.</p></section>');
+    return html.join("");
+  }
+
+  /* --------------------------------------------------------------- History */
+
+  function viewHistory() {
+    var sessions = PB.store.recentSessions(80);
+    var html = ['<header class="screen-head"><h1>History</h1>' +
+      '<p class="sub">Everything you have logged, newest first.</p></header>'];
+    if (sessions.length) {
+      html.push('<button class="btn" type="button" data-share="week" style="margin-bottom:14px">Share this week with your coach</button>');
+    }
+
+    if (!sessions.length) {
+      return html.join("") + '<div class="card empty-card">' + icon("trophy", "big-icon") +
+        "<p>Nothing logged yet.</p><a class=\"btn btn-primary\" href=\"#/log\">Log your first activity</a></div>";
+    }
+
+    sessions.forEach(function (g) {
+      var lead = g.entries[0];
+      html.push('<article class="card sess"><div class="sess-head"><strong>' +
+        esc(PB.formatDate(g.date)) + '</strong><span class="muted">' + esc(PB.relativeDay(g.date)) + "</span>" +
+        '<button class="icon-btn" data-del-session="' + g.session + '" aria-label="Delete this session">✕</button></div>');
+      html.push('<ul class="sess-rows">');
+      g.entries.forEach(function (e) {
+        var m = PB.metric(e.metric);
+        html.push("<li>" + (medalBadge(PB.store.medal(e)) || '<span class="medal blank"></span>') +
+          '<a class="sess-name" href="#/activity/' + e.metric + '">' + esc(m.list) + "</a>" +
+          '<span class="sess-val">' + esc(PB.formatFull(m.unit, e.value)) + "</span></li>");
+      });
+      html.push("</ul>");
+      if (g.note) html.push('<p class="sess-note">' + esc(g.note) + "</p>");
+      html.push("</article>");
+      void lead;
+    });
+    return html.join("");
+  }
+
+  /* One delegated handler for the whole app — screens are re-rendered often,
+   * so per-render listeners would stack up. */
+  function wireDeletes() {
+    view.addEventListener("click", function (e) {
+      var one = e.target.closest("[data-delete]");
+      if (one) {
+        if (!confirm("Delete this entry? It cannot be undone.")) return;
+        PB.store.deleteEntry(one.getAttribute("data-delete"));
+        render();
+        toast("<div><strong>Entry deleted</strong></div>");
+        return;
+      }
+      var drop = e.target.closest("[data-drop-coach]");
+      if (drop) {
+        if (!confirm("Remove this coach's access to your data?")) return;
+        PB.sync.dropCoach(drop.getAttribute("data-drop-coach")).then(function () {
+          render();
+          toast("<div><strong>Access removed</strong></div>");
+        }, function () {
+          toast("<div><strong>Could not remove access</strong><span>Try again when you are online</span></div>");
+        });
+        return;
+      }
+      var sh = e.target.closest("[data-share]");
+      if (sh) {
+        var target = sh.getAttribute("data-share");
+        share(target === "all" ? null : target === "week" ? "week" : target);
+        return;
+      }
+      var sess = e.target.closest("[data-del-session]");
+      if (sess) {
+        if (!confirm("Delete every entry logged in this session?")) return;
+        PB.store.deleteSession(sess.getAttribute("data-del-session"));
+        render();
+        toast("<div><strong>Session deleted</strong></div>");
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------ Data */
+
+  function syncCard() {
+    var st = PB.sync.status();
+    var html = ['<section class="card"><h2 class="card-head">Sync &amp; coach</h2>'];
+
+    /* The claude.ai artifact viewer sandboxes network calls, so sync cannot
+     * run there — say so instead of failing mysteriously. */
+    if (window.claude && typeof window.claude.use === "function") {
+      html.push('<p class="body">Sync is not available in this preview — the page cannot reach the internet from here. ' +
+        "Use the app from its own web address (or installed on your home screen) and this section lights up.</p></section>");
+      return html.join("");
+    }
+
+    if (!st.configured) {
+      html.push('<p class="body">Optional: connect a Supabase project and your entries follow you between ' +
+        "devices, behind a sign-in so only you (and a coach you invite) can see them. " +
+        "Without it the app keeps working on this device alone.</p>" +
+        '<label class="field"><span class="field-label">Project URL</span>' +
+        '<span class="field-input"><input type="url" id="sync-url" placeholder="https://xxxx.supabase.co" autocomplete="off"></span></label>' +
+        '<label class="field"><span class="field-label">Anon key</span>' +
+        '<span class="field-input"><input type="text" id="sync-key" placeholder="eyJ…" autocomplete="off"></span></label>' +
+        '<p class="form-error" id="sync-error" hidden></p>' +
+        '<button class="btn" id="sync-connect">Connect</button>' +
+        '<p class="fine">Setting the project up takes ten minutes once — the steps are in supabase/SETUP.md in the repo.</p>');
+    } else if (!st.signedIn) {
+      html.push('<p class="body">Sign in and your entries follow you between devices — only you, and a coach you invite, can see them.</p>' +
+        '<label class="field"><span class="field-label">Email</span>' +
+        '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
+        '<label class="field"><span class="field-label">Password <em class="opt">once you have set one</em></span>' +
+        '<span class="field-input"><input type="password" id="sync-pass" autocomplete="current-password"></span></label>' +
+        '<button class="btn btn-primary" id="sync-passgo">Sign in</button>' +
+        '<p class="fine" style="text-align:center;margin:6px 0">First time, or no password yet?</p>' +
+        '<button class="btn" id="sync-request">Email me a sign-in link</button>' +
+        '<div id="sync-code-wrap" hidden><p class="body">Check your email on this device and tap the link — that signs you in here. ' +
+        "If the email shows a code instead, type it below.</p>" +
+        '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
+        '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></span></label>' +
+        '<button class="btn" id="sync-verify">Sign in with the code</button></div>' +
+        pasteLinkBlock() +
+        '<p class="form-error" id="sync-error"' + (st.lastError ? ">" + esc(st.lastError) : " hidden>") + "</p>" +
+        '<button class="btn btn-ghost" id="sync-disconnect">Turn sync off on this device</button>');
+    } else {
+      html.push('<p class="body">Signed in as <strong>' + esc(st.email) + "</strong>.</p>" +
+        '<p class="fine" id="sync-status-line">' + esc(syncStatusLine(st)) + "</p>" +
+        (st.lastError ? '<p class="form-error">' + esc(st.lastError) + "</p>" : "") +
+        '<button class="btn" id="sync-now">Sync now</button>' +
+        '<div class="btn-row"><button class="btn btn-ghost" id="sync-signout">Sign out</button>' +
+        '<button class="btn btn-ghost" id="sync-disconnect">Disconnect</button></div>');
+      html.push('<h2 class="card-head" style="margin-top:16px">Password</h2>' +
+        '<p class="body">Set one and any device signs in instantly with your email and password — no waiting for emails.</p>' +
+        '<label class="field"><span class="field-input"><input type="password" id="acct-pass" autocomplete="new-password" placeholder="At least 8 characters"></span></label>' +
+        '<button class="btn" id="acct-pass-save">Save password</button>' +
+        '<p class="form-error" id="acct-pass-error" hidden></p>');
+      html.push('<h2 class="card-head" style="margin-top:16px">Coach access</h2>' +
+        '<p class="body">A coach sees your entries and scores, read-only. Make a code, send it to them, done.</p>' +
+        '<div id="coach-list" class="fine">Checking who can see your data…</div>' +
+        '<button class="btn" id="invite-create">Create an invite code for your coach</button>' +
+        '<p class="body" id="invite-out" hidden></p>' +
+        '<label class="field"><span class="field-label">Coaching someone? Enter their code</span>' +
+        '<span class="field-input"><input type="text" id="redeem-code" placeholder="ABCD-EFGH" autocomplete="off" style="text-transform:uppercase"></span></label>' +
+        '<button class="btn" id="invite-redeem">Link me to this athlete</button>' +
+        '<p class="form-error" id="coach-error" hidden></p>' +
+        '<div id="athlete-link"></div>');
+    }
+    html.push("</section>");
+    return html.join("");
+  }
+
+  function syncStatusLine(st) {
+    var when = st.busy ? "Syncing…"
+      : st.lastSync ? "Last synced " + PB.relativeDay(st.lastSync.slice(0, 10)).toLowerCase()
+        : "Not synced yet";
+    var queue = st.pending === 0 ? "nothing waiting to upload"
+      : st.pending + " change" + (st.pending === 1 ? "" : "s") + " waiting to upload";
+    return when + " · " + queue;
+  }
+
+  function viewData() {
+    var a = PB.store.athlete();
+    return '<header class="screen-head"><a class="back" href="#/pbs">Back</a><h1>Data &amp; backup</h1>' +
+      '<p class="sub">Entries live on this device; connect sync below and they follow you.</p></header>' +
+      syncCard() +
+      '<section class="card"><h2 class="card-head">Your name</h2>' +
+      '<label class="field"><span class="field-input"><input type="text" id="athlete-name" maxlength="40" ' +
+      'placeholder="Shown at the top of the app" value="' + esc(a.name) + '"></span></label>' +
+      '<label class="field"><span class="field-label">Plan start date</span>' +
+      '<span class="field-input"><input type="date" id="plan-start" value="' + esc(a.planStart) + '"></span>' +
+      '<span class="hint">Everything logged before this date counts as your baseline. Clear it to switch the plan features off.</span></label>' +
+      '<button class="btn" id="save-name">Save</button></section>' +
+      '<section class="card"><h2 class="card-head">Back up</h2>' +
+      '<p class="body">' + PB.store.totalEntries() + " entries stored on this device. Download a copy before you clear your browser data or change phone — a backup file is the only way to move your history to another phone or browser.</p>" +
+      '<p class="fine" id="storage-status">Checking storage…</p>' +
+      '<button class="btn" id="export-btn">Download backup file</button>' +
+      '<button class="btn" id="csv-btn">Download as CSV (for a spreadsheet)</button>' +
+      '<button class="btn" id="copy-btn">Copy to clipboard</button></section>' +
+      '<section class="card"><h2 class="card-head">Restore</h2>' +
+      '<p class="body">Load a backup file. Merge keeps what is here and adds anything missing; replace wipes first.</p>' +
+      '<input type="file" id="import-file" accept="application/json,.json">' +
+      '<div class="btn-row"><button class="btn" id="import-merge">Merge in</button>' +
+      '<button class="btn btn-ghost" id="import-replace">Replace everything</button></div></section>' +
+      '<section class="card danger"><h2 class="card-head">Start again</h2>' +
+      '<p class="body">Deletes every entry on this device. There is no undo.</p>' +
+      '<button class="btn btn-danger" id="clear-btn">Delete all my data</button></section>' +
+      '<p class="fine">Hyrox Tracker · works offline · add it to your home screen from your browser menu.</p>';
+  }
+
+  function wireData() {
+    var $ = function (id) { return document.getElementById(id); };
+
+    PB.store.storageReport(function (r) {
+      var el = $("storage-status");
+      if (!el) return;
+      el.textContent = "Using " + r.usageKB + " KB · " + (
+        r.persisted === true ? "the browser has marked this data as permanent."
+          : r.persisted === false ? "stored normally — the browser could clear it if the phone runs very low on space, so keep a backup."
+            : "stored in this browser.");
+    });
+
+    $("save-name").onclick = function () {
+      PB.store.setName($("athlete-name").value.trim());
+      PB.store.setPlanStart($("plan-start").value);
+      PB.sync.pushProfile().then(null, function () { /* offline is fine */ });
+      paintHeader();
+      toast("<div><strong>Name saved</strong></div>");
+    };
+
+    $("export-btn").onclick = function () {
+      saveFile("pb-tracker-" + PB.today() + ".json", PB.store.exportJSON());
+    };
+
+    $("csv-btn").onclick = function () {
+      var q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+      var lines = ["date,section,activity,result,unit,note"];
+      PB.store.live().slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; })
+        .forEach(function (e) {
+          var m = PB.metric(e.metric);
+          lines.push([e.date, q(PB.section(m.section).name), q(m.name),
+            q(PB.formatValue(m.unit, e.value)), q((PB.UNITS[m.unit].suffix || "time").replace("/500m", "per 500m")),
+            q(e.note)].join(","));
+        });
+      saveFile("pb-tracker-" + PB.today() + ".csv", lines.join("\r\n"));
+    };
+
+    $("copy-btn").onclick = function () {
+      var text = PB.store.exportJSON();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function () {
+          toast("<div><strong>Copied</strong><span>Paste it somewhere safe</span></div>");
+        });
+      } else {
+        prompt("Copy your backup:", text);
+      }
+    };
+
+    function doImport(mode) {
+      var file = $("import-file").files[0];
+      if (!file) { toast("<div><strong>Choose a backup file first</strong></div>"); return; }
+      if (mode === "replace" && !confirm("Replace everything on this device with the file?")) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var n = PB.store.importJSON(String(reader.result), mode);
+          render();
+          toast("<div><strong>Restored</strong><span>" + n + " entries read</span></div>");
+        } catch (err) {
+          toast("<div><strong>Could not read that file</strong><span>" + esc(err.message) + "</span></div>");
+        }
+      };
+      reader.readAsText(file);
+    }
+    $("import-merge").onclick = function () { doImport("merge"); };
+    $("import-replace").onclick = function () { doImport("replace"); };
+
+    $("clear-btn").onclick = function () {
+      if (!confirm("Delete every entry on this device?")) return;
+      if (!confirm("Really delete everything? Download a backup first if you are not sure.")) return;
+      PB.store.clearAll();
+      render();
+      paintHeader();
+      toast("<div><strong>All data deleted</strong></div>");
+    };
+  }
+
+  /* ---------------------------------------------------------- First run */
+
+  /* The front door on a fresh device: sign in, or carry on without an
+   * account. Uses the same field ids as the Data screen's sync card, so
+   * wireSync drives both. */
+  function viewWelcome() {
+    return '<div class="welcome">' + PB.art("run", "art-welcome") +
+      '<h1 class="welcome-title">Hyrox Tracker</h1>' +
+      '<p class="welcome-sub">Log your times, watts and lifts. Medal your best three efforts. Score your fitness out of 100.</p>' +
+      '<section class="card welcome-card">' +
+      '<h2 class="card-head">Sign in</h2>' +
+      '<p class="body">Your entries back up and follow you to any device. First time? Signing in creates your account — no password to remember.</p>' +
+      '<label class="field"><span class="field-label">Email</span>' +
+      '<span class="field-input"><input type="email" id="sync-email" inputmode="email" autocomplete="email" placeholder="you@example.com"></span></label>' +
+      '<label class="field"><span class="field-label">Password <em class="opt">once you have set one</em></span>' +
+      '<span class="field-input"><input type="password" id="sync-pass" autocomplete="current-password"></span></label>' +
+      '<button class="btn btn-primary" id="sync-passgo">Sign in</button>' +
+      '<p class="fine" style="text-align:center;margin:6px 0">First time, or no password yet?</p>' +
+      '<button class="btn" id="sync-request">Email me a sign-in link</button>' +
+      '<div id="sync-code-wrap" hidden><p class="body">Check your email on this device and tap the link — that signs you in here. ' +
+      "If the email shows a code instead, type it below.</p>" +
+      '<label class="field"><span class="field-label">Code from the email <em class="opt">if shown</em></span>' +
+      '<span class="field-input"><input type="text" id="sync-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></span></label>' +
+      '<button class="btn" id="sync-verify">Sign in with the code</button></div>' +
+      pasteLinkBlock() +
+      '<p class="form-error" id="sync-error"' + (PB.sync.status().lastError ? ">" + esc(PB.sync.status().lastError) : " hidden>") + "</p></section>" +
+      '<button class="btn btn-ghost" id="welcome-skip">Use without an account for now</button>' +
+      '<p class="fine">Without an account everything still works — your entries just live on this device only. You can sign in any time from the top-right of the app.</p></div>';
+  }
+
+  /* Some phones' email apps break the tap-the-link redirect (it lands on a
+   * dead page). Pasting the link instead exchanges its token directly with
+   * the server — nothing to redirect, nothing to break. */
+  function pasteLinkBlock() {
+    return '<details class="paste-link"><summary>Link opens a dead page? Paste it instead</summary>' +
+      '<p class="body">In the email, long-press <strong>Sign in</strong> → <strong>Copy link</strong>, come back here and paste it. ' +
+      "Already tapped it and got the dead page? Copy that page's web address instead — it works too.</p>" +
+      '<label class="field"><span class="field-input"><input type="url" id="sync-link" autocomplete="off" placeholder="https://…supabase.co/auth/v1/verify?…"></span></label>' +
+      '<button class="btn btn-primary" type="button" id="sync-linkgo">Sign in with the pasted link</button></details>';
+  }
+
+  function wireWelcome() {
+    wireSync();
+    var skip = document.getElementById("welcome-skip");
+    if (skip) skip.onclick = function () {
+      PB.store.setWelcomeDone(true);
+      go("#/log");
+    };
+  }
+
+  function wireSync() {
+    var $ = function (id) { return document.getElementById(id); };
+    var fail = function (box) {
+      return function (err) {
+        var el = $(box);
+        if (!el) return;
+        var msg = err.message || "That did not work — try again.";
+        if (/rate limit/i.test(msg)) {
+          msg = "The email service has sent its few allowed emails this hour. Wait a little and press the button again — your entries keep saving on this device meanwhile.";
+        }
+        el.textContent = msg;
+        el.hidden = false;
+      };
+    };
+
+    if ($("sync-connect")) {
+      $("sync-connect").onclick = function () {
+        try {
+          PB.sync.setConfig($("sync-url").value, $("sync-key").value);
+          render();
+        } catch (err) { fail("sync-error")(err); }
+      };
+    }
+    if ($("sync-request")) {
+      $("sync-request").onclick = function () {
+        var email = $("sync-email").value.trim();
+        if (!email) { fail("sync-error")(new Error("Enter your email first.")); return; }
+        $("sync-request").disabled = true;
+        PB.sync.requestCode(email).then(function () {
+          $("sync-code-wrap").hidden = false;
+          $("sync-error").hidden = true;
+          $("sync-request").disabled = false;
+          $("sync-request").textContent = "Email me another link";
+          toast("<div><strong>Email sent</strong><span>Tap the link in it on this device</span></div>");
+        }, function (err) { $("sync-request").disabled = false; fail("sync-error")(err); });
+      };
+    }
+    if ($("sync-passgo")) {
+      $("sync-passgo").onclick = function () {
+        var email = $("sync-email").value.trim();
+        var pass = $("sync-pass").value;
+        if (!email) { fail("sync-error")(new Error("Enter your email first.")); return; }
+        if (!pass) { fail("sync-error")(new Error("Enter your password — or use the emailed link below if you have not set one yet.")); return; }
+        $("sync-passgo").disabled = true;
+        PB.sync.signInPassword(email, pass).then(function () {
+          PB.sync.pushProfile();
+          PB.store.setWelcomeDone(true);
+          go("#/log");
+          toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
+        }, function (err) {
+          $("sync-passgo").disabled = false;
+          fail("sync-error")(err);
+        });
+      };
+    }
+    if ($("sync-linkgo")) {
+      $("sync-linkgo").onclick = function () {
+        var text = $("sync-link").value.trim();
+        if (!text) { fail("sync-error")(new Error("Paste the link from the email first.")); return; }
+        $("sync-linkgo").disabled = true;
+        PB.sync.verifyPastedLink(text).then(function () {
+          PB.sync.pushProfile();
+          PB.store.setWelcomeDone(true);
+          go("#/log");
+          toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
+        }, function (err) {
+          $("sync-linkgo").disabled = false;
+          fail("sync-error")(err);
+        });
+      };
+    }
+    if ($("sync-verify")) {
+      $("sync-verify").onclick = function () {
+        PB.sync.verifyCode($("sync-email").value.trim(), $("sync-code").value).then(function () {
+          PB.sync.pushProfile();
+          PB.store.setWelcomeDone(true);
+          go("#/log");
+          toast("<div><strong>Signed in</strong><span>This device now syncs</span></div>");
+        }, fail("sync-error"));
+      };
+    }
+    if ($("acct-pass-save")) {
+      $("acct-pass-save").onclick = function () {
+        var pass = $("acct-pass").value;
+        if (pass.length < 8) { fail("acct-pass-error")(new Error("Use at least 8 characters.")); return; }
+        $("acct-pass-save").disabled = true;
+        PB.sync.setPassword(pass).then(function () {
+          $("acct-pass-save").disabled = false;
+          $("acct-pass").value = "";
+          $("acct-pass-error").hidden = true;
+          toast("<div><strong>Password set</strong><span>Any device can now sign in with it</span></div>");
+        }, function (err) {
+          $("acct-pass-save").disabled = false;
+          fail("acct-pass-error")(err);
+        });
+      };
+    }
+    if ($("sync-now")) {
+      $("sync-now").onclick = function () {
+        PB.sync.syncNow().then(function (r) {
+          render();
+          if (r) toast("<div><strong>Synced</strong><span>" + r.pulled + " in, " + r.pushed + " out</span></div>");
+        }, function () { render(); });
+      };
+    }
+    if ($("sync-signout")) $("sync-signout").onclick = function () { PB.sync.signOut(); render(); };
+    if ($("sync-disconnect")) {
+      $("sync-disconnect").onclick = function () {
+        if (!confirm("Disconnect? Entries stay on this device and on the server; this device just stops syncing.")) return;
+        PB.sync.disconnect();
+        render();
+      };
+    }
+
+    if ($("coach-list")) {
+      PB.sync.myCoaches().then(function (coaches) {
+        var el = $("coach-list");
+        if (!el) return;
+        el.innerHTML = coaches.length
+          ? "Can see your data: " + coaches.map(function (c) {
+              return esc(c.name) + ' <button class="linkish" data-drop-coach="' + c.id + '">remove</button>';
+            }).join(" · ")
+          : "Nobody else can see your data yet.";
+      }, function () { var el = $("coach-list"); if (el) el.textContent = "Could not check coach access just now."; });
+
+      PB.sync.myAthletes().then(function (athletes) {
+        var el = $("athlete-link");
+        if (el && athletes.length) {
+          el.innerHTML = '<a class="btn" href="#/coach">You coach ' + athletes.length +
+            (athletes.length === 1 ? " athlete" : " athletes") + " — see their PBs</a>";
+        }
+      }, function () {});
+
+      $("invite-create").onclick = function () {
+        PB.sync.createInvite().then(function (code) {
+          var out = $("invite-out");
+          out.hidden = false;
+          out.innerHTML = "Send your coach this code: <strong class=\"big\">" + esc(code) +
+            "</strong><br><span class=\"muted\">It works once and expires in a week.</span>";
+        }, fail("coach-error"));
+      };
+      $("invite-redeem").onclick = function () {
+        var code = $("redeem-code").value.trim();
+        if (!code) { fail("coach-error")(new Error("Enter the code the athlete sent you.")); return; }
+        PB.sync.redeemInvite(code).then(function () {
+          render();
+          toast("<div><strong>Linked</strong><span>Their PBs are on the coach screen</span></div>");
+        }, fail("coach-error"));
+      };
+    }
+  }
+
+  /* ---------------------------------------------------------------- Coach */
+
+  function viewCoach() {
+    return '<header class="screen-head"><a class="back" href="#/data">Back</a><h1>Your athletes</h1>' +
+      '<p class="sub">Read-only: their entries, bests and scores as they stand.</p></header>' +
+      '<div id="coach-body" class="card"><p class="empty">Fetching your athletes…</p></div>';
+  }
+
+  function wireCoach() {
+    PB.sync.myAthletes().then(function (athletes) {
+      var el = document.getElementById("coach-body");
+      if (!el) return;
+      if (!athletes.length) {
+        el.innerHTML = '<p class="empty">No athletes yet. When one sends you an invite code, enter it on the Data screen.</p>';
+        return;
+      }
+      el.innerHTML = '<div class="rows">' + athletes.map(function (a) {
+        return '<a class="row" href="#/coach/' + a.id + '"><span class="row-main"><span class="row-name">' +
+          esc(a.name) + "</span></span><span class=\"row-arrow\">›</span></a>";
+      }).join("") + "</div>";
+    }, function (err) {
+      var el = document.getElementById("coach-body");
+      if (el) el.innerHTML = '<p class="empty">' + esc(err.message) + "</p>";
+    });
+  }
+
+  function viewAthlete() {
+    return '<header class="screen-head"><a class="back" href="#/coach">Back</a><h1 id="ath-name">Athlete</h1>' +
+      '<p class="sub">Their tracker, read-only.</p></header><div id="ath-body"><div class="card"><p class="empty">Fetching…</p></div></div>';
+  }
+
+  function wireAthlete(match) {
+    var athleteId = match[1];
+    PB.sync.myAthletes().then(function (athletes) {
+      var who = athletes.filter(function (a) { return a.id === athleteId; })[0];
+      var nameEl = document.getElementById("ath-name");
+      if (who && nameEl) nameEl.textContent = who.name;
+    }, function () {});
+    PB.sync.athleteEntries(athleteId).then(function (rows) {
+      var el = document.getElementById("ath-body");
+      if (!el) return;
+      rows = rows || [];
+      var bestOf = {};
+      rows.forEach(function (r) {
+        var m = PB.metric(r.metric);
+        if (!m) return;
+        var b = bestOf[r.metric];
+        if (!b || PB.store.isBetter(m, r.value, b.value)) bestOf[r.metric] = r;
+      });
+      var overall = PB.score.overallFor(rows);
+      var html = ['<div class="card hero-stat"><div><span class="label">Overall score</span>' +
+        '<strong class="big">' + (overall == null ? "—" : overall + "/100") + "</strong>" +
+        '<span class="muted">' + rows.length + " entries logged</span></div></div>"];
+      PB.SECTIONS.forEach(function (sec) {
+        html.push('<section class="block"><h2 class="block-head">' + icon(sec.icon) +
+          '<span class="num">' + sec.n + ".</span> " + esc(sec.name) + "</h2><div class=\"rows\">");
+        PB.metricsIn(sec.id).forEach(function (m) {
+          var b = bestOf[m.id];
+          html.push('<span class="row"><span class="row-main"><span class="row-name">' + esc(m.name) + "</span>" +
+            '<span class="row-meta">' + (b ? esc(PB.formatDate(b.date)) : "Not logged") + "</span></span>" +
+            '<span class="row-val">' + (b ? esc(PB.formatFull(m.unit, b.value)) : "—") + "</span></span>");
+        });
+        html.push("</div></section>");
+      });
+      el.innerHTML = html.join("");
+    }, function (err) {
+      var el = document.getElementById("ath-body");
+      if (el) el.innerHTML = '<div class="card"><p class="empty">' + esc(err.message) + "</p></div>";
+    });
+  }
+
+  function notFound() {
+    return '<header class="screen-head"><h1>Not found</h1></header>' +
+      '<div class="card empty-card"><p>That screen does not exist.</p>' +
+      '<a class="btn btn-primary" href="#/log">Go to the log</a></div>';
+  }
+
+  /* ---------------------------------------------------------------- Router */
+
+  var ROUTES = [
+    { re: /^#\/log\/([\w-]+)$/, render: function (m) { return viewForm(m[1]); }, wire: function (m) { wireForm(m[1]); }, tab: "log" },
+    { re: /^#\/log$/, render: viewLogMenu, tab: "log" },
+    { re: /^#\/pbs$/, render: viewPBs, tab: "pbs" },
+    { re: /^#\/activity\/([\w-]+)$/, render: function (m) { return viewActivity(m[1]); }, tab: "pbs" },
+    { re: /^#\/score$/, render: viewScore, tab: "score" },
+    { re: /^#\/history$/, render: viewHistory, tab: "history" },
+    { re: /^#\/edit\/([\w-]+)$/, render: function (m) { return viewEdit(m[1]); }, wire: wireEdit, tab: "pbs" },
+    { re: /^#\/coach$/, render: viewCoach, wire: wireCoach, tab: "" },
+    { re: /^#\/coach\/([\w-]+)$/, render: viewAthlete, wire: wireAthlete, tab: "" },
+    { re: /^#\/race$/, render: viewRace, wire: wireRace, tab: "score" },
+    { re: /^#\/welcome$/, render: viewWelcome, wire: wireWelcome, tab: "" },
+    { re: /^#\/data$/, render: viewData, wire: function (m) { wireData(m); wireSync(); }, tab: "" }
+  ];
+
+  function render() {
+    var hash = location.hash || "#/log";
+    var route = null, match = null;
+    for (var i = 0; i < ROUTES.length; i++) {
+      match = hash.match(ROUTES[i].re);
+      if (match) { route = ROUTES[i]; break; }
+    }
+    if (!route) { view.innerHTML = notFound(); return; }
+
+    timerStopTicking(); // navigating away abandons a running timer cleanly
+    cancelAnimationFrame(rest.raf);
+    rest.deadline = 0;
+    view.innerHTML = route.render(match);
+    view.scrollTop = 0;
+    window.scrollTo(0, 0);
+    if (route.wire) route.wire(match);
+
+    [].forEach.call(document.querySelectorAll(".tab"), function (t) {
+      var on = t.getAttribute("data-tab") === route.tab;
+      t.classList.toggle("on", on);
+      if (on) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
+    });
+  }
+
+  function paintHeader() {
+    var o = PB.score.overall();
+    var name = PB.store.athlete().name;
+    document.getElementById("header-name").textContent = name ? name : "Hyrox Tracker";
+    document.getElementById("header-score").textContent = o.score == null ? "—" : o.score;
+
+    /* Top-right button: says what it does. Signed out it is the way in;
+     * signed in it is the settings screen. */
+    var corner = document.getElementById("header-gear");
+    if (corner) {
+      var st = PB.sync.status();
+      if (st.configured && !st.signedIn) {
+        corner.className = "head-gear head-signin";
+        corner.setAttribute("href", "#/welcome");
+        corner.setAttribute("aria-label", "Sign in");
+        corner.textContent = "Sign in";
+      } else {
+        corner.className = "head-gear";
+        corner.setAttribute("href", "#/data");
+        corner.setAttribute("aria-label", "Settings, data and backup");
+        corner.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/>' +
+          '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+      }
+    }
+  }
+
+  function start() {
+    view = document.getElementById("view");
+    toastEl = document.getElementById("toast");
+    PB.sync.handleRedirect();
+    if (!location.hash) location.hash = "#/log";
+    /* Fresh device, sync available, never been asked: the front door is the
+     * sign-in screen. Anyone who chose "use without an account" is not asked
+     * again, and a direct link to a specific screen is respected. */
+    var st0 = PB.sync.status();
+    if (st0.configured && !st0.signedIn && !PB.store.athlete().welcomeDone &&
+      (location.hash === "#/log" || location.hash === "#/")) {
+      location.hash = "#/welcome";
+    }
+    window.addEventListener("hashchange", render);
+    wireDeletes();
+    PB.store.onChange(paintHeader);
+    PB.store.onChange(function () {
+      // only schedule an upload when there is actually something to send —
+      // sync's own bookkeeping also lands here and must not re-trigger it
+      if (PB.sync.status().pending > 0) PB.sync.syncSoon();
+    });
+    PB.sync.onStatus(function (st) {
+      var line = document.getElementById("sync-status-line");
+      if (line) line.textContent = syncStatusLine(st);
+    });
+    PB.store.requestPersistence();
+    if (PB.sync.signedIn()) {
+      PB.sync.syncNow().then(function () { render(); }, function () {});
+    }
+    paintHeader();
+    render();
+
+    /* no service worker in the single-file build — there is no file to register */
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})(window.PB = window.PB || {});
+
+</script>
+</body>
+</html>
