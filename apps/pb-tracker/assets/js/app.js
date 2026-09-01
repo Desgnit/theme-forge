@@ -17,6 +17,7 @@
     run: '<circle cx="15" cy="4.5" r="2.2"/><path d="M13 21l2-6-3-3 1-5 4 3 3 1M9 21l3-5M6 11l3-2"/>',
     strength: '<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/>',
     pulse: '<path d="M2 12h4l3-7 4 14 3-7h6"/>',
+    scale: '<path d="M5 20h14M7 20v-3h10v3M12 4v13M8 7l4-3 4 3"/>',
     trophy: '<path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M10 18h4M9 21h6"/>'
   };
 
@@ -134,7 +135,7 @@
         html.push('<a class="tile" href="#/log/' + f.id + '">' +
           PB.art(f.art, "art-tile") +
           '<span class="tile-name">' + esc(f.title) + "</span>" +
-          '<span class="tile-pb">' + (b ? "PB " + esc(PB.formatFull(PB.metric(primary).unit, b.value)) : "No entry yet") + "</span>" +
+          '<span class="tile-pb">' + (b ? (PB.metric(primary).neutral ? "Latest " : "PB ") + esc(PB.formatFull(PB.metric(primary).unit, b.value)) : "No entry yet") + "</span>" +
           '<span class="tile-go">+</span></a>');
       });
       html.push("</div></section>");
@@ -316,6 +317,67 @@
     };
   }
 
+  /* Rest timer for the strength forms: tap a preset after a set, lift again
+   * when it beeps. Deliberately separate from the main timer so a running
+   * rest clock and the entry form never fight over state. */
+  var rest = { deadline: 0, raf: 0, secs: 0 };
+
+  function restCard(f) {
+    if (!f.rest) return "";
+    return '<section class="card timer-card"><h2 class="card-head">Rest timer <span class="timer-kind">between sets</span></h2>' +
+      '<div class="timer-display" id="rest-display">–</div>' +
+      '<p class="timer-note" id="rest-note">After a set, tap how long to rest — it beeps when it is time to lift again.</p>' +
+      '<div class="btn-row rest-row">' + f.rest.map(function (s) {
+        return '<button type="button" class="btn" data-rest="' + s + '">' + PB.formatTime(s) + "</button>";
+      }).join("") + "</div></section>";
+  }
+
+  function wireRest(f) {
+    if (!f.rest) return;
+    var display = document.getElementById("rest-display");
+    var note = document.getElementById("rest-note");
+
+    function stop() {
+      cancelAnimationFrame(rest.raf);
+      rest.deadline = 0;
+      [].forEach.call(document.querySelectorAll("[data-rest]"), function (b) { b.classList.remove("btn-primary"); });
+    }
+
+    function tick() {
+      if (!rest.deadline) return;
+      var left = (rest.deadline - Date.now()) / 1000;
+      if (left <= 0) {
+        stop();
+        display.textContent = "0:00";
+        note.textContent = "Rest over — next set.";
+        timerBeep(1318, 0.6);
+        timerBuzz([120, 80, 240]);
+        return;
+      }
+      display.textContent = PB.formatTime(Math.ceil(left));
+      rest.raf = requestAnimationFrame(tick);
+    }
+
+    [].forEach.call(document.querySelectorAll("[data-rest]"), function (btn) {
+      btn.onclick = function () {
+        var secs = Number(btn.getAttribute("data-rest"));
+        if (rest.deadline && rest.secs === secs) {   // tapping the running preset cancels it
+          stop();
+          display.textContent = "–";
+          note.textContent = "Cancelled.";
+          return;
+        }
+        stop();
+        rest.secs = secs;
+        rest.deadline = Date.now() + secs * 1000;
+        btn.classList.add("btn-primary");
+        note.textContent = "Resting — lift again at the beep.";
+        timerBeep(660, 0.12);
+        tick();
+      };
+    });
+  }
+
   /* A one-tap "watch how it's done" link. Opens in the YouTube app or a new
    * tab — never inside the tracker, so a half-typed entry is not lost. */
   function videoLink(f) {
@@ -344,6 +406,7 @@
       }).join(" · ") + "</p>");
     }
     html.push(timerCard(f));
+    html.push(restCard(f));
 
     html.push('<form class="card form" id="entry-form" novalidate>');
     var grouped = f.sumTo ? f.sumTo.from : [];
@@ -397,6 +460,7 @@
     var form = document.getElementById("entry-form");
     if (!f || !form) return;
     wireTimer(f);
+    wireRest(f);
 
     function raw(metricId) {
       var el = form.querySelector('[name="' + metricId + '"]');
@@ -553,9 +617,9 @@
       (m.derived ? " · worked out from your " + esc(PB.metric(m.derived).name) : "") + "</p></div>" +
       PB.art(PB.artFor(m.derived || metricId), "art-form") + "</div></header>"];
 
-    var b = ranked[0];
+    var b = m.neutral ? PB.store.best(metricId) : ranked[0];
     html.push('<div class="card hero-stat">' +
-      '<div><span class="label">Personal best</span><strong class="big">' +
+      '<div><span class="label">' + (m.neutral ? "Latest" : "Personal best") + '</span><strong class="big">' +
       (b ? esc(PB.formatFull(m.unit, b.value)) : "—") + "</strong>" +
       '<span class="muted">' + (b ? esc(PB.formatDate(b.date)) + " · " + esc(PB.relativeDay(b.date)) : "Nothing logged yet") + "</span></div>" +
       (ms && ms.logged
@@ -563,13 +627,14 @@
         : (m.derived ? '<div class="score-chip muted-chip"><strong>—</strong><span>not scored</span></div>' : "")) +
       "</div>");
 
+    if (m.neutral) imp = null;   // heavier or lighter is not "better" or "off"
     if (imp != null) {
       html.push('<p class="improve ' + (imp >= 0 ? "up" : "down") + '">' +
         (imp >= 0 ? "▲ " + imp + "% better" : "▼ " + Math.abs(imp) + "% off") +
         " than your first logged effort.</p>");
     }
 
-    var planStart = PB.store.athlete().planStart;
+    var planStart = m.neutral ? "" : PB.store.athlete().planStart;
     if (planStart) {
       var pre = PB.store.entriesFor(metricId).filter(function (e) { return e.date < planStart; });
       var post = PB.store.entriesFor(metricId).filter(function (e) { return e.date >= planStart; });
@@ -587,7 +652,7 @@
 
     html.push('<section class="card"><h2 class="card-head">Progress</h2>' + PB.chart.render(metricId) + "</section>");
 
-    if (ranked.length) {
+    if (ranked.length && !m.neutral) {
       html.push('<section class="card"><h2 class="card-head">Top efforts</h2><ol class="podium">');
       ranked.slice(0, 3).forEach(function (e, i) {
         html.push('<li class="podium-row">' + medalBadge(i + 1) +
@@ -719,6 +784,57 @@
 
   /* A plain-text card: the phone share sheet takes it, and anything without
    * one falls back to the clipboard. */
+  /* The week, written the way you would text it to a coach: what was done,
+   * which of it was a PB, and how the score moved. */
+  function weekReportText() {
+    var name = PB.store.athlete().name;
+    var today = PB.today();
+    var recent = PB.store.live().filter(function (e) {
+      return PB.dayDiff(e.date, today) < 7 && !PB.metric(e.metric).derived;
+    }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+
+    var lines = [(name ? name + " — " : "") + "week to " + PB.formatDate(today)];
+    var hist = PB.score.history();
+    var now = hist.length ? hist[hist.length - 1].value : null;
+    var weekAgo = null;
+    hist.forEach(function (h) { if (PB.dayDiff(h.date, today) >= 7) weekAgo = h.value; });
+    if (now != null) {
+      lines.push("Fitness score " + now + "/100" +
+        (weekAgo != null && weekAgo !== now
+          ? " (" + (now > weekAgo ? "up " + (now - weekAgo) : "down " + (weekAgo - now)) + " this week)"
+          : ""));
+    }
+    lines.push("");
+
+    if (!recent.length) {
+      lines.push("Nothing logged in the last 7 days.");
+    } else {
+      var byDate = {};
+      recent.forEach(function (e) { (byDate[e.date] = byDate[e.date] || []).push(e); });
+      Object.keys(byDate).sort().forEach(function (d) {
+        lines.push(PB.formatDate(d).toUpperCase());
+        byDate[d].forEach(function (e) {
+          var m = PB.metric(e.metric);
+          var isPB = !m.neutral && m.scored !== false && (function () {
+            var b = PB.store.best(e.metric);
+            return b && b.id === e.id;
+          })();
+          lines.push("  " + m.short + ": " + PB.formatFull(m.unit, e.value) + (isPB ? "  ** PB **" : ""));
+        });
+        lines.push("");
+      });
+    }
+
+    var d = PB.store.athlete().planStart ? PB.dayDiff(today, PB.store.athlete().planStart) : null;
+    if (d !== null && d >= 0) {
+      var left = PB.BASELINE.filter(function (id) { return !PB.store.best(id); });
+      lines.push(left.length
+        ? "Baselines still to log: " + left.map(function (id) { return PB.metric(id).short; }).join(", ")
+        : "All four baselines are in.");
+    }
+    return lines.join("\n").trim();
+  }
+
   function shareText(metricId) {
     var name = PB.store.athlete().name;
     var lines = [];
@@ -751,8 +867,9 @@
   }
 
   function share(metricId) {
-    var text = shareText(metricId);
-    var title = metricId ? PB.metric(metricId).name : "My personal bests";
+    var week = metricId === "week";
+    var text = week ? weekReportText() : shareText(metricId);
+    var title = week ? "This week's training" : metricId ? PB.metric(metricId).name : "My personal bests";
     if (navigator.share) {
       navigator.share({ title: title, text: text }).catch(function () { /* dismissed */ });
       return;
@@ -764,6 +881,126 @@
       return;
     }
     prompt("Copy your bests:", text);
+  }
+
+  /* ------------------------------------------------------------ Race predictor */
+
+  /* Projected men's-open race, segment by segment. Where the tracker holds a
+   * real number (5km run, 2km ski, 2km row) the projection is built on it;
+   * everywhere else it uses typical men's-open times for the athlete's
+   * current level, interpolated between beginner (score 20), average (50)
+   * and elite (90). Estimates, plainly labelled as such. */
+  var RACE_SEGMENTS = [
+    { name: "Runs 1–8 (8 × 1km)", key: "runs" },
+    { name: "1. SkiErg 1,000m", key: "ski" },
+    { name: "2. Sled Push 50m", key: "sledpush" },
+    { name: "3. Sled Pull 50m", key: "sledpull" },
+    { name: "4. Burpee Broad Jumps 80m", key: "bbj" },
+    { name: "5. RowErg 1,000m", key: "row" },
+    { name: "6. Farmers Carry 200m", key: "farmers" },
+    { name: "7. Sandbag Lunges 100m", key: "lunges" },
+    { name: "8. Wall Balls ×100", key: "wallballs" },
+    { name: "Roxzone + transitions", key: "rox" }
+  ];
+  /* typical men's-open minutes at score 20 / 50 / 90 */
+  var RACE_TYPICAL = {
+    runs: [48, 40, 30], ski: [4.6, 3.9, 3.3], sledpush: [4.5, 3.0, 2.0],
+    sledpull: [6.0, 4.5, 3.0], bbj: [6.5, 5.0, 3.5], row: [4.5, 3.8, 3.2],
+    farmers: [2.6, 2.0, 1.5], lunges: [5.5, 4.5, 3.5], wallballs: [7.0, 5.0, 3.5],
+    rox: [8.0, 6.5, 4.5]
+  };
+
+  function racePredict() {
+    var score = PB.score.overall().score;
+    var s = Math.max(20, Math.min(90, score == null ? 50 : score));
+    function typical(key) {
+      var t = RACE_TYPICAL[key];
+      var mins = s <= 50 ? t[0] + (t[1] - t[0]) * (s - 20) / 30 : t[1] + (t[2] - t[1]) * (s - 50) / 40;
+      return mins * 60;
+    }
+    function own(id) { var b = PB.store.best(id); return b && b.value; }
+
+    return RACE_SEGMENTS.map(function (seg) {
+      var secs = null, from = "typical for your level", isOwn = false;
+      if (seg.key === "runs" && own("run5k_total")) {
+        secs = (own("run5k_total") / 5) * 8 * 1.06;   // your 5km pace over 8km with race fatigue
+        from = "from your 5km run";
+        isOwn = true;
+      } else if (seg.key === "ski" && own("ski2k_total")) {
+        secs = own("ski2k_total") / 2 * 1.02;
+        from = "from your 2km ski";
+        isOwn = true;
+      } else if (seg.key === "row" && own("row2k_total")) {
+        secs = own("row2k_total") / 2 * 1.02;
+        from = "from your 2km row";
+        isOwn = true;
+      }
+      if (secs == null) secs = typical(seg.key);
+      return { name: seg.name, secs: Math.round(secs), own: isOwn, from: from };
+    });
+  }
+
+  function viewRace() {
+    var rows = racePredict();
+    var total = rows.reduce(function (a, r) { return a + r.secs; }, 0);
+    var target = PB.parseTime(PB.store.athlete().raceTarget || "");
+    var scale = target ? target / total : null;
+    var o = PB.score.overall();
+
+    var html = ['<header class="screen-head"><a class="back" href="#/score">Back</a><h1>Race predictor</h1>' +
+      '<p class="sub">Your projected Hyrox, men’s open. Built from your logged tests where they exist, and typical times for your level everywhere else.</p></header>'];
+
+    html.push('<section class="card race-hero"><span class="label">Projected finish</span>' +
+      '<strong class="race-total">' + esc(PB.formatTime(total)) + "</strong>" +
+      '<span class="muted">at your current score of ' + (o.score == null ? "50 (nothing scored yet)" : o.score) + "/100</span></section>");
+
+    html.push('<section class="card"><h2 class="card-head">Target</h2>' +
+      '<p class="body">Set a target finish and every segment shows its share of that budget next to the projection.</p>' +
+      '<label class="field"><span class="field-input"><input type="text" id="race-target" inputmode="numeric" placeholder="e.g. 1:29:00" value="' +
+      esc(PB.store.athlete().raceTarget || "") + '"></span>' +
+      '<span class="hint" id="race-target-hint">h:mm:ss or mm:ss</span></label></section>');
+
+    html.push('<section class="card"><h2 class="card-head">Segments' +
+      (scale ? '<span class="count">projection · target</span>' : "") + "</h2><ul class=\"race-rows\">");
+    rows.forEach(function (r) {
+      html.push('<li><span class="race-name">' + esc(r.name) +
+        '<em class="race-src' + (r.own ? " own" : "") + '">' + esc(r.from) + "</em></span>" +
+        '<span class="race-time">' + esc(PB.formatTime(r.secs)) + "</span>" +
+        (scale ? '<span class="race-time race-budget">' + esc(PB.formatTime(Math.round(r.secs * scale))) + "</span>" : "") +
+        "</li>");
+    });
+    html.push("</ul>");
+    if (scale) {
+      var diff = total - target;
+      html.push('<p class="fine">' + (diff > 0
+        ? "The target is " + PB.formatTime(Math.abs(Math.round(diff))) + " quicker than today's projection — the biggest typical-time segments are where it hides."
+        : "Your projection already beats that target by " + PB.formatTime(Math.abs(Math.round(diff))) + ".") + "</p>");
+    }
+    html.push('<p class="fine">Log the 5km run, 2km ski and 2km row and the projection uses your real numbers. The rest are honest estimates — race day, kit and queues all move them.</p></section>');
+    return html.join("");
+  }
+
+  function wireRace() {
+    var input = document.getElementById("race-target");
+    if (!input) return;
+    var t = null;
+    input.addEventListener("input", function () {
+      clearTimeout(t);
+      var hint = document.getElementById("race-target-hint");
+      var v = PB.parseTime(input.value.trim());
+      if (input.value.trim() && v == null) { hint.textContent = "Not a time we can read — h:mm:ss or mm:ss"; hint.className = "hint bad"; return; }
+      hint.textContent = "h:mm:ss or mm:ss";
+      hint.className = "hint";
+      t = setTimeout(function () {
+        PB.store.setRaceTarget(input.value.trim());
+        render();
+        var again = document.getElementById("race-target");
+        if (again) {
+          again.focus();
+          again.setSelectionRange(again.value.length, again.value.length);
+        }
+      }, 700);
+    });
   }
 
   /* ----------------------------------------------------------------- Score */
@@ -806,8 +1043,11 @@
       html.push("</ul></section>");
     }
 
+    html.push('<a class="btn" href="#/race" style="margin-bottom:14px">Race predictor — your projected Hyrox finish</a>');
+
     html.push('<div class="sec-grid">');
     o.sections.forEach(function (sec) {
+      if (!sec.rows.length) return;   // bodyweight has no scored rows — nothing to show here
       html.push('<section class="card sec-card"><h2 class="card-head">' + icon(sec.section.icon) +
         esc(sec.section.name) + '<span class="sec-score">' +
         (sec.score == null ? "—" : sec.score) + "</span></h2>");
@@ -839,6 +1079,9 @@
     var sessions = PB.store.recentSessions(80);
     var html = ['<header class="screen-head"><h1>History</h1>' +
       '<p class="sub">Everything you have logged, newest first.</p></header>'];
+    if (sessions.length) {
+      html.push('<button class="btn" type="button" data-share="week" style="margin-bottom:14px">Share this week with your coach</button>');
+    }
 
     if (!sessions.length) {
       return html.join("") + '<div class="card empty-card">' + icon("trophy", "big-icon") +
@@ -891,7 +1134,7 @@
       var sh = e.target.closest("[data-share]");
       if (sh) {
         var target = sh.getAttribute("data-share");
-        share(target === "all" ? null : target);
+        share(target === "all" ? null : target === "week" ? "week" : target);
         return;
       }
       var sess = e.target.closest("[data-del-session]");
@@ -1303,6 +1546,7 @@
     { re: /^#\/edit\/([\w-]+)$/, render: function (m) { return viewEdit(m[1]); }, wire: wireEdit, tab: "pbs" },
     { re: /^#\/coach$/, render: viewCoach, wire: wireCoach, tab: "" },
     { re: /^#\/coach\/([\w-]+)$/, render: viewAthlete, wire: wireAthlete, tab: "" },
+    { re: /^#\/race$/, render: viewRace, wire: wireRace, tab: "score" },
     { re: /^#\/welcome$/, render: viewWelcome, wire: wireWelcome, tab: "" },
     { re: /^#\/data$/, render: viewData, wire: function (m) { wireData(m); wireSync(); }, tab: "" }
   ];
@@ -1317,6 +1561,8 @@
     if (!route) { view.innerHTML = notFound(); return; }
 
     timerStopTicking(); // navigating away abandons a running timer cleanly
+    cancelAnimationFrame(rest.raf);
+    rest.deadline = 0;
     view.innerHTML = route.render(match);
     view.scrollTop = 0;
     window.scrollTo(0, 0);

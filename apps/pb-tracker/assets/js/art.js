@@ -6,6 +6,12 @@
 
   /* Each entry: [head cx, head cy, ...path strings]. */
   var ART = {
+    scale: [32, 10,
+      "M20 24l12-8 12 8", "M32 16v14",                                // figure standing tall
+      "M32 30l-8 16", "M32 30l8 16",                                  // legs to the platform
+      "M14 50h36", "M18 50v6h28v-6",                                  // scale platform + base
+      "M28 56h8"                                                      // dial
+    ],
     bike: [44, 14,
       "M14 48a8 8 0 1 0 .1 0", "M50 48a8 8 0 1 0 .1 0",              // wheels
       "M14 48h14l8-14h10", "M36 34l6 14", "M46 30l4 4",              // frame + bars

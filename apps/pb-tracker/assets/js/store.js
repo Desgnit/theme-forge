@@ -82,10 +82,19 @@
     return entriesFor(metricId).slice().sort(rankSort(PB.metric(metricId)));
   }
 
-  function best(metricId) { return ranked(metricId)[0] || null; }
+  /* For a neutral metric (bodyweight) "best" means most recent — there is
+   * no direction to rank by, and the newest reading is the true one. */
+  function best(metricId) {
+    if (PB.metric(metricId).neutral) {
+      var all = entriesFor(metricId);
+      return all[all.length - 1] || null;
+    }
+    return ranked(metricId)[0] || null;
+  }
 
   /* 1, 2, 3 for the medal positions, 0 for everything else. */
   function medal(entry) {
+    if (PB.metric(entry.metric).neutral) return 0;
     var pos = ranked(entry.metric).findIndex(function (e) { return e.id === entry.id; });
     return pos >= 0 && pos < 3 ? pos + 1 : 0;
   }
@@ -106,7 +115,7 @@
       if (v == null || isNaN(v)) return;
       var metric = PB.metric(metricId);
       var previous = best(metricId);
-      if (isBetter(metric, v, previous && previous.value)) prs.push(metricId);
+      if (!metric.neutral && isBetter(metric, v, previous && previous.value)) prs.push(metricId);
       st.entries.push({
         id: uid(), session: session, metric: metricId,
         value: v, date: date, note: note || "", updated: now(), deleted: false
@@ -172,6 +181,11 @@
    * baseline; clear it and the plan features simply disappear. */
   function setPlanStart(date) {
     load().athlete.planStart = /^\d{4}-\d{2}-\d{2}$/.test(date || "") ? date : "";
+    save();
+  }
+
+  function setRaceTarget(text) {
+    load().athlete.raceTarget = String(text || "").trim();
     save();
   }
 
@@ -291,7 +305,7 @@
     deleteEntry: deleteEntry, deleteSession: deleteSession,
     recentSessions: recentSessions, totalEntries: totalEntries,
     athlete: athlete, setName: setName, setPlanStart: setPlanStart,
-    setWelcomeDone: setWelcomeDone,
+    setWelcomeDone: setWelcomeDone, setRaceTarget: setRaceTarget,
     exportJSON: exportJSON, importJSON: importJSON, clearAll: clearAll,
     requestPersistence: requestPersistence, storageReport: storageReport,
     changedSince: changedSince, applyRemote: applyRemote,

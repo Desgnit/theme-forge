@@ -52,6 +52,27 @@ Log a new best and the app tells you straight away.
 
 ---
 
+## Timers, rest and race day
+
+Every timed activity carries its own clock: a stopwatch on the row, ski and
+dead hang whose Stop button fills the entry box, laps on the 5km run that
+capture each 1km split, and a beeping countdown for the 60-second tests and
+the 20-minute bike. The strength forms add a rest timer (2:00 / 3:00 / 5:00)
+that beeps when it is time to lift again.
+
+The Score screen links a **race predictor**: your projected men's-open Hyrox
+finish, built from your logged 5km run, 2km ski and 2km row where they
+exist and typical times for your level everywhere else, with an optional
+target that turns into a per-segment time budget.
+
+**Bodyweight** is its own section — a latest-value log with a chart, no PBs
+or medals (no direction is "better"), and once logged it scales the strength
+benchmarks, which are written for 80kg.
+
+The History screen's **Share this week with your coach** builds a plain-text
+summary of the last seven days — sessions, PBs flagged, score movement and
+outstanding baselines — and hands it to the phone's share sheet.
+
 ## The plan start date
 
 The cog screen holds a **plan start date** (set for 7 September out of the

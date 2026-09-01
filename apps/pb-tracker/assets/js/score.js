@@ -22,17 +22,33 @@
     return BANDS[BANDS.length - 1];
   }
 
+  /* The strength benchmarks are written for an 80kg athlete. Once a
+   * bodyweight is logged, they scale to it — a 70kg athlete is not asked to
+   * move 80kg numbers to earn the same score. Clamped so a wild reading
+   * cannot distort the scale, and everything downstream (scores, levels,
+   * "next band at") follows automatically because it all comes through here. */
+  function effectiveBench(metric) {
+    if (!metric.bench) return null;
+    if (metric.section !== "strength") return metric.bench;
+    var bw = PB.store.best("bodyweight");
+    if (!bw) return metric.bench;
+    var scale = Math.max(0.75, Math.min(1.25, bw.value / 80));
+    return [metric.bench[0] * scale, metric.bench[1] * scale];
+  }
+
   function scoreValue(metric, value) {
-    if (!metric.bench || value == null) return null;
-    var zero = metric.bench[0], hundred = metric.bench[1];
+    var bench = effectiveBench(metric);
+    if (!bench || value == null) return null;
+    var zero = bench[0], hundred = bench[1];
     var pct = ((zero - value) / (zero - hundred)) * 100;
     return Math.max(0, Math.min(100, Math.round(pct)));
   }
 
   /* What value would be needed to hit a target score — powers "next band at". */
   function valueForScore(metric, target) {
-    if (!metric.bench) return null;
-    var zero = metric.bench[0], hundred = metric.bench[1];
+    var bench = effectiveBench(metric);
+    if (!bench) return null;
+    var zero = bench[0], hundred = bench[1];
     return zero - (target / 100) * (zero - hundred);
   }
 

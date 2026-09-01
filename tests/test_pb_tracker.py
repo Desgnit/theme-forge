@@ -35,6 +35,8 @@ def js_metrics(src):
             hit = re.search(r'\b%s: "([^"]+)"' % key, line)
             if hit:
                 m[key] = hit.group(1)
+        if "neutral: true" in line:
+            m["neutral"] = True
         bench = re.search(r"bench: \[([-\d.]+), ([-\d.]+)\]", line)
         if bench:
             m["bench"] = [float(bench.group(1)), float(bench.group(2))]
@@ -65,8 +67,8 @@ def main():
     sections = re.findall(r'\{ id: "(\w+)", n: \d+', data)
     units = re.findall(r"^    (\w+): \{ ", data, re.M)
 
-    if len(metrics) != 23:
-        errors.append("expected the 23 rows of the paper tracker, found %d" % len(metrics))
+    if len(metrics) != 24:
+        errors.append("expected the 23 tracker rows plus bodyweight, found %d" % len(metrics))
 
     ids = [m.get("id") for m in metrics]
     if len(set(ids)) != len(ids):
@@ -83,11 +85,11 @@ def main():
             errors.append("%s: no unit" % mid)
         elif m["unit"] not in units:
             errors.append("%s: unknown unit %s" % (mid, m["unit"]))
-        if m.get("derived"):
-            if m["derived"] not in ids:
+        if m.get("derived") or m.get("neutral"):
+            if m.get("derived") and m["derived"] not in ids:
                 errors.append("%s: derived from unknown metric %s" % (mid, m["derived"]))
             if m.get("bench"):
-                errors.append("%s: derived rows must not be scored" % mid)
+                errors.append("%s: derived/neutral rows must not be scored" % mid)
         else:
             if not m.get("bench"):
                 errors.append("%s: scored metric with no benchmark" % mid)

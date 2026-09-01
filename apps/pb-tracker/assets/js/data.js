@@ -21,7 +21,8 @@
     { id: "ergs", n: 2, name: "Ergs", icon: "erg" },
     { id: "run", n: 3, name: "5km Run", icon: "run" },
     { id: "strength", n: 4, name: "Strength", sub: "3RM", icon: "strength" },
-    { id: "tests", n: 5, name: "60 Second Tests & Static", icon: "pulse" }
+    { id: "tests", n: 5, name: "60 Second Tests & Static", icon: "pulse" },
+    { id: "body", n: 6, name: "Bodyweight", icon: "scale" }
   ];
 
   var METRICS = [
@@ -51,7 +52,12 @@
     { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [15, 70] },
     { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", unit: "m", bench: [15, 80] },
     { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", unit: "m", bench: [12, 60] },
-    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [20, 180] }
+    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [20, 180] },
+
+    /* Neutral: no direction is "better", so it gets a chart and a latest
+     * value but no PB, no medals and no score of its own. What it does do is
+     * scale the strength benchmarks, which are written for 80kg. */
+    { id: "bodyweight", section: "body", name: "Bodyweight", unit: "kg", neutral: true }
   ];
 
   /* Units: how a value is typed, drawn and compared. */
@@ -123,6 +129,12 @@
     });
   });
 
+  FORMS.push({
+    id: "bodyweight", section: "body", title: "Bodyweight", art: "scale",
+    blurb: "Weigh in whenever you like — same scales, same time of day reads truest. Your strength scores adjust to it.",
+    fields: [{ metric: "bodyweight", label: "Weight", required: true }]
+  });
+
   /* One short "how to do it" video per activity — the shortest solid
    * technique clip we could find from a reputable coach, official Concept2
    * clips for the ergs. Every id was checked live before shipping; watch
@@ -185,6 +197,8 @@
     if (v) f.video = { url: "https://www.youtube.com/watch?v=" + v[0], by: v[1] };
     if (RACE[f.id]) f.race = RACE[f.id];
     if (TIMERS[f.id]) f.timer = TIMERS[f.id];
+    /* heavy triples need clock-watched rest, not guesswork */
+    if (f.section === "strength") f.rest = [120, 180, 300];
   });
 
   /* The full station list for the reference card — includes stations the
@@ -208,7 +222,7 @@
     m.list = m.name;
     m.short = m.short || m.name;
     m.better = UNITS[m.unit].better;
-    m.scored = !m.derived;
+    m.scored = !m.derived && !m.neutral;
     byId[m.id] = m;
   });
 
