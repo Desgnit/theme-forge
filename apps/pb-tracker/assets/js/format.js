@@ -10,6 +10,11 @@
   function parseTime(text) {
     var s = String(text).trim();
     if (!s) return null;
+    /* Phone number-pads have no colon, so the dot stands in for it:
+     * "9.09" means 9:09. Two digits after the dot, reading as valid
+     * seconds — a genuine decimal like "45.5" still means seconds. */
+    var dotted = s.match(/^(\d{1,3})\.([0-5]\d)$/);
+    if (dotted) return Number(dotted[1]) * 60 + Number(dotted[2]);
     if (!/^\d+(:[0-5]?\d){0,2}(\.\d+)?$/.test(s)) return null;
     var parts = s.split(":").map(parseFloat);
     if (parts.some(isNaN)) return null;

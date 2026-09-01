@@ -422,7 +422,7 @@
         (fld.required ? "" : ' <em class="opt">optional</em>') + "</span>" +
         '<span class="field-input">' +
         '<input id="fi-' + fld.metric + '" name="' + fld.metric + '" type="text" ' +
-        'inputmode="' + (u.input === "time" ? "numeric" : "decimal") + '" ' +
+        'inputmode="decimal" ' +
         'autocomplete="off" placeholder="' + esc(u.input === "time" ? "mm:ss" : "0") + '">' +
         (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
         "</span>" +
@@ -723,7 +723,7 @@
       '<form class="card form" id="edit-form" novalidate>' +
       '<label class="field" for="edit-value"><span class="field-label">Result</span>' +
       '<span class="field-input"><input id="edit-value" type="text" ' +
-      'inputmode="' + (u.input === "time" ? "numeric" : "decimal") + '" autocomplete="off" value="' +
+      'inputmode="decimal" autocomplete="off" value="' +
       esc(PB.formatValue(m.unit, entry.value)) + '">' +
       (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
       '</span><span class="hint" id="edit-hint">' + esc(u.hint) + "</span></label>" +
