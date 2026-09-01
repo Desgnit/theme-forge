@@ -30,7 +30,7 @@
 
     { id: "row2k_total", section: "ergs", name: "2km Row (Total Time)", short: "2km Row", unit: "time", bench: [600, 380] },
     { id: "row2k_pace", section: "ergs", name: "2km Row (Pace per 500m)", unit: "pace", derived: "row2k_total" },
-    { id: "ski2k_total", section: "ergs", name: "2km Ski (Total Time)", short: "2km Ski", unit: "time", bench: [660, 430] },
+    { id: "ski2k_total", section: "ergs", name: "2km Ski (Total Time)", short: "2km Ski", unit: "time", bench: [650, 415] },
     { id: "ski2k_pace", section: "ergs", name: "2km Ski (Pace per 500m)", unit: "pace", derived: "ski2k_total" },
 
     { id: "run5k_total", section: "run", name: "5km Run (Total Time)", short: "5km Run", unit: "time", bench: [2400, 1080] },
@@ -48,11 +48,11 @@
     { id: "ski60_cals", section: "tests", name: "60s Max Ski (Calories)", unit: "cals", bench: [12, 34] },
     { id: "row60_cals", section: "tests", name: "60s Max Cals Row", unit: "cals", bench: [12, 36] },
     { id: "wallball60", section: "tests", name: "60s Max Wall Balls", unit: "reps", bench: [12, 40] },
-    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", unit: "m", bench: [4, 30] },
-    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [5, 33] },
+    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", unit: "m", bench: [1, 35] },
+    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [7, 37] },
     { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", unit: "m", bench: [3, 25] },
     { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", unit: "m", bench: [5, 45] },
-    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [20, 180] },
+    { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [10, 130] },
 
     /* Neutral: no direction is "better", so it gets a chart and a latest
      * value but no PB, no medals and no score of its own. What it does do is

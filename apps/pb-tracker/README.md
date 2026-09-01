@@ -152,7 +152,7 @@ Treat the score as a way to compare you against you.
 | --- | --- | --- |
 | Average watts, 20 min bike | 80 W | 330 W |
 | 2km Row | 10:00 | 6:20 |
-| 2km Ski | 11:00 | 7:10 |
+| 2km Ski | 10:50 | 6:55 |
 | 5km Run | 40:00 | 18:00 |
 | 3RM Back Squat | 50 kg | 180 kg |
 | 3RM Bench Press | 30 kg | 130 kg |
@@ -161,11 +161,11 @@ Treat the score as a way to compare you against you.
 | 60s Max Ski | 12 cal | 34 cal |
 | 60s Max Row | 12 cal | 36 cal |
 | 60s Wall Balls | 12 reps | 40 reps |
-| 60s Burpee Broad Jumps | 4 m | 30 m |
-| 60s Walking Lunges (bodyweight) | 5 m | 33 m |
+| 60s Burpee Broad Jumps | 1 m | 35 m |
+| 60s Walking Lunges (bodyweight) | 7 m | 37 m |
 | 60s Sled Pull (103kg incl. sled) | 3 m | 25 m |
 | 60s Sled Push (152kg incl. sled) | 5 m | 45 m |
-| Dead Hang | 20 s | 180 s |
+| Dead Hang | 10 s | 130 s |
 
 **Changing them** is one edit: the `bench: [zero, hundred]` pair on each metric
 in `assets/js/data.js`. Times are in seconds. The ordering carries the
