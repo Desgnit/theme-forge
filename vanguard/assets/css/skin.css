@@ -1,0 +1,134 @@
+/* ==========================================================================
+   Vanguard — skin layer. Loaded AFTER assets/css/main.css on every page.
+   Practical + modern: moderate radius, a dashed "route-line" motif (like a
+   route drawn on a map), arrow-tipped buttons, bold stats, checklist ticks.
+   ========================================================================== */
+:root {
+  --co-radius: 0.375rem;                          /* moderate, practical corners */
+  --vg-route: rgb(var(--co-accent-dark) / 0.45);  /* dashed route-line colour */
+}
+
+/* Route-line motif: cards carry a dashed top edge, like a leg of the map. */
+.card {
+  border-radius: var(--co-radius);
+  border-top: 2px dashed var(--vg-route);
+}
+figure.card figcaption {
+  border-top: 2px dashed var(--vg-route);
+}
+
+/* Section titles are underlined by a short dashed route with an end-stop. */
+.section-title {
+  position: relative;
+  padding-bottom: 0.9rem;
+}
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 4.5rem;
+  border-top: 3px dashed rgb(var(--co-accent-dark));
+}
+.section-title.text-white::after {
+  border-top-color: rgb(var(--co-accent));
+}
+
+/* Footer rule and area chips join the route. */
+footer .border-t { border-top-style: dashed; }
+.spec-chip { border-style: dashed; border-radius: var(--co-radius); }
+
+/* --- Arrow-tipped buttons ------------------------------------------------- */
+.btn-accent::after,
+.btn-outline::after,
+.btn-ghost-light::after {
+  content: "\2192";
+  display: inline-block;
+  font-weight: 800;
+  transition: transform 0.18s ease;
+}
+.btn-accent:hover::after,
+.btn-outline:hover::after,
+.btn-ghost-light:hover::after {
+  transform: translateX(4px);
+}
+
+/* --- Bold stat numbers ----------------------------------------------------- */
+dl dd.font-display {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: rgb(var(--co-accent-dark));
+}
+
+/* --- hero v2: timeline hero + van band -------------------------------------
+   The homepage hero swaps its photo column for a 3-step "moving day"
+   mini-timeline joined by the skin's dashed route-line; the van photo moves
+   below the hero into a full-width band with the price strip overlaid. */
+.vg-hero-steps {
+  position: relative;
+  display: grid;
+  gap: 2.25rem;
+  padding-left: 3.4rem;
+  list-style: none;
+  margin: 0;
+}
+.vg-hero-steps::before {
+  /* the dashed route-line connecting the steps */
+  content: "";
+  position: absolute;
+  left: 1.2rem;
+  top: 1rem;
+  bottom: 1.4rem;
+  border-left: 3px dashed rgb(var(--co-accent) / 0.55);
+}
+.vg-hero-step { position: relative; }
+.vg-hero-step-dot {
+  position: absolute;
+  left: -3.4rem;
+  top: -0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 50%;
+  border: 2px dashed rgb(var(--co-accent));
+  background: rgb(var(--co-primary-dark));
+  color: rgb(var(--co-accent));
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.vg-van-band img {
+  display: block;
+  width: 100%;
+  height: clamp(240px, 34vw, 420px);
+  object-fit: cover;
+}
+.vg-van-band-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(var(--co-primary-dark) / 0.86);
+  border-top: 3px dashed rgb(var(--co-accent) / 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* --- Checklist ticks on card lists ---------------------------------------- */
+.card ul { margin-top: 0.9rem; display: grid; gap: 0.45rem; }
+.card ul li {
+  position: relative;
+  padding-left: 1.4rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: rgb(var(--co-ink-soft));
+}
+.card ul li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 800;
+  color: rgb(var(--co-accent-dark));
+}

@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scoop — Premium Shopify Theme for Supplement Brands · Theme Forge</title>
+<meta name="description" content="Static design preview of Scoop, a dark-first, volt-accented Shopify OS 2.0 theme for sports supplement stores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #121212;
+    --surface-2: #181818;
+    --volt: #c8ff16;
+    --volt-rgb: 200, 255, 22;
+    --ink: #ffffff;
+    --text: #e7e9e2;
+    --muted: rgba(231, 233, 226, 0.62);
+    --border: rgba(231, 233, 226, 0.14);
+    --border-strong: rgba(231, 233, 226, 0.32);
+    --display: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+    --body: 'Inter', 'Helvetica Neue', sans-serif;
+    --pad: clamp(1.25rem, 4vw, 3rem);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; }
+
+  .wrap { max-width: 1360px; margin-inline: auto; padding-inline: var(--pad); }
+
+  .kicker {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--volt);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    padding: 1em 2em;
+    font-family: var(--display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .btn--volt { background: var(--volt); color: #0a0a0a; }
+  .btn--volt:hover { background: #fff; box-shadow: 0 0 36px rgba(var(--volt-rgb), 0.4); }
+  .btn--ghost { border-color: rgba(255, 255, 255, 0.5); color: #fff; }
+  .btn--ghost:hover { border-color: var(--volt); color: var(--volt); }
+
+  /* ------ Announcement ------ */
+  .announce {
+    background: var(--volt);
+    color: #0a0a0a;
+    font-family: var(--display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0.65rem var(--pad);
+  }
+
+  /* ------ Header ------ */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 10, 10, 0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    min-height: 72px;
+  }
+  .logo {
+    font-family: var(--display);
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .logo span { color: var(--volt); }
+  .nav { display: none; justify-content: center; gap: 0.5rem; }
+  @media (min-width: 920px) { .nav { display: flex; } }
+  .nav a {
+    padding: 0.75rem 0.9rem;
+    font-family: var(--display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    transition: color 0.15s var(--ease);
+  }
+  .nav a:hover, .nav a.is-active { color: var(--volt); }
+  .header__icons { display: flex; align-items: center; gap: 0.4rem; }
+  .icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s var(--ease);
+  }
+  .icon-btn:hover { color: var(--volt); }
+  .icon-btn svg { width: 21px; height: 21px; }
+  .cart-count {
+    position: absolute;
+    top: 3px;
+    right: 1px;
+    min-width: 17px;
+    height: 17px;
+    padding-inline: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--volt);
+    color: #0a0a0a;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 999px;
+    line-height: 1;
+  }
+
+  /* ------ Hero ------ */
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(84vh, 780px);
+    overflow: hidden;
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+  }
+  .hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 65% 30%;
+  }
+  .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(100deg, rgba(10, 10, 10, 0.86) 8%, rgba(10, 10, 10, 0.45) 55%, rgba(10, 10, 10, 0.25) 100%),
+      linear-gradient(185deg, rgba(10, 10, 10, 0.6) 0%, rgba(10, 10, 10, 0.15) 40%, rgba(10, 10, 10, 0.96) 100%);
+  }
+  .hero__inner { position: relative; z-index: 2; width: 100%; padding-block: clamp(2.25rem, 4vw, 3.25rem) 0; }
+  .hero__content { max-width: 780px; }
+  .hero__kicker { margin-bottom: 1.1rem; }
+  .hero__title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(3.4rem, 1.6rem + 8.4vw, 7rem);
+    line-height: 0.94;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .hero__title em { font-style: normal; color: var(--volt); }
+  .hero__text {
+    max-width: 46ch;
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 1.3rem;
+  }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-bottom: clamp(1.8rem, 3vw, 2.2rem); }
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    padding-block: 1.05rem 1.5rem;
+    gap: 1.25rem 2rem;
+  }
+  @media (min-width: 760px) { .hero__stats { grid-template-columns: repeat(4, 1fr); } }
+  .stat__num {
+    font-family: var(--display);
+    font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--volt);
+    line-height: 1;
+  }
+  .stat__label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.5rem;
+  }
+
+  /* ------ Marquee ------ */
+  .marquee {
+    background: var(--volt);
+    overflow: hidden;
+    padding-block: 0.95rem;
+  }
+  .marquee__track { display: flex; width: max-content; animation: marquee 26s linear infinite; }
+  .marquee__group { display: flex; align-items: center; flex-shrink: 0; }
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #0a0a0a;
+    line-height: 1.1;
+  }
+  .marquee__item--outline { color: transparent; -webkit-text-stroke: 1.5px #0a0a0a; }
+  .marquee__sep { padding-inline: 1.6rem; color: #0a0a0a; -webkit-text-stroke: 0; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track { animation: none; width: auto; }
+    .marquee__group[aria-hidden='true'] { display: none; }
+  }
+
+  /* ------ Sections ------ */
+  .section { padding-block: clamp(4rem, 8vw, 6.5rem); }
+  .section__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.75rem;
+  }
+  .section__title {
+    font-family: var(--display);
+    font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.4rem);
+    font-weight: 700;
+    line-height: 1.02;
+    text-transform: uppercase;
+    color: #fff;
+    margin-top: 0.6rem;
+  }
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--volt);
+    border-bottom: 1px solid rgba(var(--volt-rgb), 0.4);
+    padding-bottom: 3px;
+    transition: border-color 0.15s var(--ease);
+  }
+  .link-arrow:hover { border-color: var(--volt); }
+  .link-arrow svg { width: 16px; height: 16px; transition: transform 0.18s var(--ease); }
+  .link-arrow:hover svg { transform: translateX(4px); }
+
+  /* ------ Product grid ------ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.25rem 1.25rem;
+  }
+  @media (min-width: 920px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .card { position: relative; }
+  .card__media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--surface);
+    margin-bottom: 1rem;
+  }
+  .card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s var(--ease);
+  }
+  .card:hover .card__media img { transform: scale(1.07); }
+  .card__badge {
+    position: absolute;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 2;
+    background: var(--volt);
+    color: #0a0a0a;
+    font-family: var(--display);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4em 0.85em;
+  }
+  .card__quick {
+    position: absolute;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    z-index: 2;
+    padding: 0.8em 1em;
+    text-align: center;
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(10, 10, 10, 0.88);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease), background 0.18s var(--ease), color 0.18s var(--ease);
+  }
+  .card:hover .card__quick, .card__quick:focus-visible { opacity: 1; transform: translateY(0); }
+  .card__quick:hover { background: var(--volt); color: #0a0a0a; border-color: var(--volt); }
+  .card__vendor {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--volt);
+    margin-bottom: 0.3rem;
+  }
+  .card__title {
+    font-family: var(--display);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #fff;
+    margin-bottom: 0.35rem;
+  }
+  .card__price {
+    font-family: var(--display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--volt);
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .card__compare { color: var(--muted); font-weight: 400; font-size: 0.85em; }
+
+  /* ------ Benefits panel ------ */
+  .benefits { background: var(--surface); border-block: 1px solid var(--border); }
+  .benefits__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 960px) { .benefits__grid { grid-template-columns: 1.05fr 1fr; gap: 5rem; } }
+  .benefits__title {
+    font-family: var(--display);
+    font-size: clamp(2.1rem, 1.4rem + 2.8vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.0;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0.7rem 0 1.4rem;
+  }
+  .benefits__title em { font-style: normal; color: var(--volt); }
+  .benefits__text { color: var(--muted); font-size: 1.05rem; max-width: 52ch; margin-bottom: 2rem; }
+  .facts {
+    border: 2px solid #fff;
+    background: var(--bg);
+    padding: 1.75rem 1.75rem 1.25rem;
+    box-shadow: 12px 12px 0 rgba(var(--volt-rgb), 0.16);
+  }
+  .facts__title {
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: #fff;
+    line-height: 1.05;
+  }
+  .facts__sub {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.35rem 0 0.9rem;
+  }
+  .facts__rows { border-top: 8px solid #fff; }
+  .facts__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .facts__row:last-child { border-bottom: 4px solid #fff; }
+  .facts__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .facts__name svg { width: 15px; height: 15px; color: var(--volt); flex-shrink: 0; }
+  .facts__value {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--volt);
+    white-space: nowrap;
+  }
+  .facts__foot { font-size: 0.7rem; color: var(--muted); margin-top: 0.9rem; }
+
+  /* ------ Image break ------ */
+  .break {
+    position: relative;
+    min-height: min(72vh, 640px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+  }
+  .break__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+  }
+  .break::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(185deg, rgba(10, 10, 10, 0.72) 0%, rgba(10, 10, 10, 0.18) 45%, rgba(10, 10, 10, 0.82) 100%);
+  }
+  .break__content { position: relative; z-index: 2; padding: var(--pad); }
+  .break__title {
+    font-family: var(--display);
+    font-size: clamp(3rem, 1.4rem + 9vw, 7.5rem);
+    font-weight: 700;
+    line-height: 0.94;
+    text-transform: uppercase;
+    letter-spacing: 0.005em;
+    color: transparent;
+    -webkit-text-stroke: 2px #fff;
+    margin-block: 0.9rem 1.6rem;
+  }
+  .break__title strong { color: var(--volt); -webkit-text-stroke: 0; font-weight: 700; }
+
+  /* ------ Testimonial ------ */
+  .quote { text-align: center; }
+  .quote__stars { display: flex; justify-content: center; gap: 4px; color: var(--volt); margin-bottom: 1.6rem; }
+  .quote__stars svg { width: 20px; height: 20px; }
+  .quote__text {
+    font-family: var(--display);
+    font-size: clamp(1.4rem, 1rem + 1.9vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.25;
+    color: #fff;
+    max-width: 26ch;
+    margin-inline: auto;
+    margin-bottom: 1.8rem;
+  }
+  .quote__text em { font-style: normal; color: var(--volt); }
+  .quote__author {
+    font-family: var(--display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .quote__meta { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.3rem; }
+
+  /* ------ Footer ------ */
+  .footer { background: #0d0d0d; border-top: 1px solid var(--border); color: rgba(255, 255, 255, 0.72); }
+  .footer__grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    padding-block: 4rem 2.75rem;
+  }
+  @media (min-width: 720px) { .footer__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 980px) { .footer__grid { grid-template-columns: 2fr 1fr 1fr 1.4fr; } }
+  .footer p { font-size: 0.85rem; max-width: 34ch; }
+  .footer__heading {
+    font-family: var(--display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .footer__menu li { margin-bottom: 0.55rem; font-size: 0.85rem; }
+  .footer__menu a:hover { color: var(--volt); }
+  .newsletter { display: flex; margin-top: 1rem; }
+  .newsletter input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.85em 1em;
+    font: inherit;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-strong);
+    border-right: none;
+    color: #fff;
+  }
+  .newsletter input::placeholder { color: rgba(255, 255, 255, 0.45); }
+  .newsletter button {
+    padding: 0 1.4em;
+    background: var(--volt);
+    border: none;
+    color: #0a0a0a;
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .newsletter button:hover { background: #fff; }
+  .footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding-block: 1.4rem;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .footer__note { letter-spacing: 0.04em; }
+  .footer__note strong { color: var(--volt); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Announcement bar -->
+  <div class="announce">Free UK shipping over £40 &nbsp;—&nbsp; Subscribe &amp; save 15%</div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap header__inner">
+      <a class="logo" href="#">Scoop<span>.</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a class="is-active" href="#">Shop</a>
+        <a href="#">Protein</a>
+        <a href="#">Pre-workout</a>
+        <a href="#">Recovery</a>
+        <a href="#">Lab results</a>
+      </nav>
+      <div class="header__icons">
+        <button class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20a7.6 7.6 0 0 1 14.4 0"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Cart, 2 items">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8h13l-.9 11a1.5 1.5 0 0 1-1.5 1.4H7.9A1.5 1.5 0 0 1 6.4 19L5.5 8Z"/><path d="M8.8 10V6.4a3.2 3.2 0 0 1 6.4 0V10"/></svg>
+          <span class="cart-count">2</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__media">
+      <img src="img/woman-weights.jpg" alt="Athlete grinding through heavy curls in a dark gym" fetchpriority="high">
+    </div>
+    <div class="wrap hero__inner">
+      <div class="hero__content">
+        <span class="kicker hero__kicker">Whey isolate — drop 003</span>
+        <h1 class="hero__title">Fuel the<br><em>obsession</em></h1>
+        <p class="hero__text">Clinically dosed protein. Third-party tested, batch by batch. Zero junk. Built for the ones who show up at 5am.</p>
+        <div class="hero__actions">
+          <a class="btn btn--volt" href="#stack">Shop the drop</a>
+          <a class="btn btn--ghost" href="#facts">Read the label</a>
+        </div>
+      </div>
+      <div class="hero__stats">
+        <div class="stat"><div class="stat__num">27g</div><div class="stat__label">Protein per scoop</div></div>
+        <div class="stat"><div class="stat__num">5.5g</div><div class="stat__label">BCAAs</div></div>
+        <div class="stat"><div class="stat__num">1.9g</div><div class="stat__label">Sugar</div></div>
+        <div class="stat"><div class="stat__num">0</div><div class="stat__label">Banned substances</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee" role="region" aria-label="Highlights ticker">
+    <div class="marquee__track">
+      <div class="marquee__group">
+        <span class="marquee__item">Lab tested<span class="marquee__sep" aria-hidden="true">•</span></span>
+        <span class="marquee__item marquee__item--outline">27g protein<span class="marquee__sep" aria-hidden="true">•</span></span>
+        <span class="marquee__item">Zero junk<span class="marquee__sep" aria-hidden="true">•</span></span>
+        <span class="marquee__item marquee__item--outline">Third-party verified<span class="marquee__sep" aria-hidden="true">•</span></span>
+        <span class="marquee__item">No fillers<span class="marquee__sep" aria-hidden="true">•</span></span>
+        <span class="marquee__item marquee__item--outline">Batch certified<span class="marquee__sep" aria-hidden="true">•</span></span>
+      </div>
+      <div class="marquee__group" aria-hidden="true">
+        <span class="marquee__item">Lab tested<span class="marquee__sep">•</span></span>
+        <span class="marquee__item marquee__item--outline">27g protein<span class="marquee__sep">•</span></span>
+        <span class="marquee__item">Zero junk<span class="marquee__sep">•</span></span>
+        <span class="marquee__item marquee__item--outline">Third-party verified<span class="marquee__sep">•</span></span>
+        <span class="marquee__item">No fillers<span class="marquee__sep">•</span></span>
+        <span class="marquee__item marquee__item--outline">Batch certified<span class="marquee__sep">•</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product grid -->
+  <section class="section" id="stack">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <span class="kicker">The stack</span>
+          <h2 class="section__title">Best sellers</h2>
+        </div>
+        <a class="link-arrow" href="#">
+          View all
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="card__media">
+            <img src="img/protein-scoop.jpg" alt="Whey isolate powder with dosing scoop" loading="lazy">
+            <button class="card__quick">Quick view</button>
+          </div>
+          <div class="card__vendor">Scoop Labs</div>
+          <h3 class="card__title">Whey Isolate — Vanilla Bean</h3>
+          <div class="card__price">£34.00</div>
+        </article>
+        <article class="card">
+          <div class="card__media">
+            <img src="img/supplement-powder.jpg" alt="Clear whey unflavoured powder" loading="lazy">
+            <button class="card__quick">Quick view</button>
+          </div>
+          <div class="card__vendor">Scoop Labs</div>
+          <h3 class="card__title">Clear Whey — Unflavoured</h3>
+          <div class="card__price">£29.00</div>
+        </article>
+        <article class="card">
+          <div class="card__media">
+            <span class="card__badge">Save 29%</span>
+            <img src="img/banana-shake.jpg" alt="Wild berry recovery protein shake" loading="lazy">
+            <button class="card__quick">Quick view</button>
+          </div>
+          <div class="card__vendor">Scoop Labs</div>
+          <h3 class="card__title">Recovery Blend — Wild Berry</h3>
+          <div class="card__price">£27.00 <s class="card__compare">£38.00</s></div>
+        </article>
+        <article class="card">
+          <div class="card__media">
+            <img src="img/smoothie-bowl.jpg" alt="Strawberry whey summer edition shake" loading="lazy">
+            <button class="card__quick">Quick view</button>
+          </div>
+          <div class="card__vendor">Scoop Labs</div>
+          <h3 class="card__title">Strawberry Whey — Summer Edition</h3>
+          <div class="card__price">£36.00</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits / nutrition panel -->
+  <section class="section benefits" id="facts">
+    <div class="wrap benefits__grid">
+      <div>
+        <span class="kicker">Full disclosure</span>
+        <h2 class="benefits__title">Read the label.<br><em>We dare you.</em></h2>
+        <p class="benefits__text">Every batch is third-party tested and every number is printed where you can see it. No proprietary blends, no fairy dust — just clinically dosed ingredients doing their job.</p>
+        <a class="btn btn--volt" href="#">See the lab results</a>
+      </div>
+      <div class="facts" role="region" aria-label="Supplement facts">
+        <p class="facts__title">Supplement facts</p>
+        <p class="facts__sub">Per 30g serving — vanilla whey isolate</p>
+        <ul class="facts__rows">
+          <li class="facts__row">
+            <span class="facts__name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Protein</span>
+            <span class="facts__value">27g</span>
+          </li>
+          <li class="facts__row">
+            <span class="facts__name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>BCAAs</span>
+            <span class="facts__value">5.5g</span>
+          </li>
+          <li class="facts__row">
+            <span class="facts__name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Sugar</span>
+            <span class="facts__value">1.9g</span>
+          </li>
+          <li class="facts__row">
+            <span class="facts__name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Calories</span>
+            <span class="facts__value">112</span>
+          </li>
+          <li class="facts__row">
+            <span class="facts__name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5 5.8v5.4c0 4.4 3 7.9 7 9.6 4-1.7 7-5.2 7-9.6V5.8L12 3.2Z"/><path d="m9 11.8 2.2 2.2L15.4 9"/></svg>Banned substances</span>
+            <span class="facts__value">0</span>
+          </li>
+        </ul>
+        <p class="facts__foot">* Independently verified. Certificates published for every batch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Full-width athlete break -->
+  <section class="break">
+    <img class="break__bg" src="img/athlete-chalk.jpg" alt="Athlete pressing a loaded barbell overhead" loading="lazy">
+    <div class="break__content">
+      <span class="kicker">Scoop athletes</span>
+      <h2 class="break__title">No <strong>shortcuts</strong><br>ever</h2>
+      <a class="btn btn--ghost" href="#">Meet the team</a>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="section">
+    <div class="wrap quote">
+      <div class="quote__stars" aria-label="5 out of 5 stars">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3.1 1.2-6.2L3 9.6l6.3-.8L12 3Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3.1 1.2-6.2L3 9.6l6.3-.8L12 3Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3.1 1.2-6.2L3 9.6l6.3-.8L12 3Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3.1 1.2-6.2L3 9.6l6.3-.8L12 3Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3.1 1.2-6.2L3 9.6l6.3-.8L12 3Z"/></svg>
+      </div>
+      <blockquote class="quote__text">“First protein that tastes clean, mixes with zero clumps — and <em>publishes the lab sheets</em> to prove it.”</blockquote>
+      <div class="quote__author">Dani K.</div>
+      <div class="quote__meta">Powerlifter — 3× national qualifier</div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <div>
+        <a class="logo" href="#">Scoop<span>.</span></a>
+        <p style="margin-top: 1rem;">Sports nutrition with the energy of a drop and the precision of a lab. Made in the UK, tested everywhere.</p>
+      </div>
+      <div>
+        <div class="footer__heading">Shop</div>
+        <ul class="footer__menu">
+          <li><a href="#">Protein</a></li>
+          <li><a href="#">Pre-workout</a></li>
+          <li><a href="#">Recovery</a></li>
+          <li><a href="#">Bundles</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__heading">The lab</div>
+        <ul class="footer__menu">
+          <li><a href="#">Batch certificates</a></li>
+          <li><a href="#">Our process</a></li>
+          <li><a href="#">Athletes</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__heading">Get the next drop first</div>
+        <p style="font-size: 0.85rem;">Restocks sell out in hours. Be first in line.</p>
+        <form class="newsletter" onsubmit="return false">
+          <input type="email" placeholder="Email address" aria-label="Email address">
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="wrap footer__bottom">
+      <span>© 2026 Scoop Demo Store. All rights reserved.</span>
+      <span class="footer__note"><strong>Static design preview</strong> — the real theme runs on Shopify.</span>
+    </div>
+  </footer>
+
+</body>
+</html>

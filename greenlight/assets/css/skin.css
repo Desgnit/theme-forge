@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Greenlight skin — loaded after main.css.
+   Optimistic, clear, traffic-light-inspired: friendly radii, a lit green
+   dot on every kicker, progress-bar underlines, L-plate stat badges and
+   soft mint section tints. Pure overrides — no HTML changes required.
+   ========================================================================== */
+
+:root {
+  --co-radius: 0.75rem;            /* friendlier corners everywhere */
+  --co-board: 240 250 244;         /* soft mint tint for banded sections */
+  --co-line: 219 234 224;          /* mint-leaning borders to match */
+}
+
+/* --- Kicker: three tiny traffic-light dots, the green one lit ----------- */
+.kicker::before {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  background-color: rgb(var(--co-line));
+  box-shadow:
+    12px 0 0 0 rgb(var(--co-line)),
+    24px 0 0 0 rgb(var(--co-accent)),
+    24px 0 0 3px rgb(var(--co-accent) / 0.25); /* the green one glows */
+  margin-right: 24px;              /* room for the box-shadow dots */
+}
+.bg-primary-dark .kicker::before,
+.\!text-accent.kicker::before {    /* on dark heroes: unlit dots go dim white */
+  background-color: rgb(255 255 255 / 0.25);
+  box-shadow:
+    12px 0 0 0 rgb(255 255 255 / 0.25),
+    24px 0 0 0 rgb(var(--co-accent)),
+    24px 0 0 3px rgb(var(--co-accent) / 0.35);
+}
+
+/* --- Section titles: green progress bar underline ------------------------ */
+.section-title::after {
+  content: "";
+  display: block;
+  margin-top: 0.85rem;
+  height: 5px;
+  width: 4.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    rgb(var(--co-accent)) 0 60%,
+    rgb(var(--co-accent) / 0.25) 60%);   /* a progress bar, most of the way there */
+}
+.section-title.text-white::after {
+  background: linear-gradient(90deg,
+    rgb(var(--co-accent)) 0 60%,
+    rgb(255 255 255 / 0.25) 60%);
+}
+
+/* --- Stat badges: L-plate inspired (white square, thin border) ---------- */
+dl.grid > div {
+  background: rgb(255 255 255);
+  border: 1.5px solid rgb(var(--co-primary) / 0.25);
+  border-radius: 0.5rem;
+  padding: 0.9rem 0.75rem;
+  text-align: center;
+}
+dl.grid > div > dd { color: rgb(var(--co-accent-dark)); }
+
+/* --- hero v2: dashboard hero + road band -----------------------------------
+   Centered headline with a wide 3-stat "dashboard" of L-plate style badges
+   (the existing dl.grid plates) directly under the CTAs; the learner-driver
+   photo leaves the hero and becomes a full-width band after the trust strip. */
+.gl-hero-center { text-align: center; }
+.gl-hero-dash {
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.gl-hero-dash > div > dt { color: rgb(var(--co-ink-soft)); }
+.gl-photo-band img {
+  display: block;
+  width: 100%;
+  height: clamp(240px, 32vw, 400px);
+  object-fit: cover;
+}
+
+/* --- Friendlier surfaces -------------------------------------------------- */
+.btn-accent, .btn-outline, .btn-ghost-light, .\!btn, .btn {
+  border-radius: 999px;            /* pill buttons: optimistic and clear */
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+.card { box-shadow: 0 1px 2px rgb(var(--co-primary) / 0.05); }
+.card:hover { border-color: rgb(var(--co-accent) / 0.45); }
+.spec-chip { border-radius: 999px; background-color: rgb(255 255 255); }

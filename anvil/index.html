@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anvil — Premium Shopify Theme by Theme Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;600;700&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1c1f; --ink-rgb:26,28,31;
+    --ember:#c2542e; --ember-rgb:194,84,46;
+    --bg:#faf9f6; --text:#26282c; --muted:rgba(38,40,44,.62);
+    --border:rgba(38,40,44,.12); --sale:#b3372b;
+    --radius:10px; --btn-radius:6px;
+    --shadow-md:0 6px 24px -8px rgba(16,18,20,.16);
+    --shadow-lg:0 24px 60px -16px rgba(16,18,20,.28);
+    --heading:'Work Sans',sans-serif; --body:'Assistant',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0}
+  body{font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--heading);color:var(--ink);line-height:1.12;letter-spacing:-.015em}
+  a{text-decoration:none;color:inherit}
+  img{max-width:100%}
+  .wrap{max-width:1280px;margin-inline:auto;padding-inline:clamp(1rem,4vw,2.5rem)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85em 1.8em;font-weight:700;font-size:.9rem;border-radius:var(--btn-radius);border:1px solid transparent;cursor:pointer;font-family:var(--body)}
+  .btn-ink{background:var(--ink);color:#fff}
+  .btn-white{background:#fff;color:var(--ink)}
+  .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+  .eyebrow{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ember)}
+
+  /* Announcement */
+  .announce{background:var(--ink);color:#fff;text-align:center;font-size:.85rem;padding:.55rem 1rem}
+  .announce strong{color:#f0b9a2}
+
+  /* Header */
+  header.site{position:relative;background:rgba(250,249,246,.97);border-bottom:1px solid var(--border);z-index:50}
+  .head-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;min-height:72px}
+  .logo{font-family:var(--heading);font-weight:700;font-size:1.45rem;letter-spacing:-.02em;color:var(--ink)}
+  .logo span{color:var(--ember)}
+  nav.main{display:flex;justify-content:center;gap:.4rem;font-size:.92rem;font-weight:700}
+  nav.main a{padding:.7rem .85rem;color:var(--text);border-radius:6px;display:inline-flex;align-items:center;gap:6px}
+  nav.main a.active{color:var(--ember)}
+  nav.main svg{opacity:.7}
+  .head-icons{display:flex;align-items:center;gap:.35rem}
+  .icon-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;color:var(--ink)}
+  .bubble{position:absolute;top:2px;right:0;min-width:18px;height:18px;padding-inline:4px;background:var(--ember);color:#fff;font-size:11px;font-weight:700;border-radius:99px;display:flex;align-items:center;justify-content:center}
+
+  /* Mega menu (shown open) */
+  .mega{position:absolute;left:0;right:0;top:100%;background:#fff;border-bottom:1px solid var(--border);box-shadow:var(--shadow-lg);z-index:60}
+  .mega-grid{display:grid;grid-template-columns:1fr 1fr 1.25fr 1.25fr;gap:2.5rem;padding-block:2.25rem}
+  .mega h4{font-family:var(--body);font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+  .mega ul{list-style:none;padding:0;font-size:.92rem}
+  .mega ul li{margin-bottom:.55rem}
+  .mega ul a:hover{color:var(--ember)}
+  .mega-card{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;display:flex;align-items:flex-end;color:#fff}
+  .mega-card .cap{position:relative;z-index:2;padding:1.1rem;width:100%;background:linear-gradient(transparent,rgba(10,11,12,.72))}
+  .mega-card .cap strong{display:block;font-family:var(--heading);font-size:1.05rem}
+  .mega-card .cap span{font-size:.78rem;opacity:.85}
+  .ph-a{background:linear-gradient(140deg,#3b3f46 0%,#6b5544 55%,#c2542e 130%)}
+  .ph-b{background:linear-gradient(150deg,#23303b 0%,#3f5c66 60%,#88a29b 130%)}
+
+  /* Hero */
+  .hero{position:relative;min-height:560px;display:flex;align-items:center;color:#fff;overflow:hidden;
+    background:
+      radial-gradient(1100px 500px at 85% 15%,rgba(194,84,46,.5),transparent 60%),
+      radial-gradient(900px 600px at 15% 90%,rgba(63,92,102,.55),transparent 65%),
+      linear-gradient(118deg,#1c1e22 0%,#2b2e34 52%,#4a3a30 100%)}
+  .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,11,13,.55),rgba(10,11,13,.05) 65%)}
+  .hero-inner{position:relative;z-index:2;max-width:620px;padding-block:5rem}
+  .hero .eyebrow{color:#f0b9a2}
+  .hero h1{color:#fff;font-size:clamp(2.5rem,5.2vw,4.1rem);margin:.8rem 0 1.1rem}
+  .hero p{font-size:1.15rem;opacity:.92;margin-bottom:1.8rem;max-width:46ch}
+  .hero-cta{display:flex;gap:.85rem;flex-wrap:wrap}
+  .hero-badge{position:absolute;right:clamp(1rem,6vw,5rem);bottom:3rem;z-index:2;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);border-radius:12px;padding:.9rem 1.2rem;font-size:.85rem;display:flex;gap:.7rem;align-items:center}
+  .hero-badge b{font-size:1.2rem;font-family:var(--heading)}
+
+  /* Value props strip */
+  .props{border-bottom:1px solid var(--border)}
+  .props .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding-block:1.4rem}
+  .prop{display:flex;align-items:center;gap:.8rem;font-size:.88rem;font-weight:600}
+  .prop .dot{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:rgba(var(--ember-rgb),.12);color:var(--ember)}
+
+  /* Sections */
+  section.block{padding-block:4.5rem}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(1.8rem,3vw,2.5rem)}
+  .sec-head .sub{color:var(--muted);margin-top:.4rem;max-width:52ch}
+  .view-all{font-weight:700;font-size:.9rem;color:var(--ink);display:inline-flex;align-items:center;gap:.4rem;border-bottom:2px solid var(--ember);padding-bottom:2px}
+
+  /* Product grid */
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem 1rem}
+  .card{position:relative}
+  .card-media{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:3/4;margin-bottom:.8rem}
+  .badge{position:absolute;top:.8rem;left:.8rem;z-index:2;padding:.28em .8em;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;color:#fff}
+  .badge.sale{background:var(--sale)}
+  .badge.out{background:var(--ink)}
+  .qv{position:absolute;left:.8rem;right:.8rem;bottom:.8rem;z-index:2;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.7em 1em;font-size:.85rem;font-weight:700;background:rgba(255,255,255,.95);color:var(--ink);border:none;border-radius:var(--btn-radius);box-shadow:var(--shadow-md);cursor:pointer}
+  .card .title{font-size:.92rem;font-weight:700;color:var(--text)}
+  .card .vendor{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .price{font-size:.9rem;font-weight:700;color:var(--ink)}
+  .price .was{color:var(--muted);font-weight:400;text-decoration:line-through;margin-left:.4rem}
+  .price.on-sale .now{color:var(--sale)}
+  .ph1{background:linear-gradient(145deg,#d8cfc2,#a89684 60%,#7d6b58)}
+  .ph2{background:linear-gradient(145deg,#c6cdd4,#8d9aa6 55%,#5d6b78)}
+  .ph3{background:linear-gradient(145deg,#d9d3c8,#b3a08e 50%,#c2542e 140%)}
+  .ph4{background:linear-gradient(145deg,#ccd4cd,#93a596 55%,#5f7364)}
+
+  /* Promo tiles */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .tile{position:relative;display:flex;align-items:flex-end;min-height:340px;border-radius:var(--radius);overflow:hidden;color:#fff}
+  .tile::after{content:'';position:absolute;inset:0;background:linear-gradient(185deg,rgba(8,9,10,0) 42%,rgba(8,9,10,.62))}
+  .tile .cap{position:relative;z-index:2;padding:1.5rem}
+  .tile h3{color:#fff;font-size:1.35rem;margin-bottom:.2rem}
+  .tile p{font-size:.88rem;opacity:.88;margin-bottom:.7rem}
+  .tile .go{font-size:.85rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.6);padding-bottom:2px}
+  .tile-a{background:linear-gradient(150deg,#31363d,#5c6670 70%,#8b959e 130%)}
+  .tile-b{background:linear-gradient(150deg,#4a3527,#8a5a3a 65%,#c2542e 130%)}
+  .tile-c{background:linear-gradient(150deg,#26333a,#41585f 60%,#6e8b8a 130%)}
+
+  /* Testimonials */
+  .quotes{background:var(--ink);color:rgba(255,255,255,.88)}
+  .quotes h2{color:#fff}
+  .quote-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .quote{padding:1.8rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius)}
+  .stars{color:var(--ember);letter-spacing:2px;margin-bottom:.8rem;font-size:.9rem}
+  .quote p{font-size:1.02rem;color:#fff;line-height:1.55;margin-bottom:1rem}
+  .quote .who{font-size:.85rem;font-weight:700;color:#fff}
+  .quote .meta{font-size:.72rem;opacity:.6}
+
+  /* Footer */
+  footer.site{background:var(--ink);color:rgba(255,255,255,.75);font-size:.9rem}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:2rem;padding-block:4rem 2.5rem}
+  .foot-grid h4{font-family:var(--body);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;margin-bottom:.9rem}
+  .foot-grid ul{list-style:none;padding:0}
+  .foot-grid li{margin-bottom:.5rem}
+  .foot-logo{font-family:var(--heading);font-weight:700;font-size:1.3rem;color:#fff}
+  .foot-logo span{color:var(--ember)}
+  .news-row{display:flex;gap:.5rem;margin-top:.9rem}
+  .news-row input{flex:1;padding:.7em 1em;border-radius:var(--btn-radius);border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;font-family:var(--body)}
+  .news-row input::placeholder{color:rgba(255,255,255,.5)}
+  .foot-bottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.12);padding-block:1.2rem;font-size:.78rem}
+  .pay{display:flex;gap:.45rem}
+  .pay span{display:inline-block;width:44px;height:26px;border-radius:4px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.15);font-size:.55rem;font-weight:700;color:#fff;display:inline-flex;align-items:center;justify-content:center;letter-spacing:.03em}
+  .demo-note{background:rgba(255,255,255,.06);border-top:1px solid rgba(255,255,255,.1);text-align:center;font-size:.75rem;padding:.6rem 1rem;color:rgba(255,255,255,.55)}
+
+  @media (max-width:900px){
+    .mega-grid{grid-template-columns:1fr 1fr}
+    .mega-card{display:none}
+    nav.main{display:none}
+    .head-row{grid-template-columns:auto auto}
+    .props .wrap,.grid4,.tiles,.quote-row{grid-template-columns:repeat(2,1fr)}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    .grid4,.tiles,.quote-row,.props .wrap{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="announce">Free shipping on orders over <strong>$75</strong> — no code needed</div>
+
+<header class="site">
+  <div class="wrap">
+    <div class="head-row">
+      <a class="logo" href="#">Anvil<span>.</span></a>
+      <nav class="main" aria-label="Primary">
+        <a class="active" href="#" aria-expanded="true">Shop
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9.5 6 6 6-6"/></svg>
+        </a>
+        <a href="#">New arrivals</a>
+        <a href="#">Sale</a>
+        <a href="#">Journal</a>
+        <a href="#">About</a>
+      </nav>
+      <div class="head-icons">
+        <span class="icon-btn" title="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/></svg>
+        </span>
+        <span class="icon-btn" title="Account">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20a7.6 7.6 0 0 1 14.4 0"/></svg>
+        </span>
+        <span class="icon-btn" title="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8h13l-.9 11a1.5 1.5 0 0 1-1.5 1.4H7.9A1.5 1.5 0 0 1 6.4 19L5.5 8Z"/><path d="M8.8 10V6.4a3.2 3.2 0 0 1 6.4 0V10"/></svg>
+          <span class="bubble">2</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mega menu, shown open for the preview -->
+  <div class="mega" role="region" aria-label="Shop menu">
+    <div class="wrap">
+      <div class="mega-grid">
+        <div>
+          <h4>By category</h4>
+          <ul>
+            <li><a href="#">Bags &amp; carry</a></li>
+            <li><a href="#">Everyday tools</a></li>
+            <li><a href="#">Workshop</a></li>
+            <li><a href="#">Apparel</a></li>
+            <li><a href="#">Accessories</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="#">Best sellers</a></li>
+            <li><a href="#">The Forge series</a></li>
+            <li><a href="#">Gift sets</a></li>
+            <li><a href="#">Last chance</a></li>
+          </ul>
+        </div>
+        <a class="mega-card ph-a" href="#">
+          <span class="cap"><strong>New arrivals</strong><span>Fresh this week</span></span>
+        </a>
+        <a class="mega-card ph-b" href="#">
+          <span class="cap"><strong>The Forge series</strong><span>Our flagship line</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap" style="width:100%">
+    <div class="hero-inner">
+      <span class="eyebrow">New season</span>
+      <h1>Gear that earns its keep</h1>
+      <p>Hard-wearing essentials, designed once and built properly. Free shipping over $75, two-year warranty on everything.</p>
+      <div class="hero-cta">
+        <a class="btn btn-white" href="#">Shop the collection</a>
+        <a class="btn btn-ghost" href="#">Our story</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badge"><b>4.9</b><span>★★★★★<br>2,300+ verified reviews</span></div>
+</section>
+
+<div class="props">
+  <div class="wrap">
+    <div class="prop"><span class="dot">🚚</span>Free shipping over $75</div>
+    <div class="prop"><span class="dot">🛡</span>2-year warranty</div>
+    <div class="prop"><span class="dot">↩</span>Free 30-day returns</div>
+    <div class="prop"><span class="dot">✉</span>Human support, 24h reply</div>
+  </div>
+</div>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Most wanted</span>
+        <h2>Best sellers</h2>
+        <p class="sub">The four products customers keep coming back for.</p>
+      </div>
+      <a class="view-all" href="#">View all →</a>
+    </div>
+    <div class="grid4">
+      <article class="card">
+        <div class="card-media ph1"><span class="badge sale">Save 25%</span></div>
+        <p class="vendor">Forge series</p>
+        <p class="title">Waxed Canvas Field Tote</p>
+        <p class="price on-sale"><span class="now" style="color:var(--sale)">$89</span><span class="was">$119</span></p>
+      </article>
+      <article class="card">
+        <div class="card-media ph2">
+          <button class="qv" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+            Quick view
+          </button>
+        </div>
+        <p class="vendor">Everyday carry</p>
+        <p class="title">Solid Brass Pocket Knife</p>
+        <p class="price">$64</p>
+      </article>
+      <article class="card">
+        <div class="card-media ph3"></div>
+        <p class="vendor">Forge series</p>
+        <p class="title">Hand-Stitched Card Wallet</p>
+        <p class="price">$48</p>
+      </article>
+      <article class="card">
+        <div class="card-media ph4"><span class="badge out">Sold out</span></div>
+        <p class="vendor">Workshop</p>
+        <p class="title">Machinist Desk Lamp</p>
+        <p class="price">$142</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="tiles">
+      <a class="tile tile-a" href="#">
+        <span class="cap"><h3>New arrivals</h3><p>Fresh this week</p><span class="go">Shop now →</span></span>
+      </a>
+      <a class="tile tile-b" href="#">
+        <span class="cap"><h3>Everyday carry</h3><p>Small tools, big difference</p><span class="go">Shop now →</span></span>
+      </a>
+      <a class="tile tile-c" href="#">
+        <span class="cap"><h3>Last chance</h3><p>Final units at final prices</p><span class="go">Shop the sale →</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="block quotes">
+  <div class="wrap">
+    <div class="sec-head"><h2>What customers say</h2></div>
+    <div class="quote-row">
+      <blockquote class="quote">
+        <div class="stars">★★★★★</div>
+        <p>"The quality genuinely surprised me. Ordered a second one for my brother a week later."</p>
+        <p class="who">Jamie R.</p><p class="meta">Verified buyer · Field Tote</p>
+      </blockquote>
+      <blockquote class="quote">
+        <div class="stars">★★★★★</div>
+        <p>"Shipping was quick and the packaging was flawless. This is how e-commerce should feel."</p>
+        <p class="who">Priya S.</p><p class="meta">Verified buyer · Pocket Knife</p>
+      </blockquote>
+      <blockquote class="quote">
+        <div class="stars">★★★★★</div>
+        <p>"I've bought from a lot of stores. The attention to detail here is on another level."</p>
+        <p class="who">Marcus T.</p><p class="meta">Verified buyer · Desk Lamp</p>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-logo">Anvil<span>.</span></p>
+        <p style="max-width:34ch;margin-top:.6rem">Built to convert. Designed to last. A premium Shopify OS 2.0 theme by Theme Forge.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul><li><a href="#">Best sellers</a></li><li><a href="#">New arrivals</a></li><li><a href="#">Gift sets</a></li><li><a href="#">Sale</a></li></ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul><li><a href="#">Shipping &amp; returns</a></li><li><a href="#">Warranty</a></li><li><a href="#">Contact</a></li><li><a href="#">FAQ</a></li></ul>
+      </div>
+      <div>
+        <h4>Stay in the loop</h4>
+        <p style="font-size:.85rem">New drops, restocks and subscriber-only offers.</p>
+        <div class="news-row">
+          <input type="email" placeholder="Your email address" aria-label="Email address">
+          <button class="btn btn-white" type="button">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Anvil Demo Store. All rights reserved.</span>
+      <div class="pay" aria-label="Payment methods">
+        <span>VISA</span><span>MC</span><span>AMEX</span><span>PAY</span><span>SHOP</span>
+      </div>
+    </div>
+  </div>
+  <div class="demo-note">Static design preview — the real theme runs on Shopify.</div>
+</footer>
+
+</body>
+</html>

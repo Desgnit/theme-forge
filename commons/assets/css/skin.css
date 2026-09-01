@@ -1,0 +1,78 @@
+/* Commons skin — warm village-noticeboard feel. Loads after main.css. */
+:root {
+  --co-paper: 253 250 243;   /* warm cream paper */
+  --co-board: 246 238 222;   /* cork-tinted board */
+  --co-line: 228 216 196;    /* warm pinboard lines */
+  --co-radius: 0.875rem;     /* gently rounded, like a well-thumbed card */
+}
+
+/* Community-poster headline scale */
+h1 {
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem) !important;
+  line-height: 1.08 !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.section-title { font-size: 2.5rem; line-height: 1.1; font-weight: 800; }
+
+/* Photo hero with a deep-green overlay so the poster type stays legible */
+main > section.bg-grid:first-of-type {
+  background-image:
+    linear-gradient(rgb(var(--co-primary-dark) / 0.85), rgb(var(--co-primary-dark) / 0.92)),
+    url("../img/hero.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Cards as notes pinned to the board: rounded, warm, accent tab on top */
+.card {
+  position: relative;
+  border-top: 4px solid rgb(var(--co-accent));
+  box-shadow: 0 2px 6px rgb(92 64 20 / 0.08), 0 10px 24px -18px rgb(92 64 20 / 0.35);
+}
+.card.bg-primary-dark { border-top-color: rgb(var(--co-accent)); }
+figure.card > img { border-bottom: 1px solid rgb(var(--co-line)); }
+
+/* Cork/cream section tints */
+body { background-color: rgb(var(--co-paper)); }
+section.bg-board, .bg-board { background-color: rgb(var(--co-board)); }
+.border-line { border-color: rgb(var(--co-line)); }
+
+/* Kickers as little noticeboard labels */
+.kicker { letter-spacing: 0.24em; }
+
+/* ==========================================================================
+   hero v2 — noticeboard hero
+   Full-bleed hall photo behind a cream "pinned notice" card, centred and
+   very slightly rotated, with the what's-on chips pinned along the hero's
+   bottom edge. Centring/rotation utilities are not in this theme's purged
+   main.css build, so they live here.
+   ========================================================================== */
+
+/* Lighter scrim than the old poster hero: the hall photo should read as a
+   photo now that the type sits on its own cream card. */
+main > section.hero-noticeboard.bg-grid:first-of-type {
+  background-image:
+    linear-gradient(rgb(var(--co-primary-dark) / 0.55), rgb(var(--co-primary-dark) / 0.72)),
+    url("../img/hero.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* The notice itself: cream card (accent pin-tab comes from .card above),
+   centred text, pinned a touch off-square. */
+.hero-notice {
+  text-align: center;
+  transform: rotate(-1deg);
+  box-shadow: 0 3px 8px rgb(20 24 16 / 0.25), 0 22px 44px -20px rgb(20 24 16 / 0.55);
+}
+.hero-notice .kicker { justify-content: center; }
+.hero-notice .max-w-xl { margin-left: auto; margin-right: auto; }
+
+/* What's-on chips row along the hero's bottom edge */
+.hero-whatson { background-color: rgb(var(--co-primary-dark) / 0.55); }
+.hero-whatson .spec-chip {
+  box-shadow: 0 1px 3px rgb(20 24 16 / 0.3);
+  transform: rotate(0.5deg);
+}
+.hero-whatson li:nth-child(2n) .spec-chip { transform: rotate(-0.75deg); }

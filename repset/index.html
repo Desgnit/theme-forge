@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repset — Gym Block Theme by Theme Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+	:root {
+		--charcoal: #131313;
+		--asphalt: #1c1c1c;
+		--steel: #262626;
+		--crimson: #e02424;
+		--crimson-deep: #b31b1b;
+		--concrete: #8a8a8a;
+		--chalk: #d6d6d6;
+		--white: #ffffff;
+		--display: 'Oswald', 'Arial Narrow', sans-serif;
+		--body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+	}
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+	html { scroll-behavior: smooth; }
+	body {
+		background: var(--charcoal);
+		color: var(--white);
+		font-family: var(--body);
+		font-size: 17px;
+		line-height: 1.65;
+		-webkit-font-smoothing: antialiased;
+	}
+	img { max-width: 100%; display: block; }
+	a { color: inherit; text-decoration: none; }
+	.wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+	h1, h2, h3, h4 {
+		font-family: var(--display);
+		text-transform: uppercase;
+		line-height: 1.1;
+		letter-spacing: 0.01em;
+	}
+	.kicker {
+		font-family: var(--display);
+		font-size: 13px;
+		font-weight: 600;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+		color: var(--crimson);
+	}
+	.rule {
+		width: 72px; height: 5px;
+		background: var(--crimson);
+		border: none;
+		margin: 22px 0;
+	}
+	.rule.center { margin-left: auto; margin-right: auto; }
+	.btn {
+		display: inline-block;
+		font-family: var(--display);
+		font-size: 15px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		padding: 15px 34px;
+		background: var(--crimson);
+		color: var(--white);
+		transition: background 0.25s ease, transform 0.25s ease;
+	}
+	.btn:hover { background: var(--crimson-deep); transform: translateY(-2px); }
+	.btn.ghost {
+		background: transparent;
+		border: 2px solid rgba(255,255,255,0.5);
+		padding: 13px 32px;
+	}
+	.btn.ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+
+	/* ---------- Header ---------- */
+	.site-header {
+		position: absolute;
+		top: 0; left: 0; right: 0;
+		z-index: 10;
+		border-bottom: 1px solid rgba(255,255,255,0.12);
+		background: linear-gradient(180deg, rgba(19,19,19,0.72), rgba(19,19,19,0));
+	}
+	.site-header .wrap {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 84px;
+	}
+	.brand {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 24px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		display: flex; align-items: center; gap: 10px;
+	}
+	.brand .slash { color: var(--crimson); }
+	.nav { display: flex; align-items: center; gap: 36px; }
+	.nav a {
+		font-family: var(--display);
+		font-size: 14px;
+		font-weight: 500;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--chalk);
+		transition: color 0.2s;
+	}
+	.nav a:hover { color: var(--crimson); }
+	.nav .btn { padding: 11px 24px; font-size: 13px; }
+
+	/* ---------- Hero ---------- */
+	.hero {
+		position: relative;
+		min-height: 720px;
+		height: 100vh;
+		max-height: 900px;
+		display: flex;
+		align-items: center;
+		isolation: isolate;
+		overflow: hidden;
+	}
+	.hero::before {
+		content: "";
+		position: absolute; inset: 0;
+		background: url('img/gym-dark-interior.jpg') center 40% / cover no-repeat;
+		z-index: -2;
+		transform: scale(1.02);
+	}
+	.hero::after {
+		content: "";
+		position: absolute; inset: 0;
+		background:
+			linear-gradient(90deg, rgba(19,19,19,0.85) 0%, rgba(19,19,19,0.55) 55%, rgba(19,19,19,0.35) 100%),
+			linear-gradient(180deg, rgba(19,19,19,0.35) 0%, rgba(19,19,19,0.15) 55%, var(--charcoal) 100%);
+		z-index: -1;
+	}
+	.hero-inner { padding: 130px 0 90px; max-width: 900px; }
+	.hero h1 {
+		font-size: clamp(64px, 9.5vw, 128px);
+		font-weight: 700;
+		line-height: 0.98;
+		margin: 20px 0 0;
+	}
+	.hero h1 .accent { color: var(--crimson); }
+	.hero p.lead {
+		max-width: 560px;
+		margin-top: 26px;
+		font-size: 19px;
+		color: var(--chalk);
+	}
+	.hero-cta { margin-top: 40px; display: flex; gap: 16px; flex-wrap: wrap; }
+	.hero-meta {
+		margin-top: 56px;
+		display: flex; gap: 40px; flex-wrap: wrap;
+		font-family: var(--display);
+		font-size: 13px; font-weight: 500;
+		letter-spacing: 0.16em; text-transform: uppercase;
+		color: var(--concrete);
+	}
+	.hero-meta b { color: var(--white); font-weight: 600; }
+
+	/* ---------- Hours strip ---------- */
+	.hours {
+		background: var(--steel);
+		border-top: 1px solid #2e2e2e;
+		border-bottom: 1px solid #2e2e2e;
+	}
+	.hours .wrap {
+		display: flex; flex-wrap: wrap; gap: 18px 48px;
+		align-items: center; justify-content: space-between;
+		padding-top: 20px; padding-bottom: 20px;
+		font-family: var(--display);
+		font-size: 14px; font-weight: 500;
+		letter-spacing: 0.12em; text-transform: uppercase;
+	}
+	.hours .label { color: var(--crimson); font-weight: 600; letter-spacing: 0.3em; }
+	.hours .dim { color: var(--concrete); }
+
+	/* ---------- Stats band ---------- */
+	.stats { background: linear-gradient(135deg, var(--crimson) 0%, #8f1414 100%); }
+	.stats .wrap {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 40px;
+		padding-top: 72px; padding-bottom: 72px;
+	}
+	.stat .num {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: clamp(48px, 5.5vw, 76px);
+		line-height: 1;
+	}
+	.stat .cap {
+		margin-top: 10px;
+		font-family: var(--display);
+		font-size: 13px; font-weight: 600;
+		letter-spacing: 0.26em; text-transform: uppercase;
+		color: rgba(255,255,255,0.85);
+	}
+
+	/* ---------- Sections ---------- */
+	section.block { padding: 110px 0; }
+	.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; flex-wrap: wrap; margin-bottom: 56px; }
+	.section-head h2 { font-size: clamp(38px, 4.5vw, 56px); font-weight: 700; margin-top: 14px; }
+	.section-head .side { max-width: 420px; color: var(--concrete); font-size: 16px; }
+
+	/* Classes */
+	.classes-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 26px;
+	}
+	.class-card {
+		background: var(--asphalt);
+		border: 1px solid #262626;
+		overflow: hidden;
+		display: flex; flex-direction: column;
+		transition: transform 0.3s ease, border-color 0.3s ease;
+	}
+	.class-card:hover { transform: translateY(-6px); border-color: var(--crimson); }
+	.class-card .thumb { position: relative; aspect-ratio: 4/3; overflow: hidden; }
+	.class-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+	.class-card:hover .thumb img { transform: scale(1.06); }
+	.class-card .thumb::after {
+		content: "";
+		position: absolute; inset: 0;
+		background: linear-gradient(180deg, rgba(19,19,19,0) 55%, rgba(19,19,19,0.65) 100%);
+	}
+	.class-card .body { padding: 26px 26px 30px; }
+	.class-card h3 { font-size: 24px; font-weight: 600; }
+	.class-card p { margin-top: 10px; color: var(--concrete); font-size: 15px; }
+	.class-card .times {
+		margin-top: 16px;
+		font-family: var(--display);
+		font-size: 13px; font-weight: 600;
+		letter-spacing: 0.14em; text-transform: uppercase;
+		color: var(--crimson);
+	}
+	.classes-grid .class-card.wide { grid-column: span 1; }
+	.classes-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 26px; }
+	.classes-row2 .thumb { aspect-ratio: 21/9; }
+
+	/* Pricing */
+	.pricing { background: var(--asphalt); }
+	.pricing .section-head { justify-content: center; text-align: center; flex-direction: column; align-items: center; }
+	.tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; align-items: center; }
+	.tier {
+		background: var(--charcoal);
+		border: 1px solid #2e2e2e;
+		padding: 44px 36px;
+	}
+	.tier h3 {
+		font-size: 15px; font-weight: 600;
+		letter-spacing: 0.24em;
+		color: var(--concrete);
+	}
+	.tier .price {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 72px; line-height: 1;
+		margin: 18px 0 6px;
+	}
+	.tier .price small {
+		font-size: 20px; font-weight: 500;
+		color: var(--concrete);
+		letter-spacing: 0.05em;
+	}
+	.tier ul { list-style: none; margin: 22px 0 30px; }
+	.tier li {
+		padding: 9px 0 9px 26px;
+		position: relative;
+		color: var(--concrete);
+		font-size: 15px;
+		border-bottom: 1px solid rgba(255,255,255,0.07);
+	}
+	.tier li::before {
+		content: "//";
+		position: absolute; left: 0;
+		font-family: var(--display);
+		font-weight: 700;
+		color: var(--crimson);
+	}
+	.tier .btn { width: 100%; text-align: center; }
+	.tier.featured {
+		background: linear-gradient(160deg, var(--crimson) 0%, #971616 100%);
+		border: none;
+		padding: 58px 36px;
+		transform: scale(1.03);
+		box-shadow: 0 30px 60px rgba(224,36,36,0.25);
+	}
+	.tier.featured h3, .tier.featured li, .tier.featured .price small { color: rgba(255,255,255,0.9); }
+	.tier.featured li::before { color: var(--white); }
+	.tier.featured li { border-bottom-color: rgba(255,255,255,0.2); }
+	.tier.featured .flag {
+		font-family: var(--display);
+		font-size: 12px; font-weight: 600;
+		letter-spacing: 0.3em; text-transform: uppercase;
+		background: var(--charcoal);
+		display: inline-block;
+		padding: 6px 14px;
+		margin-bottom: 18px;
+	}
+	.tier.featured .btn { background: var(--charcoal); }
+	.tier.featured .btn:hover { background: #000; }
+	.pricing .fine { text-align: center; margin-top: 40px; color: var(--concrete); font-size: 14px; }
+
+	/* Trainers */
+	.trainers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+	.trainer { position: relative; overflow: hidden; }
+	.trainer .photo { aspect-ratio: 3/4; overflow: hidden; }
+	.trainer img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(35%) contrast(1.05); transition: transform 0.5s ease, filter 0.5s ease; }
+	.trainer:hover img { transform: scale(1.05); filter: grayscale(0%) contrast(1); }
+	.trainer .photo { position: relative; }
+	.trainer .photo::after {
+		content: "";
+		position: absolute; inset: 0;
+		background: linear-gradient(180deg, rgba(19,19,19,0) 55%, rgba(19,19,19,0.8) 100%);
+	}
+	.trainer h3 { margin-top: 18px; font-size: 22px; font-weight: 600; }
+	.trainer .role {
+		font-family: var(--display);
+		font-size: 12px; font-weight: 600;
+		letter-spacing: 0.24em; text-transform: uppercase;
+		color: var(--crimson);
+		margin-top: 4px;
+	}
+	.trainer p { margin-top: 10px; color: var(--concrete); font-size: 14px; }
+
+	/* Testimonial */
+	.testimonial { background: var(--asphalt); display: grid; grid-template-columns: 44% 56%; }
+	.testimonial .photo {
+		background: url('img/kettlebell-swing.jpg') center / cover no-repeat;
+		min-height: 480px;
+		position: relative;
+	}
+	.testimonial .photo::after {
+		content: "";
+		position: absolute; inset: 0;
+		background: linear-gradient(90deg, rgba(28,28,28,0) 60%, var(--asphalt) 100%);
+	}
+	.testimonial .quotes { padding: 96px 88px; }
+	.testimonial h2 { font-size: clamp(34px, 4vw, 48px); font-weight: 700; margin-top: 14px; }
+	blockquote {
+		border-left: 4px solid var(--crimson);
+		padding-left: 26px;
+		margin-top: 42px;
+	}
+	blockquote p { font-size: 20px; color: var(--chalk); }
+	blockquote cite {
+		display: block;
+		margin-top: 14px;
+		font-style: normal;
+		font-family: var(--display);
+		font-size: 12px; font-weight: 600;
+		letter-spacing: 0.24em; text-transform: uppercase;
+		color: var(--concrete);
+	}
+
+	/* CTA */
+	.cta {
+		position: relative;
+		isolation: isolate;
+		text-align: center;
+		padding: 140px 32px;
+		overflow: hidden;
+	}
+	.cta::before {
+		content: "";
+		position: absolute; inset: 0; z-index: -2;
+		background: url('img/team-high-five.jpg') center / cover no-repeat;
+	}
+	.cta::after {
+		content: "";
+		position: absolute; inset: 0; z-index: -1;
+		background: rgba(19,19,19,0.78);
+	}
+	.cta h2 { font-size: clamp(44px, 6vw, 80px); font-weight: 700; margin-top: 16px; line-height: 1; }
+	.cta p { max-width: 560px; margin: 22px auto 0; color: var(--chalk); font-size: 19px; }
+	.cta .btn { margin-top: 38px; font-size: 17px; padding: 18px 44px; }
+
+	/* Footer */
+	footer { border-top: 1px solid #262626; padding: 90px 0 40px; }
+	.foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 56px; }
+	footer h3 { font-size: 26px; font-weight: 700; }
+	footer h4 {
+		font-size: 14px; font-weight: 600;
+		letter-spacing: 0.2em;
+		margin-bottom: 18px;
+	}
+	footer p, footer li { color: var(--concrete); font-size: 14.5px; }
+	footer ul { list-style: none; }
+	footer li { padding: 5px 0; }
+	footer li a:hover { color: var(--crimson); }
+	.foot-rule { width: 60px; height: 4px; background: var(--crimson); border: none; margin: 18px 0; }
+	.socials { display: flex; gap: 14px; margin-bottom: 18px; }
+	.socials a {
+		width: 40px; height: 40px;
+		border: 1px solid #333;
+		display: grid; place-items: center;
+		font-family: var(--display);
+		font-size: 13px; font-weight: 600;
+		color: var(--chalk);
+		transition: all 0.25s;
+	}
+	.socials a:hover { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+	.foot-bottom {
+		margin-top: 70px;
+		padding-top: 26px;
+		border-top: 1px solid #262626;
+		display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+		color: var(--concrete); font-size: 13.5px;
+	}
+
+	@media (max-width: 1024px) {
+		.stats .wrap { grid-template-columns: repeat(2, 1fr); }
+		.classes-grid { grid-template-columns: repeat(2, 1fr); }
+		.trainers-grid { grid-template-columns: repeat(2, 1fr); }
+		.tiers { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; }
+		.tier.featured { transform: none; }
+		.testimonial { grid-template-columns: 1fr; }
+		.testimonial .quotes { padding: 64px 32px; }
+		.foot-grid { grid-template-columns: 1fr 1fr; }
+	}
+	@media (max-width: 640px) {
+		.nav a:not(.btn) { display: none; }
+		.classes-grid, .classes-row2 { grid-template-columns: 1fr; }
+		.trainers-grid { grid-template-columns: 1fr; }
+		.stats .wrap { grid-template-columns: 1fr; }
+		.foot-grid { grid-template-columns: 1fr; }
+	}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+	<div class="wrap">
+		<a class="brand" href="#"><span class="slash">//</span> Forge House Gym</a>
+		<nav class="nav">
+			<a href="#classes">Classes</a>
+			<a href="#membership">Membership</a>
+			<a href="#coaches">Coaches</a>
+			<a href="#contact">Contact</a>
+			<a class="btn" href="#membership">Start Free Trial</a>
+		</nav>
+	</div>
+</header>
+
+<section class="hero">
+	<div class="wrap">
+		<div class="hero-inner">
+			<p class="kicker">Forge House Gym — Ancoats, Manchester</p>
+			<h1>Train like<br>you <span class="accent">mean it</span></h1>
+			<p class="lead">No mirrors for posing. No lounge music. 12,000 square feet of iron, chalk and coaching that actually makes you stronger.</p>
+			<div class="hero-cta">
+				<a class="btn" href="#membership">Start your free week</a>
+				<a class="btn ghost" href="#classes">View the timetable</a>
+			</div>
+			<div class="hero-meta">
+				<span><b>05:30</b> doors open</span>
+				<span><b>60+</b> classes a week</span>
+				<span><b>14</b> max per class</span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div class="hours">
+	<div class="wrap">
+		<span class="label">Opening hours</span>
+		<span>Mon–Fri 05:30–22:00</span>
+		<span>Sat 07:00–20:00</span>
+		<span>Sun 08:00–18:00</span>
+		<span class="dim">Bank hols 09:00–16:00</span>
+	</div>
+</div>
+
+<section class="stats">
+	<div class="wrap">
+		<div class="stat"><div class="num">1,400+</div><div class="cap">Active members</div></div>
+		<div class="stat"><div class="num">60+</div><div class="cap">Classes per week</div></div>
+		<div class="stat"><div class="num">12,000</div><div class="cap">Sq ft training floor</div></div>
+		<div class="stat"><div class="num">14</div><div class="cap">Coaches on staff</div></div>
+	</div>
+</section>
+
+<section class="block" id="classes">
+	<div class="wrap">
+		<div class="section-head">
+			<div>
+				<p class="kicker">The Programme</p>
+				<h2>Pick your fight</h2>
+				<hr class="rule">
+			</div>
+			<p class="side">Five programmes, one standard. Every class is capped at 14 so the coach can actually coach. Book through the app up to seven days ahead.</p>
+		</div>
+
+		<div class="classes-grid">
+			<article class="class-card">
+				<div class="thumb"><img src="img/barbell-squat.jpg" alt="Athlete under a heavy barbell back squat"></div>
+				<div class="body">
+					<h3>Strength Foundations</h3>
+					<p>Squat, press, hinge, pull. Barbell technique built from the ground up over an 8-week cycle.</p>
+					<div class="times">Mon / Wed / Fri — 06:15 &amp; 18:30</div>
+				</div>
+			</article>
+			<article class="class-card">
+				<div class="thumb"><img src="img/battle-ropes.jpg" alt="Athlete slamming battle ropes"></div>
+				<div class="body">
+					<h3>Conditioning</h3>
+					<p>45 minutes of ropes, sleds, ergs and bad decisions. Scaled to every level, brutal at all of them.</p>
+					<div class="times">Daily — 07:00, 12:15 &amp; 19:30</div>
+				</div>
+			</article>
+			<article class="class-card">
+				<div class="thumb"><img src="img/boxing-training.jpg" alt="Boxer working the heavy bag"></div>
+				<div class="body">
+					<h3>Boxing</h3>
+					<p>Bag work, pads and footwork with amateur-circuit coaches. Sparring optional, sweat is not.</p>
+					<div class="times">Tue / Thu — 18:00 · Sat — 10:00</div>
+				</div>
+			</article>
+		</div>
+		<div class="classes-row2">
+			<article class="class-card">
+				<div class="thumb"><img src="img/deadlift-setup.jpg" alt="Lifter setting up for a heavy deadlift"></div>
+				<div class="body">
+					<h3>Olympic Lifting Club</h3>
+					<p>Snatch and clean &amp; jerk under a BWL Level 2 coach. Platforms, comp bars, video review.</p>
+					<div class="times">Tue / Thu — 19:15 · Sun — 09:30</div>
+				</div>
+			</article>
+			<article class="class-card">
+				<div class="thumb"><img src="img/gym-rack-row.jpg" alt="Row of squat racks on the open gym floor"></div>
+				<div class="body">
+					<h3>Open Gym</h3>
+					<p>Fourteen racks, six platforms, calibrated plates and no time limit. Run your own programme.</p>
+					<div class="times">Every day — all opening hours</div>
+				</div>
+			</article>
+		</div>
+	</div>
+</section>
+
+<section class="block pricing" id="membership">
+	<div class="wrap">
+		<div class="section-head">
+			<p class="kicker">Membership</p>
+			<h2>No contracts. No nonsense.</h2>
+			<hr class="rule center">
+			<p class="side">Rolling monthly memberships. Cancel with 30 days' notice. Every plan starts with a free week on the floor.</p>
+		</div>
+
+		<div class="tiers">
+			<div class="tier">
+				<h3>Off-Peak</h3>
+				<div class="price">£29<small>/mo</small></div>
+				<ul>
+					<li>Open gym 09:00–16:00 weekdays</li>
+					<li>Full weekend access</li>
+					<li>2 coached classes per week</li>
+					<li>App booking &amp; tracking</li>
+				</ul>
+				<a class="btn ghost" href="#contact">Choose Off-Peak</a>
+			</div>
+			<div class="tier featured">
+				<span class="flag">Most popular</span>
+				<h3>Unlimited</h3>
+				<div class="price">£39<small>/mo</small></div>
+				<ul>
+					<li>Open gym — all opening hours</li>
+					<li>Unlimited coached classes</li>
+					<li>Boxing &amp; Oly Club included</li>
+					<li>Free guest pass every month</li>
+					<li>Member rates on workshops</li>
+				</ul>
+				<a class="btn" href="#contact">Choose Unlimited</a>
+			</div>
+			<div class="tier">
+				<h3>All-Access +</h3>
+				<div class="price">£59<small>/mo</small></div>
+				<ul>
+					<li>Everything in Unlimited</li>
+					<li>Monthly 1-to-1 coaching session</li>
+					<li>Personalised programme</li>
+					<li>InBody scan every 8 weeks</li>
+				</ul>
+				<a class="btn ghost" href="#contact">Choose All-Access</a>
+			</div>
+		</div>
+		<p class="fine">Student and NHS discounts with valid ID · Day pass £12 · 10-visit punch card £90</p>
+	</div>
+</section>
+
+<section class="block" id="coaches">
+	<div class="wrap">
+		<div class="section-head">
+			<div>
+				<p class="kicker">The Coaches</p>
+				<h2>People who put in the reps</h2>
+				<hr class="rule">
+			</div>
+			<p class="side">Every coach on the floor holds nationally recognised qualifications — and every one of them still trains here.</p>
+		</div>
+
+		<div class="trainers-grid">
+			<article class="trainer">
+				<div class="photo"><img src="img/trainer-portrait.jpg" alt="Head coach Marcus Oyelaran"></div>
+				<h3>Marcus Oyelaran</h3>
+				<div class="role">Head Coach · Strength</div>
+				<p>Former GB U23 powerlifter. 12 years coaching, 600kg+ club founder.</p>
+			</article>
+			<article class="trainer">
+				<div class="photo"><img src="img/woman-weights.jpg" alt="Conditioning lead Erin Caldwell"></div>
+				<h3>Erin Caldwell</h3>
+				<div class="role">Conditioning Lead</div>
+				<p>CrossFit L3 and ex-national rower. Runs the 07:00 class and enjoys it.</p>
+			</article>
+			<article class="trainer">
+				<div class="photo"><img src="img/athlete-portrait-dark.jpg" alt="Boxing coach Danny Whitfield"></div>
+				<h3>Danny Whitfield</h3>
+				<div class="role">Boxing Coach</div>
+				<p>42 amateur bouts, England Boxing Level 2. Pads sharp enough to fix your footwork.</p>
+			</article>
+			<article class="trainer">
+				<div class="photo"><img src="img/athlete-chalk.jpg" alt="Olympic lifting coach Priya Shah"></div>
+				<h3>Priya Shah</h3>
+				<div class="role">Olympic Lifting</div>
+				<p>BWL Level 2, English Championships qualifier at 59kg. Obsessive about bar paths.</p>
+			</article>
+		</div>
+	</div>
+</section>
+
+<section class="testimonial">
+	<div class="photo" role="img" aria-label="Member mid kettlebell swing"></div>
+	<div class="quotes">
+		<p class="kicker">Word on the floor</p>
+		<h2>Members don't lie</h2>
+		<blockquote>
+			<p>"I joined for the free week and stayed three years. My deadlift went from 80kg to 170kg, and the 6am crew is the best part of my day."</p>
+			<cite>Sophie M. — member since 2023</cite>
+		</blockquote>
+		<blockquote>
+			<p>"Proper coaching, proper kit, zero attitude. Danny rebuilt my jab in four weeks and I finally stopped dropping my right hand."</p>
+			<cite>Adeel K. — boxing programme</cite>
+		</blockquote>
+	</div>
+</section>
+
+<section class="cta">
+	<p class="kicker">First week free — no card required</p>
+	<h2>Stop scrolling.<br>Start lifting.</h2>
+	<p>Book your free week, meet the coaches, and see if Forge House is your kind of loud.</p>
+	<a class="btn" href="#membership">Claim your free week</a>
+</section>
+
+<footer id="contact">
+	<div class="wrap">
+		<div class="foot-grid">
+			<div>
+				<h3><span style="color:var(--crimson)">//</span> Forge House Gym</h3>
+				<hr class="foot-rule">
+				<p>Unit 7, Ironworks Yard, Pollard Street<br>Ancoats, Manchester M4 7DB</p>
+				<p style="margin-top:12px">0161 496 0842<br>train@forgehousegym.co.uk</p>
+			</div>
+			<div>
+				<h4>Opening Hours</h4>
+				<ul>
+					<li>Mon–Fri — 05:30–22:00</li>
+					<li>Saturday — 07:00–20:00</li>
+					<li>Sunday — 08:00–18:00</li>
+					<li>Bank holidays — 09:00–16:00</li>
+				</ul>
+			</div>
+			<div>
+				<h4>Explore</h4>
+				<ul>
+					<li><a href="#classes">Class timetable</a></li>
+					<li><a href="#membership">Membership</a></li>
+					<li><a href="#coaches">Coaching team</a></li>
+					<li><a href="#">Personal training</a></li>
+					<li><a href="#">Day passes</a></li>
+				</ul>
+			</div>
+			<div>
+				<h4>Follow</h4>
+				<div class="socials">
+					<a href="#" aria-label="Instagram">IG</a>
+					<a href="#" aria-label="Facebook">FB</a>
+					<a href="#" aria-label="YouTube">YT</a>
+					<a href="#" aria-label="TikTok">TT</a>
+				</div>
+				<p>Drop-ins welcome. First session is on us — just bring trainers and a towel.</p>
+			</div>
+		</div>
+		<div class="foot-bottom">
+			<span>© 2026 Forge House Gym. All reps reserved.</span>
+			<span>Built with the Repset theme by Theme Forge</span>
+		</div>
+	</div>
+</footer>
+
+</body>
+</html>

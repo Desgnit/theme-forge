@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Showroom skin — dark automotive gloss.
+   Loaded AFTER main.css on every page; overrides only, no new markup hooks.
+   Light content sections stay light — the gloss treatment is reserved for
+   the dark hero / CTA / footer bands.
+   ========================================================================== */
+
+:root {
+  --co-radius: 0.25rem; /* squared-off, machined corners across the theme */
+}
+
+/* --- Dark bands: a diagonal sheen, like light raking across fresh paint --- */
+.bg-primary-dark {
+  background-image: linear-gradient(
+    115deg,
+    rgb(255 255 255 / 0.07) 0%,
+    rgb(255 255 255 / 0.02) 28%,
+    transparent 46%,
+    transparent 68%,
+    rgb(255 255 255 / 0.045) 100%
+  );
+}
+
+/* Hero/CTA bands combine the sheen with a much fainter panel grid */
+.bg-grid {
+  background-image: linear-gradient(115deg, rgb(255 255 255 / 0.08), transparent 42%),
+    linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 0),
+    linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 0);
+  background-size: 100% 100%, 44px 44px, 44px 44px;
+}
+
+/* Footer gets a cyan hairline where it meets the page */
+footer.bg-primary-dark {
+  border-top: 1px solid rgb(var(--co-accent) / 0.3);
+}
+
+/* --- Cards: thin cyan edge-glow on a light body --- */
+.card {
+  border-color: rgb(var(--co-accent) / 0.4);
+  box-shadow: 0 0 0 1px rgb(var(--co-accent) / 0.08),
+    0 6px 18px -8px rgb(var(--co-accent-dark) / 0.35);
+}
+
+/* --- Kickers: wide letter-spaced, engineered uppercase --- */
+.kicker {
+  letter-spacing: 0.3em;
+}
+
+/* --- Spec plates: price tags & area chips styled like number plates --- */
+.spec-chip {
+  border-radius: 0.25rem;
+  border-color: rgb(var(--co-accent) / 0.5);
+  background-color: rgb(var(--co-primary-dark));
+  color: rgb(var(--co-accent));
+  letter-spacing: 0.12em;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    0 1px 3px rgb(var(--co-primary-dark) / 0.4);
+}
+
+/* --- hero v2: showroom floor -----------------------------------------------
+   Centered headline over a wide, low hero-car card sat like a car on a
+   plinth: cyan edge-glow, a gradient "floor reflection" beneath it, and a
+   row of number-plate price chips across the bottom of the band. */
+.sr-hero-center { text-align: center; }
+.sr-hero-plinth {
+  position: relative;
+  width: 100%;
+  max-width: 58rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sr-hero-plinth img {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 28vw, 330px); /* wide + low, like a plinth shot */
+  object-fit: cover;
+  object-position: center 60%;
+  border-radius: var(--co-radius);
+  box-shadow:
+    0 0 0 1px rgb(var(--co-accent) / 0.55),          /* cyan edge-glow */
+    0 0 34px -6px rgb(var(--co-accent) / 0.5),
+    0 22px 44px -20px rgb(0 0 0 / 0.85);
+}
+.sr-hero-plinth::after {
+  /* floor reflection: cyan gradient pooling under the car */
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 100%;
+  height: 3.25rem;
+  border-radius: 50% / 100% 100% 0 0;
+  background: linear-gradient(
+    rgb(var(--co-accent) / 0.28),
+    rgb(var(--co-accent) / 0.07) 55%,
+    transparent
+  );
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* --- Accent buttons: a soft cyan gleam that sharpens on hover --- */
+.btn-accent {
+  box-shadow: 0 0 16px -4px rgb(var(--co-accent) / 0.55);
+}
+.btn-accent:hover {
+  box-shadow: 0 0 22px -4px rgb(var(--co-accent) / 0.75);
+}
+
+/* --- Star ratings inside light review cards read as cyan gleam --- */
+.card > .text-accent-dark[aria-label] {
+  text-shadow: 0 0 12px rgb(var(--co-accent) / 0.45);
+}

@@ -1,0 +1,80 @@
+/* ==========================================================================
+   Sideline skin — friendly community club
+   Loaded after main.css; restyles via the theme's --sl-* variables only.
+   Karla type, grass-tinted section bands, sticker badges, photo hero.
+   ========================================================================== */
+
+:root {
+  --sl-font-display: "Karla", ui-sans-serif, system-ui, sans-serif;
+  --sl-font-body: "Karla", ui-sans-serif, system-ui, sans-serif;
+  --sl-radius: 0.75rem;            /* friendly rounded corners everywhere */
+  --sl-board: 236 245 238;         /* grass-green tinted section bands */
+  --sl-line: 213 229 218;          /* dividers pick up the green tint */
+}
+
+/* Karla headings: a touch tighter, always bold */
+h1, h2, h3, h4, .section-title {
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+/* Photo hero band — real matchday photo under a deep-green wash so the
+   white headline and stats stay fully legible */
+main > section.bg-pitch:first-child {
+  background-image:
+    linear-gradient(rgb(10 56 35 / 0.9), rgb(10 56 35 / 0.78) 55%, rgb(10 56 35 / 0.92)),
+    url("../img/goal-pitch.jpg");
+  background-size: cover, cover;
+  background-position: center, center 42%;
+}
+
+/* Sticker-style badges: chunky white ring, soft drop shadow, cheeky tilt */
+.age-badge {
+  border-radius: 9999px;
+  border: 3px solid rgb(255 255 255);
+  box-shadow: 0 5px 12px rgb(10 56 35 / 0.22);
+  transform: rotate(-4deg);
+}
+.chip-boys  { box-shadow: inset 0 0 0 1.5px rgb(var(--sl-boys) / 0.35); }
+.chip-girls { box-shadow: inset 0 0 0 1.5px rgb(var(--sl-girls) / 0.35); }
+.chip-mixed { box-shadow: inset 0 0 0 1.5px rgb(var(--sl-mixed) / 0.35); }
+.info-chip  { background-color: rgb(255 255 255); }
+
+/* Pill buttons — playful but still tidy */
+.btn-accent, .btn-outline, .btn-ghost-light {
+  border-radius: 9999px;
+}
+
+/* Cards float gently off the tinted bands */
+.card {
+  box-shadow: 0 1px 2px rgb(25 33 28 / 0.04), 0 10px 24px -14px rgb(21 94 60 / 0.25);
+}
+.card img { background-color: rgb(var(--sl-board)); }
+
+/* Kicker keeps its flag but rounds off like everything else */
+.kicker::before { border-radius: 9999px; }
+
+/* --------------------------------------------------------------------------
+   hero v2 — stacked playful hero: full-width photo card with corner stickers
+   -------------------------------------------------------------------------- */
+.hero-photo-card { position: relative; }
+.hero-photo-card img {
+  height: clamp(240px, 38vw, 440px);
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+/* Corner stickers reuse the .age-badge sticker look, sized up and pinned
+   so they overlap the photo card's corners */
+.hero-sticker {
+  position: absolute;
+  height: 5.5rem;
+  width: 5.5rem;
+  padding: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.15;
+  text-align: center;
+  box-shadow: 0 8px 18px rgb(10 56 35 / 0.4);
+}
+.hero-sticker--tl { top: -1.25rem; left: -0.5rem; transform: rotate(-8deg); }
+.hero-sticker--br { bottom: -1.25rem; right: -0.5rem; transform: rotate(6deg); }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thanks — download your template</title>
+  <meta name="robots" content="noindex">
+  <style>
+:root{--ink:#e8ecf3;--soft:#9aa5b5;--bg:#0d1017;--card:#151a24;--line:#252c3a;--gold:#f5b40b}
+*{box-sizing:border-box}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+.wrap{max-width:1100px;margin:0 auto;padding:56px 20px 80px}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--soft);max-width:640px;margin:0 0 44px}
+h2{font-size:1.05rem;text-transform:uppercase;letter-spacing:.18em;color:var(--gold);margin:44px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.card .body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.name{font-weight:700;font-size:1.05rem}
+.price{color:var(--gold);font-weight:700}
+.desc{color:var(--soft);font-size:.86rem;flex:1}
+.row{display:flex;gap:10px;margin-top:6px}
+.btn{flex:1;text-align:center;padding:10px 12px;border-radius:9px;font-weight:700;font-size:.9rem;text-decoration:none}
+.buy{background:var(--gold);color:#181818}
+.buy.soon{background:#2a3140;color:var(--soft);pointer-events:none}
+.demo{border:1px solid var(--line);color:var(--ink)}
+.btn:hover{filter:brightness(1.1)}
+a.back{color:var(--soft);text-decoration:none;font-size:.9rem}
+footer{margin-top:64px;color:var(--soft);font-size:.8rem;border-top:1px solid var(--line);padding-top:20px}
+</style>
+</head>
+<body>
+  <div class="wrap" style="max-width:640px">
+    <h1>Thanks for your purchase!</h1>
+    <p class="sub" id="msg">Your template is ready to download.</p>
+    <a class="btn buy" style="display:inline-block;min-width:240px" id="dl" href="#">Download your template</a>
+    <p class="sub" style="margin-top:24px">Unzip it and open <code>index.html</code> — the README inside covers rebranding and going live. Keep your Stripe receipt as your licence record.</p>
+  </div>
+  <script>
+    var zips = {"forgeline": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/forgeline-theme-v1.0.0.zip", "callout": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-theme-v1.0.0.zip", "callout-plumbing": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-plumbing-theme-v1.0.0.zip", "callout-building": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-building-theme-v1.0.0.zip", "callout-landscaping": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-landscaping-theme-v1.0.0.zip", "callout-roofing": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-roofing-theme-v1.0.0.zip", "sideline": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/sideline-theme-v1.0.0.zip", "terrace": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/terrace-theme-v1.0.0.zip", "clarion": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/clarion-theme-v1.0.0.zip", "vermilion": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/vermilion-theme-v1.0.0.zip", "evergreen": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/evergreen-theme-v1.0.0.zip", "amberline": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/amberline-theme-v1.0.0.zip", "skyline": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/skyline-theme-v1.0.0.zip", "tangerine": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/tangerine-theme-v1.0.0.zip", "midnight": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/midnight-theme-v1.0.0.zip", "canary": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/canary-theme-v1.0.0.zip", "candystripe": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/candystripe-theme-v1.0.0.zip", "boundary": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/boundary-theme-v1.0.0.zip", "callout-skiphire": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-skiphire-theme-v1.0.0.zip", "callout-scaffolding": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/callout-scaffolding-theme-v1.0.0.zip", "solace": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/solace-theme-v1.0.0.zip", "commons": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/commons-theme-v1.0.0.zip", "swim": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/swim-theme-v1.0.0.zip", "tryline": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/tryline-theme-v1.0.0.zip", "greenside": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/greenside-theme-v1.0.0.zip", "southpaw": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/southpaw-theme-v1.0.0.zip", "clearview": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/clearview-theme-v1.0.0.zip", "vanguard": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/vanguard-theme-v1.0.0.zip", "showroom": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/showroom-theme-v1.0.0.zip", "wagtail": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/wagtail-theme-v1.0.0.zip", "hedgerow": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/hedgerow-theme-v1.0.0.zip", "wayside": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/wayside-theme-v1.0.0.zip", "greenlight": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/greenlight-theme-v1.0.0.zip", "anvil": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/anvil-theme-v1.0.0.zip", "scoop": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/scoop-theme-v1.0.0.zip", "torque": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/torque-theme-v1.0.0.zip", "repset": "https://github.com/Desgnit/theme-forge/releases/download/themes-latest/repset-theme-v1.0.0.zip"};
+    var names = {"forgeline": "Forgeline \u2014 Industrial & Trade Supplier HTML Template", "callout": "Callout \u2014 Electrician Website Template (local trades)", "callout-plumbing": "Callout \u2014 Plumber Website Template (local trades)", "callout-building": "Callout \u2014 Builder Website Template (local trades)", "callout-landscaping": "Callout \u2014 Landscaper Website Template (local trades)", "callout-roofing": "Callout \u2014 Roofer Website Template (local trades)", "sideline": "Sideline \u2014 Grassroots Junior Football Club Template", "terrace": "Terrace \u2014 Football Club HTML Template (claret & sky)", "clarion": "Clarion \u2014 Football Club HTML Template (royal blue & gold)", "vermilion": "Vermilion \u2014 Football Club HTML Template (scarlet & gold)", "evergreen": "Evergreen \u2014 Football Club HTML Template (forest green & gold)", "amberline": "Amberline \u2014 Football Club HTML Template (black & amber)", "skyline": "Skyline \u2014 Football Club HTML Template (sky blue & gold)", "tangerine": "Tangerine \u2014 Football Club HTML Template (orange & black)", "midnight": "Midnight \u2014 Football Club HTML Template (navy & sky)", "canary": "Canary \u2014 Football Club HTML Template (yellow & slate)", "candystripe": "Candystripe \u2014 Football Club HTML Template (red & white stripes)", "boundary": "Boundary \u2014 Cricket Club HTML Template (green & gold)", "callout-skiphire": "Callout \u2014 Skip Hire Website Template (local trades)", "callout-scaffolding": "Callout \u2014 Scaffolding Website Template (local trades)", "solace": "Solace \u2014 Funeral Directors HTML Template", "commons": "Commons \u2014 Village Hall & Community Centre Template", "swim": "Swim \u2014 Fishing Lakes & Day-Ticket Fishery Template", "tryline": "Tryline \u2014 Rugby League Club HTML Template", "greenside": "Greenside \u2014 Lawn Bowls Club HTML Template", "southpaw": "Southpaw \u2014 Boxing & Martial Arts Gym Template", "clearview": "Clearview \u2014 Window Cleaning Business Template", "vanguard": "Vanguard \u2014 Man & Van / Removals Template", "showroom": "Showroom \u2014 Mobile Car Valeting & Detailing Template", "wagtail": "Wagtail \u2014 Dog Grooming Salon Template", "hedgerow": "Hedgerow \u2014 Farm Shop & Butchery HTML Template", "wayside": "Wayside \u2014 Caravan & Camping Site Template", "greenlight": "Greenlight \u2014 Driving Instructor Website Template", "anvil": "Anvil \u2014 Premium Conversion-First Shopify Theme", "scoop": "Scoop \u2014 Supplements & Protein Shopify Theme", "torque": "Torque \u2014 Fitness Gear & Apparel Shopify Theme", "repset": "Repset \u2014 Gym & Fitness Club WordPress Block Theme"};
+    var slug = new URLSearchParams(location.search).get("theme");
+    if (zips[slug]) {
+      document.getElementById("dl").href = zips[slug];
+      document.getElementById("msg").textContent = names[slug] + " is ready to download.";
+    } else {
+      document.getElementById("dl").href = "https://github.com/Desgnit/theme-forge/releases/tag/themes-latest";
+      document.getElementById("dl").textContent = "Open the downloads page";
+    }
+  </script>
+</body>
+</html>
