@@ -306,6 +306,11 @@ button { font: inherit; }
   position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
   font-size: 13px; color: var(--muted); pointer-events: none;
 }
+/* Minutes : seconds pair — two boxes with a printed colon, so a phone
+   keypad never has to produce punctuation. */
+.t-wrap { display: flex; align-items: center; gap: 8px; }
+.field-input .t-wrap input { width: 50%; min-width: 0; text-align: center; }
+.t-colon { font-size: 20px; font-weight: 700; color: var(--muted); }
 .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .field-tight .field-input input { padding: 11px 12px; font-size: 16px; }
 .field-tight .hint { min-height: 0; }

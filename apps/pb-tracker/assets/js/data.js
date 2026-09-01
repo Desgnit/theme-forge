@@ -67,9 +67,9 @@
     cals: { suffix: "cal", better: "higher", input: "number", step: "1", hint: "Calories on the monitor after 60 seconds" },
     reps: { suffix: "reps", better: "higher", input: "number", step: "1", hint: "Good reps in 60 seconds" },
     m: { suffix: "m", better: "higher", input: "number", step: "0.5", hint: "Distance covered, in metres" },
-    time: { better: "lower", input: "time", hint: "mm:ss \u2014 no colon on the keypad? The dot works: 8.42 reads as 8:42" },
-    pace: { suffix: "/500m", better: "lower", input: "time", hint: "mm:ss per 500m \u2014 the dot works as the colon" },
-    time_up: { better: "higher", input: "time", hint: "mm:ss \u2014 the dot works as the colon: 1.45 reads as 1:45" }
+    time: { better: "lower", input: "time", hint: "Minutes in the first box, seconds in the second" },
+    pace: { suffix: "/500m", better: "lower", input: "time", hint: "Pace per 500m \u2014 minutes, then seconds" },
+    time_up: { better: "higher", input: "time", hint: "Minutes in the first box, seconds in the second \u2014 under a minute, leave minutes empty" }
   };
 
   /* The Log menu: one card per card-tap, in tracker order. */

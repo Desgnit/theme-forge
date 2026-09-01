@@ -192,10 +192,7 @@
   }
 
   function fillField(metricId, secs) {
-    var el = document.querySelector('[name="' + metricId + '"]');
-    if (!el) return;
-    el.value = PB.formatTime(Math.round(secs * 10) / 10);
-    el.dispatchEvent(new Event("input", { bubbles: true }));
+    writeField(document, metricId, secs);
   }
 
   function timerCard(f) {
@@ -387,6 +384,52 @@
       esc(f.video.by) + "</span></a>";
   }
 
+  /* Times are typed like a stopwatch reads: a minutes box and a seconds box,
+   * both plain digits — nothing to punctuate, nothing to misread. The pair
+   * is joined back into "m:ss" wherever a value is read. */
+  function timePairInputs(idAttr, nameAttr) {
+    return '<span class="t-wrap">' +
+      '<input id="' + idAttr + '" name="' + nameAttr + '" class="t-mm" type="text" ' +
+      'inputmode="numeric" autocomplete="off" maxlength="2" placeholder="min">' +
+      '<span class="t-colon">:</span>' +
+      '<input id="' + idAttr + '__ss" name="' + nameAttr + '__ss" class="t-ss" type="text" ' +
+      'inputmode="decimal" autocomplete="off" maxlength="4" placeholder="sec"></span>';
+  }
+
+  /* Combined "m:ss" text for a field, whether it is a time pair or a plain
+   * input. Empty when both boxes are empty; single-digit seconds pad to two
+   * so "9" means 9 seconds, not 90. */
+  function readField(root, name) {
+    var el = root.querySelector('[name="' + name + '"]');
+    if (!el) return "";
+    if (!el.classList.contains("t-mm")) return el.value.trim();
+    var ss = root.querySelector('[name="' + name + '__ss"]');
+    var mv = el.value.trim(), sv = ss ? ss.value.trim() : "";
+    if (!mv && !sv) return "";
+    /* seconds alone stay plain seconds — "75" in the seconds box is 1:15,
+       not an error */
+    if (!mv) return sv;
+    if (/^\d$/.test(sv)) sv = "0" + sv;
+    return mv + ":" + (sv || "00");
+  }
+
+  function writeField(root, name, secs, silent) {
+    var el = root.querySelector('[name="' + name + '"]');
+    if (!el) return;
+    var t = PB.formatTime(Math.round(secs * 10) / 10);
+    if (el.classList.contains("t-mm")) {
+      var parts = t.split(":");
+      el.value = parts.length === 3 ? String(Number(parts[0]) * 60 + Number(parts[1])) : parts[0];
+      var ss = root.querySelector('[name="' + name + '__ss"]');
+      if (ss) ss.value = parts[parts.length - 1];
+    } else {
+      el.value = t;
+    }
+    /* silent writes come from inside an input handler — dispatching there
+       would re-enter it forever */
+    if (!silent) el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
   /* ------------------------------------------------------------- Entry form */
 
   function viewForm(formId) {
@@ -421,9 +464,9 @@
         '<span class="field-label">' + esc(fld.label) +
         (fld.required ? "" : ' <em class="opt">optional</em>') + "</span>" +
         '<span class="field-input">' +
-        '<input id="fi-' + fld.metric + '" name="' + fld.metric + '" type="text" ' +
-        'inputmode="decimal" ' +
-        'autocomplete="off" placeholder="' + esc(u.input === "time" ? "mm:ss" : "0") + '">' +
+        (u.input === "time" ? timePairInputs("fi-" + fld.metric, fld.metric)
+          : '<input id="fi-' + fld.metric + '" name="' + fld.metric + '" type="text" ' +
+            'inputmode="decimal" autocomplete="off" placeholder="0">') +
         (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
         "</span>" +
         '<span class="hint" data-hint="' + fld.metric + '">' + esc(inGrid ? "" : u.hint) + "</span></label>");
@@ -452,7 +495,7 @@
         '<a class="link" href="#/activity/' + primary + '">See progress</a></div>');
     }
     html.push('<p class="fine">' + esc(s.name) + " · " + (s.sub ? esc(s.sub) + " · " : "") +
-      "Times can be typed as 8:42, or as plain seconds.</p>");
+      "Times go in as two boxes — minutes, then seconds.</p>");
     return html.join("");
   }
 
@@ -464,8 +507,7 @@
     wireRest(f);
 
     function raw(metricId) {
-      var el = form.querySelector('[name="' + metricId + '"]');
-      return el ? el.value.trim() : "";
+      return readField(form, metricId);
     }
 
     function echo() {
@@ -502,7 +544,7 @@
         var parts = f.sumTo.from.map(function (id) { return PB.parseValue("time", raw(id)); });
         var totalEl = form.querySelector('[name="' + f.sumTo.metric + '"]');
         if (parts.every(function (p) { return p != null; }) && totalEl && !totalEl.dataset.touched) {
-          totalEl.value = PB.formatTime(parts.reduce(function (a, b) { return a + b; }, 0));
+          writeField(form, f.sumTo.metric, parts.reduce(function (a, b) { return a + b; }, 0), true);
           echoOne(f.sumTo.metric);
         }
       }
@@ -521,7 +563,16 @@
     }
 
     form.addEventListener("input", function (e) {
-      if (e.target.name === (f.sumTo && f.sumTo.metric)) e.target.dataset.touched = "1";
+      var baseName = String(e.target.name || "").replace(/__ss$/, "");
+      if (f.sumTo && baseName === f.sumTo.metric && e.isTrusted) {
+        var totalEl = form.querySelector('[name="' + f.sumTo.metric + '"]');
+        if (totalEl) totalEl.dataset.touched = "1";
+      }
+      /* two digits of minutes hops the cursor to the seconds box */
+      if (e.isTrusted && e.target.classList.contains("t-mm") && e.target.value.length >= 2) {
+        var ssEl = form.querySelector('[name="' + e.target.name + '__ss"]');
+        if (ssEl && !ssEl.value) ssEl.focus();
+      }
       echo();
     });
 
@@ -722,9 +773,11 @@
       "<h1>Edit entry</h1><p class=\"sub\">" + esc(m.name) + "</p></header>" +
       '<form class="card form" id="edit-form" novalidate>' +
       '<label class="field" for="edit-value"><span class="field-label">Result</span>' +
-      '<span class="field-input"><input id="edit-value" type="text" ' +
-      'inputmode="decimal" autocomplete="off" value="' +
-      esc(PB.formatValue(m.unit, entry.value)) + '">' +
+      '<span class="field-input">' +
+      (u.input === "time" ? timePairInputs("edit-value", "edit-value")
+        : '<input id="edit-value" name="edit-value" type="text" ' +
+          'inputmode="decimal" autocomplete="off" value="' +
+          esc(PB.formatValue(m.unit, entry.value)) + '">') +
       (u.suffix && u.suffix !== "/500m" ? '<span class="unit">' + esc(u.suffix) + "</span>" : "") +
       '</span><span class="hint" id="edit-hint">' + esc(u.hint) + "</span></label>" +
       '<label class="field"><span class="field-label">Date</span>' +
@@ -745,16 +798,24 @@
     if (!entry) return;
     var m = PB.metric(entry.metric);
     var form = document.getElementById("edit-form");
-    var input = document.getElementById("edit-value");
     var hint = document.getElementById("edit-hint");
+    if (PB.UNITS[m.unit].input === "time") writeField(form, "edit-value", entry.value, true);
 
-    input.addEventListener("input", function () {
-      var v = PB.parseValue(m.unit, input.value.trim());
-      if (!input.value.trim()) { hint.textContent = PB.UNITS[m.unit].hint; hint.className = "hint"; return; }
+    function current() { return readField(form, "edit-value"); }
+
+    form.addEventListener("input", function (e) {
+      if (String(e.target.name || "").replace(/__ss$/, "") !== "edit-value") return;
+      if (e.isTrusted && e.target.classList.contains("t-mm") && e.target.value.length >= 2) {
+        var ssEl = form.querySelector('[name="edit-value__ss"]');
+        if (ssEl && !ssEl.value) ssEl.focus();
+      }
+      var text = current();
+      if (!text) { hint.textContent = PB.UNITS[m.unit].hint; hint.className = "hint"; return; }
+      var v = PB.parseValue(m.unit, text);
       if (v == null) { hint.textContent = "Not a valid entry — " + PB.UNITS[m.unit].hint; hint.className = "hint bad"; return; }
       var shown = PB.formatValue(m.unit, v);
-      hint.textContent = shown === input.value.trim() ? PB.UNITS[m.unit].hint : "Reads as " + PB.formatFull(m.unit, v);
-      hint.className = shown === input.value.trim() ? "hint" : "hint good";
+      hint.textContent = shown === text ? PB.UNITS[m.unit].hint : "Reads as " + PB.formatFull(m.unit, v);
+      hint.className = shown === text ? "hint" : "hint good";
     });
 
     document.getElementById("edit-delete").onclick = function () {
@@ -767,7 +828,7 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var err = document.getElementById("edit-error");
-      var v = PB.parseValue(m.unit, input.value.trim());
+      var v = PB.parseValue(m.unit, current());
       var date = document.getElementById("edit-date").value || entry.date;
       if (v == null) {
         err.textContent = "That result is not a value we can read. " + PB.UNITS[m.unit].hint + ".";
