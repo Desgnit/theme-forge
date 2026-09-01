@@ -401,7 +401,7 @@
     var formLevels = PB.score.levels(f.fields[0].metric);
     if (formLevels) {
       var mainMetric = PB.metric(f.fields[0].metric);
-      html.push('<p class="levels-line">' + formLevels.map(function (row) {
+      html.push('<p class="levels-line"><strong>This test:</strong> ' + formLevels.map(function (row) {
         return esc(row.name) + " " + esc(PB.formatFull(mainMetric.unit, row.value));
       }).join(" · ") + "</p>");
     }
