@@ -48,10 +48,10 @@
     { id: "ski60_cals", section: "tests", name: "60s Max Ski (Calories)", unit: "cals", bench: [12, 34] },
     { id: "row60_cals", section: "tests", name: "60s Max Cals Row", unit: "cals", bench: [12, 36] },
     { id: "wallball60", section: "tests", name: "60s Max Wall Balls", unit: "reps", bench: [12, 40] },
-    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", unit: "m", bench: [12, 45] },
-    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [15, 70] },
-    { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", unit: "m", bench: [15, 80] },
-    { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", unit: "m", bench: [12, 60] },
+    { id: "burpee60_m", section: "tests", name: "1 Minute Max Distance Burpee Broad Jumps", unit: "m", bench: [4, 30] },
+    { id: "lunge60_m", section: "tests", name: "1 Minute Max Distance Walking Lunges", unit: "m", bench: [5, 33] },
+    { id: "sledpull60_m", section: "tests", name: "1 Minute Max Distance Sled Pull", unit: "m", bench: [3, 25] },
+    { id: "sledpush60_m", section: "tests", name: "1 Minute Max Distance Sled Push", unit: "m", bench: [5, 45] },
     { id: "deadhang", section: "tests", name: "Dead Hang (Max Time)", unit: "time_up", bench: [20, 180] },
 
     /* Neutral: no direction is "better", so it gets a chart and a latest
@@ -124,7 +124,11 @@
     var m = METRICS.filter(function (x) { return x.id === id; })[0];
     FORMS.push({
       id: id, section: "tests", title: m.name, art: TEST_ART[id],
-      blurb: id === "deadhang" ? "Hang from the bar until you drop off." : "One all-out minute.",
+      blurb: id === "deadhang" ? "Hang from the bar until you drop off."
+        : id === "sledpush60_m" ? "One all-out minute at race load — 152kg including the sled. Different weight? Say so in the note."
+        : id === "sledpull60_m" ? "One all-out minute at race load — 103kg including the sled. Different weight? Say so in the note."
+        : id === "lunge60_m" ? "One all-out minute, bodyweight — no sandbag."
+        : "One all-out minute.",
       fields: [{ metric: id, label: "Result", required: true }]
     });
   });

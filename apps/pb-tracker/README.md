@@ -161,10 +161,10 @@ Treat the score as a way to compare you against you.
 | 60s Max Ski | 12 cal | 34 cal |
 | 60s Max Row | 12 cal | 36 cal |
 | 60s Wall Balls | 12 reps | 40 reps |
-| 60s Burpee Broad Jumps | 12 m | 45 m |
-| 60s Walking Lunges | 15 m | 70 m |
-| 60s Sled Pull | 15 m | 80 m |
-| 60s Sled Push | 12 m | 60 m |
+| 60s Burpee Broad Jumps | 4 m | 30 m |
+| 60s Walking Lunges (bodyweight) | 5 m | 33 m |
+| 60s Sled Pull (103kg incl. sled) | 3 m | 25 m |
+| 60s Sled Push (152kg incl. sled) | 5 m | 45 m |
 | Dead Hang | 20 s | 180 s |
 
 **Changing them** is one edit: the `bench: [zero, hundred]` pair on each metric
