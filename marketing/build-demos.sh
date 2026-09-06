@@ -37,6 +37,13 @@ mkdir -p "$OUT/pb-tracker"
 cp -r apps/pb-tracker/. "$OUT/pb-tracker"/
 rm -rf "$OUT"/pb-tracker/tools "$OUT"/pb-tracker/README.md
 
+# the Sports Social Marketing pitch site rides along at /sportssocial/ —
+# a client proof of concept, not a catalogue theme, that needs a public URL
+mkdir -p "$OUT/sportssocial"
+cp -r clients/sportssocial/. "$OUT/sportssocial"/
+rm -rf "$OUT"/sportssocial/README.md "$OUT"/sportssocial/build-single-file.py \
+  "$OUT"/sportssocial/dist
+
 python3 marketing/build-store.py
 
 echo "Demo site assembled at $OUT ($(du -sh "$OUT" | cut -f1))."
