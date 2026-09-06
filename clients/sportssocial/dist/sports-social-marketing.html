@@ -460,9 +460,9 @@ section[id], article[id] { scroll-margin-top: 96px; }
 .stack > * + * { margin-top: 1rem; }
 .center { text-align: center; }
 .mt-lg { margin-top: 2.5rem; }
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.reveal.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.js .reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; } }
 
 /* =========================================================================
    Credibility, proof and conversion blocks
@@ -671,7 +671,7 @@ section[id], article[id] { scroll-margin-top: 96px; }
       </p>
     </div>
 
-    <aside class="hero__panel reveal">
+    <aside class="hero__panel">
       <h2>WHAT WE'RE USUALLY BROUGHT IN TO FIX</h2>
       <ul>
         <li><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Posting a lot, growing very little</span></li>
@@ -1861,12 +1861,23 @@ section[id], article[id] { scroll-margin-top: 96px; }
   document.addEventListener("click", function (e) {
     var a = e.target.closest("a[href]");
     if (!a) return;
-    var href = a.getAttribute("href");
-    var m = /^(index|work|contact)\.html(#.*)?$/.exec(href || "");
-    if (!m) return;
-    e.preventDefault();
-    show(m[1], m[2] || "");
-    history.replaceState(null, "", (m[2] || "#") );
+    var href = a.getAttribute("href") || "";
+    var m = /^(index|work|contact)\.html(#.*)?$/.exec(href);
+    if (m) {
+      e.preventDefault();
+      show(m[1], m[2] || "");
+      history.replaceState(null, "", m[2] || "#");
+      return;
+    }
+    // A bare "#section" link may point into a page that is currently hidden.
+    if (href.charAt(0) === "#" && href.length > 1) {
+      var target = document.getElementById(href.slice(1));
+      var owner = target && target.closest("[data-page]");
+      if (!owner) return;
+      e.preventDefault();
+      show(owner.dataset.page, href);
+      history.replaceState(null, "", href);
+    }
   });
   // Deep links such as ...html#services still land on the home page section.
   if (location.hash) {

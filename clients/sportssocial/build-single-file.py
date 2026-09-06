@@ -86,12 +86,23 @@ def main():
   document.addEventListener("click", function (e) {
     var a = e.target.closest("a[href]");
     if (!a) return;
-    var href = a.getAttribute("href");
-    var m = /^(index|work|contact)\\.html(#.*)?$/.exec(href || "");
-    if (!m) return;
-    e.preventDefault();
-    show(m[1], m[2] || "");
-    history.replaceState(null, "", (m[2] || "#") );
+    var href = a.getAttribute("href") || "";
+    var m = /^(index|work|contact)\\.html(#.*)?$/.exec(href);
+    if (m) {
+      e.preventDefault();
+      show(m[1], m[2] || "");
+      history.replaceState(null, "", m[2] || "#");
+      return;
+    }
+    // A bare "#section" link may point into a page that is currently hidden.
+    if (href.charAt(0) === "#" && href.length > 1) {
+      var target = document.getElementById(href.slice(1));
+      var owner = target && target.closest("[data-page]");
+      if (!owner) return;
+      e.preventDefault();
+      show(owner.dataset.page, href);
+      history.replaceState(null, "", href);
+    }
   });
   // Deep links such as ...html#services still land on the home page section.
   if (location.hash) {

@@ -428,9 +428,9 @@ section[id], article[id] { scroll-margin-top: 96px; }
 .stack > * + * { margin-top: 1rem; }
 .center { text-align: center; }
 .mt-lg { margin-top: 2.5rem; }
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.reveal.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.js .reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; } }
 
 /* =========================================================================
    Credibility, proof and conversion blocks
